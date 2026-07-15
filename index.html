@@ -12,8 +12,8 @@
                 extend: {
                     colors: {
                         fundo: '#0F0B14',
-                        card: '#1A1425'
-                        vermelho: '#F43F5E',    
+                        card: '#1A1425',
+                        vermelho: '#F43F5E',
                         roxo: '#A855F7',
                         texto: '#E2D9F0',
                         textoFraco: '#9488A8'
@@ -30,7 +30,6 @@
 
     <header class="bg-black/80 sticky top-0 z-50 border-b border-gray-700">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center flex-wrap gap-4">
-            <!-- Menu de Categorias -->
             <div class="flex gap-3">
                 <button id="filtro-todos" class="categoria-btn bg-gray-700 text-white px-4 py-2 rounded font-bold hover:bg-vermelho transition">TODOS</button>
                 <button id="filtro-addons" class="categoria-btn bg-gray-700 text-white px-4 py-2 rounded font-bold hover:bg-vermelho transition">ADDONS</button>
@@ -39,7 +38,6 @@
 
             <h1 class="text-vermelho text-4xl font-black tracking-wider">McNexus</h1>
 
-            <!-- Barra de Pesquisa -->
             <div class="relative w-full max-w-xs">
                 <input type="text" id="pesquisa" placeholder="Buscar por nome..." class="w-full bg-card border border-gray-700 rounded-lg py-2 pl-9 pr-3 text-sm focus:outline-none focus:border-roxo transition">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400"></i>
@@ -47,16 +45,11 @@
         </div>
     </header>
 
-    <!-- Área de Filtros REMOVIDA -->
-
-    <!-- Conteúdo principal -->
     <main class="container mx-auto px-4 py-10">
-        <p class="text-gray-400 mb-6">Mostrando <span id="qtd-resultados">1 - 2</span> de 2 resultados</p>
+        <p class="text-gray-400 mb-6">Mostrando <span id="qtd-resultados"></span></p>
 
-        <!-- Grade de Itens -->
         <div id="lista-itens" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-            <!-- Item 1: Compact Machines -->
             <a href="addons/compactmachines/index.html" class="block group item" 
                data-tipo="addons" 
                data-nome="Compact Machines">
@@ -68,13 +61,10 @@
                     </div>
                     <div class="p-4">
                         <h3 class="text-xl font-bold mb-3 group-hover:text-vermelho transition">Compact Machines</h3>
-                        <div class="flex flex-wrap gap-1">
-                        </div>
                     </div>
                 </div>
             </a>
 
-            <!-- Item 2: Barrel Expansion -->
             <a href="addons/barrel_expansion/index.html" class="block group item" 
                data-tipo="addons" 
                data-nome="Barrel Expansion">
@@ -86,50 +76,38 @@
                     </div>
                     <div class="p-4">
                         <h3 class="text-xl font-bold mb-3 group-hover:text-vermelho transition">Barrel Expansion</h3>
-                        <div class="flex flex-wrap gap-1">
-                        </div>
                     </div>
                 </div>
             </a>
-
-            <!-- Exemplo de MODPACK (quando adicionar) -->
-            <!--
-            <a href="modpacks/aventura/index.html" class="block group item" 
-               data-tipo="modpacks" 
-               data-nome="Aventura Total">
-                <div class="bg-card rounded-lg overflow-hidden border border-gray-800 hover:border-roxo transition-shadow shadow-md hover:shadow-roxo/20">
+			
+            <a href="addons/mobgrindutils/index.html" class="block group item" 
+               data-tipo="addons" 
+               data-nome="Mob Grind Utils">
+                <div class="bg-card rounded-lg overflow-hidden border border-gray-800 hover:border-vermelho transition-shadow shadow-md hover:shadow-vermelho/20">
                     <div class="h-52 relative">
-                        <img src="modpacks/aventura/capa.jpg" alt="Aventura Total" class="w-full h-full object-cover">
-                        <span class="absolute top-3 left-3 bg-black/70 px-2.5 py-1 rounded text-xs">05 Jul</span>
-                        <span class="absolute top-3 right-3 bg-roxo/90 px-2 py-0.5 rounded text-xs font-bold">MODPACK</span>
+                        <img src="addons/mobgrindutils/capa.jpg" alt="Mob Grind Utils" class="w-full h-full object-cover">
+                        <span class="absolute top-3 left-3 bg-black/70 px-2.5 py-1 rounded text-xs">15 Jul</span>
+                        <span class="absolute top-3 right-3 bg-vermelho/90 px-2 py-0.5 rounded text-xs font-bold">ADDON</span>
                     </div>
                     <div class="p-4">
-                        <h3 class="text-xl font-bold mb-3 group-hover:text-roxo transition">Aventura Total</h3>
-                        <div class="flex flex-wrap gap-1">
-                            <span class="bg-gray-700 px-2 py-0.5 rounded text-xs text-gray-300">Aventura</span>
-                            <span class="bg-gray-700 px-2 py-0.5 rounded text-xs text-gray-300">Exploração</span>
-                        </div>
+                        <h3 class="text-xl font-bold mb-3 group-hover:text-vermelho transition">Mob Grind Utils</h3>
                     </div>
                 </div>
             </a>
-            -->
 
         </div>
 
-        <!-- Mensagem sem resultados -->
         <div id="sem-resultados" class="hidden text-center text-gray-400 mt-12 text-lg">
             Nenhum item encontrado com esses filtros.
         </div>
     </main>
 
-    <!-- Rodapé -->
     <footer class="bg-black/80 border-t border-gray-700 mt-12 py-6">
         <div class="container mx-auto px-4 text-center text-gray-400">
             <p>© 2026 McNexus - Todos os direitos reservados</p>
         </div>
     </footer>
 
-    <!-- Script dos filtros -->
     <script>
         const botoesCategoria = document.querySelectorAll('.categoria-btn');
         const campoPesquisa = document.getElementById('pesquisa');
@@ -159,21 +137,18 @@
 
             if (contador === 0) {
                 semResultados.classList.remove('hidden');
-                qtdResultados.textContent = '0 - 0';
+                qtdResultados.textContent = '0 resultados';
             } else {
                 semResultados.classList.add('hidden');
-                qtdResultados.textContent = `1 - ${contador}`;
+                const texto = contador === 1 ? 'resultado' : 'resultados';
+                qtdResultados.textContent = `1 - ${contador} de ${contador} ${texto}`;
             }
         }
 
         botoesCategoria.forEach(botao => {
             botao.addEventListener('click', () => {
                 botoesCategoria.forEach(b => b.classList.remove('bg-vermelho', 'bg-roxo'));
-                if (botao.id === 'filtro-modpacks') {
-                    botao.classList.add('bg-roxo');
-                } else {
-                    botao.classList.add('bg-vermelho');
-                }
+                botao.id === 'filtro-modpacks' ? botao.classList.add('bg-roxo') : botao.classList.add('bg-vermelho');
                 filtroAtualTipo = botao.id.replace('filtro-', '');
                 aplicarFiltros();
             });
@@ -184,7 +159,6 @@
             aplicarFiltros();
         });
 
-        // Inicia com "TODOS" selecionado
         document.getElementById('filtro-todos').classList.add('bg-vermelho');
         aplicarFiltros();
     </script>

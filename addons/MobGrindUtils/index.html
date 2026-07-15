@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mob Grinding Utils - Detalhes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fundo: '#121212',
+                        card: '#1e1e1e',
+                        vermelho: '#F43F5E',
+                        roxo: '#A855F7',
+                        texto: '#E2D9F0',
+                        textoFraco: '#9488A8'
+                    },
+                    fontFamily: {
+                        principal: ['Segoe UI', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-fundo text-texto font-principal min-h-screen">
+
+    <!-- Dados para filtro da página inicial -->
+    <div style="display: none;" data-tipo="addons" data-tags="mecanica,utilitario,fazenda"></div>
+
+    <header class="bg-black/80 border-b border-gray-700 py-4 sticky top-0 z-50">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="../../index.html" class="text-white hover:text-vermelho flex items-center gap-2 transition">
+                <i class="fa-solid fa-arrow-left"></i> Voltar para a lista
+            </a>
+            <h1 class="text-vermelho text-2xl font-bold">McNexus</h1>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 max-w-5xl">
+        <div class="grid md:grid-cols-3 gap-8">
+
+            <div class="md:col-span-2">
+                <h2 class="text-3xl font-bold mb-4">Mob Grinding Utils</h2>
+                <p class="text-textoFraco mb-6">Criado por: <span class="text-roxo font-semibold">ReversyPlayer e McStudios</span></p>
+
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <img src="capa.jpg" alt="Imagem do Addon" class="w-full rounded-lg border border-gray-700">
+                    <img src="imagem1.jpg" alt="Ventilador" class="w-full rounded-lg border border-gray-700">
+                </div>
+
+                <div class="mb-8">
+                    <a href="https://discord.gg/TEeb4zc3M5" target="_blank" 
+                       class="inline-flex items-center gap-2 text-roxo hover:text-purple-400 font-semibold text-lg transition">
+                        <i class="fa-brands fa-discord"></i>
+                        Grupo do Discord
+                    </a>
+                </div>
+
+                <div class="bg-card p-6 rounded-lg border border-gray-800">
+                    <h3 class="text-xl font-bold mb-4 text-vermelho">Sobre esse Addon</h3>
+                    
+                    <p class="mb-4 leading-relaxed">
+                        Este addon adiciona novas máquinas e itens incríveis para o seu modo sobrevivência: ventiladores, esteiras, espinhos e muito mais!
+                    </p>
+
+                    <h4 class="text-lg font-semibold text-roxo mt-6 mb-3">📦 Conteúdos do Addon</h4>
+
+                    <h5 class="font-bold mt-4 mb-2 text-white">1️⃣ Ventilador</h5>
+                    <p class="mb-3">Colocável virado para qualquer direção. Quando alimentado por redstone, ele empurra itens, mobs e jogadores a até <strong>4 blocos de distância</strong>.</p>
+
+                    <h5 class="font-bold mt-4 mb-2 text-white">2️⃣ Esteira</h5>
+                    <p class="mb-3">Quando uma entidade está em cima, ela é levada automaticamente na direção para qual o bloco foi posicionado.</p>
+
+                    <h5 class="font-bold mt-4 mb-2 text-white">3️⃣ Inibidor de Ender</h5>
+                    <p class="mb-3">Quando alimentado por redstone, impede que endermans, shulkers e jogadores se teletransportem num raio de <strong>16 blocos</strong>. Com isso, pérolas de ender e frutas do coro não funcionam nessa área.</p>
+
+                    <h5 class="font-bold mt-4 mb-2 text-white">4️⃣ Tanque de XP</h5>
+                    <p class="mb-3">Sempre que você estiver com experiência e em cima do bloco, poderá armazenar seu XP dentro dele — muito útil para criar o Balde de Experiência.</p>
+
+                    <h5 class="font-bold mt-4 mb-2 text-white">5️⃣ Espinhos</h5>
+                    <p class="mb-3">Podem ser colocados de lado ou para cima. Quando um mob ou jogador encostar, receberá dano direto — perfeito para uso em fazendas.</p>
+
+                    <h5 class="font-bold mt-4 mb-2 text-white">6️⃣ Troca de Mobs & Ração de Galinha</h5>
+                    <p class="mb-3">É um item que serve para coletar o DNA de mobs e gerar ovos de desova deles!</p>
+                    <p class="mb-2"><strong>🔹 Como usar:</strong></p>
+                    <ul class="list-disc pl-5 mb-3 space-y-1">
+                        <li>Primeiro, crie uma <strong>Ração de Galinha</strong> e segure-a na mão secundária</li>
+                        <li>Bata no mob com o item <strong>Troca de Mobs</strong></li>
+                        <li>O DNA do mob ficará armazenado na ração</li>
+                        <li>Agora bata numa galinha com a ração — ela soltará o ovo de desova daquele mob!</li>
+                    </ul>
+
+                    <h5 class="font-bold mt-4 mb-2 text-white">🥚 Ovo Podre e Ovo Dourado</h5>
+                    <p class="mb-3">Ao criar uma <strong>Ração Amaldiçoada</strong> ou <strong>Ração Nutritiva</strong> e bater numa galinha, você ganha esses ovos especiais:</p>
+                    <ul class="list-disc pl-5 mb-3 space-y-1">
+                        <li><strong>Ovo Dourado:</strong> Transforma grama numa área de 5×5 em grama verde, que gera mobs pacíficos</li>
+                        <li><strong>Ovo Podre:</strong> Transforma grama numa área de 5×5 em grama roxa, que gera mobs hostis</li>
+                    </ul>
+                    <p class="mb-3">A quantidade e o tipo de mob dependem da dimensão: por exemplo, endermans aparecem com mais frequência no Fim, mas são mais raros no Mundo Superior.</p>
+
+                    <h4 class="text-lg font-semibold text-roxo mt-6 mb-3">⚠️ Observação Importante</h4>
+                    <p class="italic">Nesta versão, as máquinas param de funcionar se você ficar muito longe delas. Esse comportamento será corrigido em versões futuras!</p>
+                    <p class="mt-4">Por enquanto é só! Em breve teremos mais novidades e funcionalidades.</p>
+                </div>
+            </div>
+
+            <div>
+                <div class="bg-card p-6 rounded-lg border border-gray-800 sticky top-24">
+                    <h3 class="text-xl font-bold mb-4">Informações</h3>
+                    <ul class="space-y-2 text-textoFraco mb-6">
+                        <li>📅 Lançado: 15/07</li>
+                        <li>🎮 Versão compatível: 1.26.32</li>
+                        <li>📂 Tipo: Adaptação não oficial</li>
+                    </ul>
+
+                    <a href="https://vatonage.com/mods/mob-grinding-utils" target="_blank" class="block w-full bg-vermelho hover:bg-vermelho/80 text-center py-3 rounded-lg font-bold text-lg transition">
+    <i class="fa-solid fa-download mr-2"></i> BAIXAR ADDON
+</a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>
