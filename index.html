@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>McNexus - Addons Minecraft</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fundo: '#0F0B14',
+                        card: '#1A1425'
+                        vermelho: '#F43F5E',    
+                        roxo: '#A855F7',
+                        texto: '#E2D9F0',
+                        textoFraco: '#9488A8'
+                    },
+                    fontFamily: {
+                        principal: ['Segoe UI', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-fundo text-texto font-principal min-h-screen">
+
+    <header class="bg-black/80 sticky top-0 z-50 border-b border-gray-700">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center flex-wrap gap-4">
+            <!-- Menu de Categorias -->
+            <div class="flex gap-3">
+                <button id="filtro-todos" class="categoria-btn bg-gray-700 text-white px-4 py-2 rounded font-bold hover:bg-vermelho transition">TODOS</button>
+                <button id="filtro-addons" class="categoria-btn bg-gray-700 text-white px-4 py-2 rounded font-bold hover:bg-vermelho transition">ADDONS</button>
+                <button id="filtro-modpacks" class="categoria-btn bg-gray-700 text-white px-4 py-2 rounded font-bold hover:bg-roxo transition">MODPACKS</button>
+            </div>
+
+            <h1 class="text-vermelho text-4xl font-black tracking-wider">McNexus</h1>
+
+            <!-- Barra de Pesquisa -->
+            <div class="relative w-full max-w-xs">
+                <input type="text" id="pesquisa" placeholder="Buscar por nome..." class="w-full bg-card border border-gray-700 rounded-lg py-2 pl-9 pr-3 text-sm focus:outline-none focus:border-roxo transition">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Área de Filtros REMOVIDA -->
+
+    <!-- Conteúdo principal -->
+    <main class="container mx-auto px-4 py-10">
+        <p class="text-gray-400 mb-6">Mostrando <span id="qtd-resultados">1 - 2</span> de 2 resultados</p>
+
+        <!-- Grade de Itens -->
+        <div id="lista-itens" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Item 1: Compact Machines -->
+            <a href="addons/compactmachines/index.html" class="block group item" 
+               data-tipo="addons" 
+               data-nome="Compact Machines">
+                <div class="bg-card rounded-lg overflow-hidden border border-gray-800 hover:border-vermelho transition-shadow shadow-md hover:shadow-vermelho/20">
+                    <div class="h-52 relative">
+                        <img src="addons/compactmachines/capa.jpg" alt="Compact Machines" class="w-full h-full object-cover">
+                        <span class="absolute top-3 left-3 bg-black/70 px-2.5 py-1 rounded text-xs">05 Jul</span>
+                        <span class="absolute top-3 right-3 bg-vermelho/90 px-2 py-0.5 rounded text-xs font-bold">ADDON</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-3 group-hover:text-vermelho transition">Compact Machines</h3>
+                        <div class="flex flex-wrap gap-1">
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Item 2: Barrel Expansion -->
+            <a href="addons/barrel_expansion/index.html" class="block group item" 
+               data-tipo="addons" 
+               data-nome="Barrel Expansion">
+                <div class="bg-card rounded-lg overflow-hidden border border-gray-800 hover:border-vermelho transition-shadow shadow-md hover:shadow-vermelho/20">
+                    <div class="h-52 relative">
+                        <img src="addons/barrel_expansion/capa.jpg" alt="Barrel Expansion" class="w-full h-full object-cover">
+                        <span class="absolute top-3 left-3 bg-black/70 px-2.5 py-1 rounded text-xs">05 Jul</span>
+                        <span class="absolute top-3 right-3 bg-vermelho/90 px-2 py-0.5 rounded text-xs font-bold">ADDON</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-3 group-hover:text-vermelho transition">Barrel Expansion</h3>
+                        <div class="flex flex-wrap gap-1">
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Exemplo de MODPACK (quando adicionar) -->
+            <!--
+            <a href="modpacks/aventura/index.html" class="block group item" 
+               data-tipo="modpacks" 
+               data-nome="Aventura Total">
+                <div class="bg-card rounded-lg overflow-hidden border border-gray-800 hover:border-roxo transition-shadow shadow-md hover:shadow-roxo/20">
+                    <div class="h-52 relative">
+                        <img src="modpacks/aventura/capa.jpg" alt="Aventura Total" class="w-full h-full object-cover">
+                        <span class="absolute top-3 left-3 bg-black/70 px-2.5 py-1 rounded text-xs">05 Jul</span>
+                        <span class="absolute top-3 right-3 bg-roxo/90 px-2 py-0.5 rounded text-xs font-bold">MODPACK</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-3 group-hover:text-roxo transition">Aventura Total</h3>
+                        <div class="flex flex-wrap gap-1">
+                            <span class="bg-gray-700 px-2 py-0.5 rounded text-xs text-gray-300">Aventura</span>
+                            <span class="bg-gray-700 px-2 py-0.5 rounded text-xs text-gray-300">Exploração</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            -->
+
+        </div>
+
+        <!-- Mensagem sem resultados -->
+        <div id="sem-resultados" class="hidden text-center text-gray-400 mt-12 text-lg">
+            Nenhum item encontrado com esses filtros.
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-black/80 border-t border-gray-700 mt-12 py-6">
+        <div class="container mx-auto px-4 text-center text-gray-400">
+            <p>© 2026 McNexus - Todos os direitos reservados</p>
+        </div>
+    </footer>
+
+    <!-- Script dos filtros -->
+    <script>
+        const botoesCategoria = document.querySelectorAll('.categoria-btn');
+        const campoPesquisa = document.getElementById('pesquisa');
+        const itens = document.querySelectorAll('.item');
+        const qtdResultados = document.getElementById('qtd-resultados');
+        const semResultados = document.getElementById('sem-resultados');
+
+        let filtroAtualTipo = 'todos';
+        let termoPesquisa = '';
+
+        function aplicarFiltros() {
+            let contador = 0;
+            itens.forEach(item => {
+                const tipo = item.dataset.tipo;
+                const nome = item.dataset.nome.toLowerCase();
+
+                const correspondeTipo = filtroAtualTipo === 'todos' || tipo === filtroAtualTipo;
+                const correspondeBusca = nome.includes(termoPesquisa.toLowerCase());
+
+                if (correspondeTipo && correspondeBusca) {
+                    item.style.display = 'block';
+                    contador++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            if (contador === 0) {
+                semResultados.classList.remove('hidden');
+                qtdResultados.textContent = '0 - 0';
+            } else {
+                semResultados.classList.add('hidden');
+                qtdResultados.textContent = `1 - ${contador}`;
+            }
+        }
+
+        botoesCategoria.forEach(botao => {
+            botao.addEventListener('click', () => {
+                botoesCategoria.forEach(b => b.classList.remove('bg-vermelho', 'bg-roxo'));
+                if (botao.id === 'filtro-modpacks') {
+                    botao.classList.add('bg-roxo');
+                } else {
+                    botao.classList.add('bg-vermelho');
+                }
+                filtroAtualTipo = botao.id.replace('filtro-', '');
+                aplicarFiltros();
+            });
+        });
+
+        campoPesquisa.addEventListener('input', () => {
+            termoPesquisa = campoPesquisa.value.trim();
+            aplicarFiltros();
+        });
+
+        // Inicia com "TODOS" selecionado
+        document.getElementById('filtro-todos').classList.add('bg-vermelho');
+        aplicarFiltros();
+    </script>
+
+</body>
+</html>
