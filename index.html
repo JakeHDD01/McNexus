@@ -102,6 +102,16 @@ footer{padding:30px 5vw;border-top:1px solid var(--line);color:var(--m);text-ali
 .chk{display:flex;gap:12px;align-items:flex-start;margin:0;color:var(--t);cursor:pointer}
 .chk input{width:22px;height:22px;margin-top:4px;accent-color:var(--p)}
 .rules{list-style:none;padding:0;color:var(--m)}.rules li{margin:8px 0}
+.dc{background:#5865F2}
+footer .btn{margin-bottom:14px}
+dialog{overflow:auto}
+dialog textarea{width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:80px;resize:vertical}
+.fup{display:block;border:1px dashed var(--line);border-radius:12px;padding:14px;color:var(--m);cursor:pointer;margin:0}
+.rich img,#fd img{max-width:100%;border-radius:10px;margin:8px 0}
+#profile{max-width:900px;margin:0 auto;padding-bottom:50px}
+.pbox{display:flex;gap:16px;align-items:center;margin:26px 0 8px}
+.pav{width:84px;height:84px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:2.2rem;font-weight:800;flex:none}
+.pbio{color:var(--m);white-space:pre-wrap;margin:8px 0 14px}
 </style>
 </head>
 <body>
@@ -114,6 +124,7 @@ footer{padding:30px 5vw;border-top:1px solid var(--line);color:var(--m);text-ali
     <button class="av" id="avBtn" aria-label="My account" data-d hidden></button>
     <div class="dd" id="dd" hidden>
       <button id="dashBtn">Creator dashboard</button>
+      <button id="profBtn">My profile</button>
       <button id="setBtn">Settings</button>
       <button class="out" id="logoutBtn">Sign out</button>
     </div>
@@ -156,6 +167,14 @@ footer{padding:30px 5vw;border-top:1px solid var(--line);color:var(--m);text-ali
   <div id="dList" data-d></div>
 </section>
 
+<section id="profile" class="wrap" hidden>
+  <div class="pbox"><div class="pav" id="pAv" data-d></div><h2 id="pName" data-d></h2></div>
+  <p class="pbio" id="pBio" data-d></p>
+  <div class="row" id="pLinks" data-d></div>
+  <h2 class="t">Addons</h2>
+  <div class="grid" id="pGrid" data-d></div>
+</section>
+
 <section id="sub" class="wrap" hidden>
   <h2 class="t" id="fTitle" data-d>Submit new post</h2>
   <p class="sub">Share your creation with the community</p>
@@ -180,6 +199,7 @@ footer{padding:30px 5vw;border-top:1px solid var(--line);color:var(--m);text-ali
       <button type="button" data-c="justifyCenter" title="Center">↔</button>
       <button type="button" data-c="justifyRight" title="Align right">⇥</button>
       <button type="button" data-c="link" title="Link">🔗</button>
+      <button type="button" data-c="image" title="Image">🖼</button><input id="fdi" type="file" accept="image/*" hidden>
       <button type="button" data-c="removeFormat" title="Clear formatting">Tx</button>
     </div>
     <div id="fd" contenteditable="true" data-ph="Describe your creation" data-d></div>
@@ -188,9 +208,14 @@ footer{padding:30px 5vw;border-top:1px solid var(--line);color:var(--m);text-ali
   <div class="chips" id="tagBox" data-d></div>
   <p class="note" id="tcount" data-d>0/5 tags selected</p>
   <div id="orgBox" hidden><label for="fo">Origin</label><select id="fo"><option value="studio">Studio addon</option><option value="parceiro">Partner addon</option></select></div>
-  <label for="fl">Download link *</label>
+  <label for="fl">Download link (optional)</label>
   <input id="fl" type="url" placeholder="https://www.mediafire.com/your-download">
-  <p class="note">Upload your file (.mcaddon or .mcpack, up to 100 MB) to Mediafire, Drive or GitHub Releases and paste the link here. The admin downloads it to check before approving.</p>
+  <label for="fu">Download file (optional)</label>
+  <label class="fup" for="fu" id="fupTxt" data-d></label>
+  <input id="fu" type="file" hidden>
+  <p class="note">If you do not paste a link, the uploaded file is used for the download. You need at least one of them.</p>
+  <label for="fy">YouTube link (optional)</label><input id="fy" type="url" placeholder="https://www.youtube.com/...">
+  <label for="fdc">Discord link (optional)</label><input id="fdc" type="url" placeholder="https://discord.gg/...">
   <div class="box" id="reqBox"><h3>⚠ Addon requirements</h3>
     <label class="chk"><input type="checkbox" id="fReq"><span><b>This addon does NOT use player.json</b><br><small style="color:var(--m)">Addons must not modify player.json to be compatible</small></span></label>
   </div>
@@ -201,7 +226,7 @@ footer{padding:30px 5vw;border-top:1px solid var(--line);color:var(--m);text-ali
   <div class="err" id="ferr" data-d></div>
   <div class="row"><button class="btn ghost" id="fClose">Cancel</button><button class="btn" id="saveBtn">SUBMIT FOR REVIEW</button></div>
 </section>
-<footer id="foot" data-d></footer>
+<footer><a class="btn dc" id="dcBtn" target="_blank" rel="noopener">Join our Discord</a><p id="foot" data-d></p></footer>
 
 <dialog id="dAuth">
   <h2 id="aTitle" data-d>Sign in</h2>
@@ -220,6 +245,8 @@ footer{padding:30px 5vw;border-top:1px solid var(--line);color:var(--m);text-ali
   <h2>Settings</h2>
   <label for="sn">Creator name</label><input id="sn" maxlength="30">
   <label for="sl">Language</label><select id="sl"><option value="en">English</option><option value="pt">Português</option></select>
+  <label for="pb">Bio</label><textarea id="pb" maxlength="300"></textarea>
+  <label>Social links</label><div id="lkBox" data-d></div>
   <div id="ghBox" hidden style="border-top:1px solid var(--line);margin-top:16px;padding-top:4px">
     <label for="gr">Site repository (user/repository)</label><input id="gr" placeholder="youruser/yoursite">
     <label for="gb">Branch</label><input id="gb" value="main">
@@ -229,7 +256,7 @@ footer{padding:30px 5vw;border-top:1px solid var(--line);color:var(--m);text-ali
   </div>
   <div class="err" id="serr" data-d></div>
   <div class="row">
-    <button class="btn" id="sSave">Save name</button>
+    <button class="btn" id="sSave">Save profile</button>
     <button class="btn ghost" id="sPw">Change password by email</button>
     <button class="btn ghost" id="sClose">Close</button>
   </div>
@@ -241,6 +268,7 @@ footer{padding:30px 5vw;border-top:1px solid var(--line);color:var(--m);text-ali
 /* ====== SETTINGS: edit here ====== */
 const CONFIG = {
   studio: "McNexus Studio",
+  discord: "https://discord.gg/uXgJgdWtHj",
   firebase: {
     apiKey: "AIzaSyDtSj7gpOWfOidOzfteODf3WlmTixHpekE",
     authDomain: "sitemcnexusstudio.firebaseapp.com",
@@ -274,9 +302,9 @@ const PT = {
   "You do not have permission for this action.":"Você não tem permissão para essa ação.",
   "Create creator account":"Criar conta de criador","Create account":"Criar conta","I already have an account":"Já tenho conta","Close":"Fechar","Creator name":"Nome de criador","Email":"E-mail","Password":"Senha",
   "Choose a creator name.":"Escolha um nome de criador.","Could not create the account: use a valid email and a password with 6+ characters.":"Não foi possível criar a conta: use um e-mail válido e senha com 6+ caracteres.","Wrong email or password.":"E-mail ou senha incorretos.",
-  "Language":"Idioma","Save name":"Salvar nome","Change password by email":"Trocar senha por e-mail","Site repository (user/repository)":"Repositório do site (usuario/repositorio)","GitHub token":"Token do GitHub",
+  "Language":"Idioma","Save profile":"Salvar perfil","Change password by email":"Trocar senha por e-mail","Site repository (user/repository)":"Repositório do site (usuario/repositorio)","GitHub token":"Token do GitHub",
   "Only used to create the addons/ folder in the repository when you approve an addon. Saved only on this device, never in the code. Create one at GitHub → Settings → Developer settings → Fine-grained tokens, for this repository only, with Contents: Read and write.":"Serve só para criar a pasta addons/ no repositório quando você aprova um addon. Fica salvo apenas neste aparelho, nunca no código. Crie em GitHub → Settings → Developer settings → Fine-grained tokens, só para esse repositório, com Contents: Read and write.",
-  "Save GitHub":"Salvar GitHub","Name saved.":"Nome salvo.","Could not save.":"Não foi possível salvar.","We sent you an email to change your password.":"Enviamos um e-mail para trocar a senha.","Could not send the email.":"Não foi possível enviar o e-mail.","GitHub saved on this device.":"GitHub salvo neste aparelho.",
+  "Save GitHub":"Salvar GitHub","Profile saved.":"Perfil salvo.","Could not save.":"Não foi possível salvar.","We sent you an email to change your password.":"Enviamos um e-mail para trocar a senha.","Could not send the email.":"Não foi possível enviar o e-mail.","GitHub saved on this device.":"GitHub salvo neste aparelho.",
   "by {0}":"por {0}","Download":"Baixar",
   "Submit new post":"Enviar novo post","Edit post":"Editar post","Share your creation with the community":"Compartilhe sua criação com a comunidade","Post type":"Tipo do post","Thumbnail *":"Miniatura *",
   "Tap to upload a thumbnail":"Toque para enviar a miniatura","Recommended: 800x450 (16:9)":"Recomendado: 800x450 (16:9)","Title *":"Título *","Give your creation a catchy title":"Dê um título chamativo à sua criação","{0}/100 characters":"{0}/100 caracteres",
@@ -290,7 +318,14 @@ const PT = {
   "Upload a thumbnail (16:9).":"Envie a miniatura (16:9).","Write a title.":"Escreva o título.","Write a description.":"Escreva a descrição.","The description is too long.":"A descrição está muito longa.","Choose at least 1 tag.":"Escolha pelo menos 1 tag.",
   "Paste a download link starting with https://":"Cole um link de download que comece com https://","Confirm that the addon does not use player.json.":"Confirme que o addon não usa player.json.","Could not read that image.":"Não foi possível ler essa imagem.","Could not save. Try signing in again.":"Não foi possível salvar. Tente entrar de novo.",
   "Paste the link (https://...)":"Cole o link (https://...)",
-  "© {0} {1}. Not affiliated with Mojang or Microsoft.":"© {0} {1}. Não afiliado à Mojang ou Microsoft.","{0} – Minecraft addons":"{0} – Addons para Minecraft","{0}: addons for your world":"{0}: addons para o seu mundo"
+  "© {0} {1}. Not affiliated with Mojang or Microsoft.":"© {0} {1}. Não afiliado à Mojang ou Microsoft.","{0} – Minecraft addons":"{0} – Addons para Minecraft","{0}: addons for your world":"{0}: addons para o seu mundo",
+  "Join our Discord":"Entre no nosso Discord","My profile":"Meu perfil","Download link (optional)":"Link de download (opcional)","Download file (optional)":"Arquivo para download (opcional)",
+  "Tap to choose a .mcaddon or .mcpack file (up to {0} MB)":"Toque para escolher um arquivo .mcaddon ou .mcpack (até {0} MB)",
+  "If you do not paste a link, the uploaded file is used for the download. You need at least one of them.":"Se você não colar um link, o arquivo enviado é usado no download. Você precisa de pelo menos um dos dois.",
+  "YouTube link (optional)":"Link do YouTube (opcional)","Discord link (optional)":"Link do Discord (opcional)","Image":"Imagem","Social links":"Redes sociais","No addons yet.":"Nenhum addon ainda.","Creator":"Criador",
+  "Use a valid https link for {0}.":"Use um link https válido para {0}.","Add a download link or upload a file.":"Adicione um link de download ou envie um arquivo.",
+  "The file must be .mcaddon or .mcpack, up to {0} MB.":"O arquivo precisa ser .mcaddon ou .mcpack, até {0} MB.","Uploading file {0}/{1}...":"Enviando arquivo {0}/{1}...",
+  "The post is too big. Remove some images from the description.":"O post está grande demais. Tire algumas imagens da descrição.","Could not upload the file. Edit the post and try again.":"Não foi possível enviar o arquivo. Edite o post e tente de novo."
 };
 let lang = localStorage.getItem("lang") === "pt" ? "pt" : "en";
 const tr = (s, ...a) => { let r = lang === "pt" ? (PT[s] ?? s) : s; a.forEach((v, i) => r = r.split("{" + i + "}").join(v)); return r; };
@@ -318,6 +353,7 @@ function clean(html) {  // deixa só formatação segura na descrição
       if (c.nodeType === 3) out.append(document.createTextNode(c.textContent));
       else if (c.nodeType === 1) {
         if (/^(SCRIPT|STYLE)$/.test(c.tagName)) continue;
+        if (c.tagName === "IMG") { const sr = c.getAttribute("src") || ""; if (/^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(sr) || /^[a-z0-9-]+\/img-\d+\.jpg$/.test(sr)) { const e = document.createElement("img"); e.setAttribute("src", sr); e.alt = ""; out.append(e); } continue; }
         if (!OKTAG[c.tagName]) { walk(c, out); continue; }
         const e = document.createElement(c.tagName.toLowerCase());
         if (c.tagName === "A") { const h = c.getAttribute("href") || ""; if (/^https?:\/\//i.test(h)) { e.href = h; e.target = "_blank"; e.rel = "noopener noreferrer nofollow"; } }
@@ -330,12 +366,17 @@ function clean(html) {  // deixa só formatação segura na descrição
 }
 const tagsHtml = i => (i.tags || []).filter(t => TAGS.includes(t)).map(t => `<span class="tg">${esc(t)}</span>`).join("");
 const typeLabel = x => x === "addonpack" ? "Addonpack" : "Addon";
+const SOC = [["discord","Discord"],["youtube","YouTube"],["twitter","X / Twitter"],["instagram","Instagram"],["tiktok","TikTok"],["website","Website"]];
+const HOSTS = {discord: /(^|\.)(discord\.gg|discord\.com)$/, youtube: /(^|\.)(youtube\.com|youtu\.be)$/, twitter: /(^|\.)(twitter\.com|x\.com)$/, instagram: /(^|\.)instagram\.com$/, tiktok: /(^|\.)tiktok\.com$/, website: /./};
+const okLink = (k, u) => { try { const x = new URL(u); return x.protocol === "https:" && HOSTS[k].test(x.hostname); } catch (e) { return false; } };
+const MAX_MB = 25, CH = 800000;  // limite do arquivo e tamanho de cada pedaço enviado ao Firestore
 const demo = !CONFIG.firebase.apiKey, PER = 8;
-let live = [], mine = [], user = null, adminOk = false, editing = null, imgData = "", B, page = 1, dtab = "todos", mode = "login", pubIntent = false, ptype = "addon", tags = [];
+let live = [], mine = [], user = null, adminOk = false, editing = null, imgData = "", B, page = 1, dtab = "todos", mode = "login", pubIntent = false, ptype = "addon", tags = [], upFile = null;
 const isAdmin = () => !!user && (demo ? /^admin/i.test(user.email) : adminOk);
 const nameOf = u => u?.displayName || (u?.email || "").split("@")[0];
 $("#fTag").innerHTML = '<option value="todas">All tags</option>' + TAGS.map(t => `<option>${t}</option>`).join("");
-$("#logo").textContent = CONFIG.studio;
+$("#logo").textContent = CONFIG.studio; $("#dcBtn").href = CONFIG.discord;
+$("#lkBox").innerHTML = SOC.map(([k, l]) => `<label for="lk-${k}">${l}</label><input id="lk-${k}" placeholder="https://">`).join("");
 if (demo) $("#demo").style.display = "block";
 
 /* ---------- Backend ---------- */
@@ -345,13 +386,15 @@ async function initBackend() {
     const sess = (e, n) => { user = {uid: e, email: e, displayName: n}; localStorage.setItem("user", e); localStorage.setItem("uname", n); };
     B = {
       list: async () => L().filter(x => x.status === "live"), mine: async () => L().filter(x => isAdmin() || x.authorUid === user.uid),
-      save: async it => { const a = L(); if (it.id) { const i = a.findIndex(x => x.id === it.id); a[i] = {...a[i], ...it}; } else a.unshift({...it, id: String(Date.now()), created: Date.now()}); S(a); },
+      save: async it => { const a = L(); let id = it.id; if (id) { const i = a.findIndex(x => x.id === id); a[i] = {...a[i], ...it}; } else { id = String(Date.now()); a.unshift({...it, id, created: Date.now()}); } S(a); return id; },
       status: async (id, s, ex) => S(L().map(x => x.id === id ? {...x, status: s, ...ex} : x)),
       remove: async id => S(L().filter(x => x.id !== id)),
       login: async e => sess(e, localStorage.getItem("uname") || e.split("@")[0]),
       signup: async (e, p, n) => sess(e, n),
       logout: async () => { user = null; localStorage.removeItem("user"); },
-      rename: async n => { user.displayName = n; localStorage.setItem("uname", n); }, reset: async () => {}
+      rename: async n => { user.displayName = n; localStorage.setItem("uname", n); }, reset: async () => {},
+      profile: async uid => JSON.parse(localStorage.getItem("p:" + uid) || "null"), setProfile: async p => localStorage.setItem("p:" + user.uid, JSON.stringify(p)),
+      putChunks: async () => {}, getChunks: async () => [], dropChunks: async () => {}
     };
     const u = localStorage.getItem("user"); if (u) sess(u, localStorage.getItem("uname") || u.split("@")[0]);
     return;
@@ -360,30 +403,36 @@ async function initBackend() {
   const [{initializeApp}, A, F] = await Promise.all([import(b+"firebase-app.js"), import(b+"firebase-auth.js"), import(b+"firebase-firestore.js")]);
   const app = initializeApp(CONFIG.firebase), auth = A.getAuth(app), db = F.getFirestore(app), col = F.collection(db, "addons");
   const rows = s => s.docs.map(d => ({...d.data(), id: d.id}));
-  const check = async () => { try { adminOk = !!user && (await F.getDoc(F.doc(db, "admins", user.uid))).exists(); } catch (e) { adminOk = false; } };
+  const check = async () => { try { adminOk = !!user && (await F.getDoc(F.doc(db, "admins", user.uid))).exists(); } catch (e) { adminOk = false; }
+    try { if (user) { const pr = F.doc(db, "users", user.uid); if (!(await F.getDoc(pr)).exists()) await F.setDoc(pr, {name: nameOf(user)}); } } catch (e) {} };
   await new Promise(r => A.onAuthStateChanged(auth, async u => { user = u; await check(); r(); }));
   B = {
     list: async () => rows(await F.getDocs(F.query(col, F.where("status", "==", "live")))),
     mine: async () => rows(await F.getDocs(adminOk ? col : F.query(col, F.where("authorUid", "==", user.uid)))),
-    save: async it => { const {id, ...d} = it; if (id) await F.updateDoc(F.doc(db, "addons", id), d); else await F.addDoc(col, {...d, created: Date.now()}); },
+    save: async it => { const {id, ...d} = it; if (id) { await F.updateDoc(F.doc(db, "addons", id), d); return id; } return (await F.addDoc(col, {...d, created: Date.now()})).id; },
     status: (id, s, ex) => F.updateDoc(F.doc(db, "addons", id), {status: s, ...ex}),
     remove: id => F.deleteDoc(F.doc(db, "addons", id)),
     login: async (e, p) => { user = (await A.signInWithEmailAndPassword(auth, e, p)).user; await check(); },
     signup: async (e, p, n) => { user = (await A.createUserWithEmailAndPassword(auth, e, p)).user; await A.updateProfile(user, {displayName: n}); await check(); },
     logout: async () => { await A.signOut(auth); user = null; adminOk = false; },
     rename: n => A.updateProfile(auth.currentUser, {displayName: n}),
+    profile: async uid => { const p = await F.getDoc(F.doc(db, "users", uid)); return p.exists() ? p.data() : null; },
+    setProfile: p => F.setDoc(F.doc(db, "users", auth.currentUser.uid), p),
+    putChunks: async (id, parts, cb) => { for (let k = 0; k < parts.length; k++) { await F.setDoc(F.doc(db, "addons", id, "chunks", String(k)), {d: parts[k]}); cb && cb(k + 1, parts.length); } },
+    getChunks: async (id, n) => { const o = []; for (let k = 0; k < n; k++) o.push((await F.getDoc(F.doc(db, "addons", id, "chunks", String(k)))).data().d); return o; },
+    dropChunks: async id => { const q = await F.getDocs(F.collection(db, "addons", id, "chunks")); await Promise.all(q.docs.map(d => F.deleteDoc(d.ref))); },
     reset: () => A.sendPasswordResetEmail(auth, user.email)
   };
 }
 
 /* ---------- Navegação ---------- */
-function go(v) { $("#home").hidden = v !== "home"; $("#dash").hidden = v !== "dash"; $("#sub").hidden = v !== "sub"; scrollTo(0, 0); }
+function go(v) { $("#home").hidden = v !== "home"; $("#dash").hidden = v !== "dash"; $("#sub").hidden = v !== "sub"; $("#profile").hidden = v !== "profile"; scrollTo(0, 0); }
 function head() {
   $("#loginBtn").hidden = !!user; $("#avBtn").hidden = !user; $("#dd").hidden = true;
   if (user) $("#avBtn").textContent = nameOf(user).charAt(0).toUpperCase();
 }
 $("#menuBtn").onclick = () => $("#menu").hidden = !$("#menu").hidden;
-$("#logo").onclick = () => { go("home"); refresh(); };
+$("#logo").onclick = () => { history.pushState(null, "", location.pathname); go("home"); refresh(); };
 $("#avBtn").onclick = e => { e.stopPropagation(); $("#dd").hidden = !$("#dd").hidden; };
 document.addEventListener("click", () => $("#dd").hidden = true);
 document.querySelectorAll("#menu [data-t]").forEach(b => b.onclick = () => { $("#fType").value = b.dataset.t; page = 1; go("home"); $("#menu").hidden = true; renderHome(); });
@@ -394,19 +443,20 @@ $("#q").oninput = () => { page = 1; go("home"); renderHome(); };
 /* ---------- Início ---------- */
 function filtered() {
   const q = $("#q").value.trim().toLowerCase(), t = $("#fType").value, o = $("#fOrg").value, s = $("#fSort").value, tg = $("#fTag").value;
-  return live.filter(i => (t === "todos" || i.type === t) && (tg === "todas" || (i.tags || []).includes(tg)) && (o === "todos" || (o === "studio") === !!i.studio) && (i.name + " " + (i.desc || "") + " " + (i.authorName || "")).toLowerCase().includes(q))
+  return live.filter(i => (t === "todos" || i.type === t) && (tg === "todas" || (i.tags || []).includes(tg)) && (o === "todos" || (o === "studio") === !!i.studio) && (i.name + " " + (i.authorName || "") + " " + (i.tags || []).join(" ")).toLowerCase().includes(q))
     .sort((x, y) => s === "az" ? x.name.localeCompare(y.name) : (y.created || 0) - (x.created || 0));
 }
-function renderHome() {
-  const a = filtered(), pages = Math.max(1, Math.ceil(a.length / PER)); page = Math.min(page, pages);
-  const from = (page - 1) * PER, show = a.slice(from, from + PER);
-  $("#count").textContent = a.length ? tr("Showing {0}-{1} of {2} results", from + 1, from + show.length, a.length) : tr("No results");
-  $("#grid").innerHTML = show.length ? show.map(i => `
+const card = i => `
     <article class="card" tabindex="0" data-v="${esc(i.id)}">
       ${safe(i.image) ? `<img src="${esc(safe(i.image))}" alt="" loading="lazy">` : `<div class="ph"></div>`}
       <span class="tag ${i.studio ? "" : "pt"}">${i.studio ? "Studio" : tr("Partner")}</span>
       <div class="ov"><h3>${esc(i.name)}</h3><div class="st"><span class="pill">${typeLabel(i.type)}</span></div></div>
-    </article>`).join("") : `<div class="empty">${tr("No addons here yet. Check back soon!")}</div>`;
+    </article>`;
+function renderHome() {
+  const a = filtered(), pages = Math.max(1, Math.ceil(a.length / PER)); page = Math.min(page, pages);
+  const from = (page - 1) * PER, show = a.slice(from, from + PER);
+  $("#count").textContent = a.length ? tr("Showing {0}-{1} of {2} results", from + 1, from + show.length, a.length) : tr("No results");
+  $("#grid").innerHTML = show.length ? show.map(card).join("") : `<div class="empty">${tr("No addons here yet. Check back soon!")}</div>`;
   $("#pg").innerHTML = pages > 1 ? `<button class="btn ghost sm" data-p="-1" ${page < 2 ? "disabled" : ""}>${tr("Previous")}</button><span>${tr("Page {0} of {1}", page, pages)}</span><button class="btn ghost sm" data-p="1" ${page >= pages ? "disabled" : ""}>${tr("Next")}</button>` : "";
 }
 $("#pg").onclick = e => { const p = e.target.dataset.p; if (p) { page += +p; renderHome(); scrollTo(0, 300); } };
@@ -415,14 +465,17 @@ async function refresh() { try { live = await B.list(); } catch (e) { live = [];
 /* ---------- Detalhes ---------- */
 function openView(id) {
   const i = live.find(x => x.id === id) || mine.find(x => x.id === id); if (!i) return;
+  const nm = i.authorName || CONFIG.studio, by = esc(tr("by {0}", "@@")).replace("@@", /^[\w-]+$/.test(i.authorUid || "") ? `<a href="#u=${esc(i.authorUid)}" style="color:#ff9cae">${esc(nm)}</a>` : esc(nm));
   $("#vBody").innerHTML = `${safe(i.image) ? `<img src="${esc(safe(i.image))}" alt="">` : ""}<h2>${esc(i.name)}</h2>
-    <p class="by">${esc(tr("by {0}", i.authorName || CONFIG.studio))} · ${typeLabel(i.type)}</p>
-    <div>${tagsHtml(i)}</div><div class="rich">${clean(i.desc)}</div><a class="btn" href="${esc(safe(i.link))}" target="_blank" rel="noopener">${tr("Download")}</a>`;
+    <p class="by">${by} · ${typeLabel(i.type)}</p>
+    <div>${tagsHtml(i)}</div><div class="rich">${clean(i.desc)}</div>
+    <div class="row">${safe(i.link) ? `<a class="btn" href="${esc(safe(i.link))}" target="_blank" rel="noopener">${tr("Download")}</a>` : ""}${okLink("youtube", i.yt) ? `<a class="btn ghost" href="${esc(i.yt)}" target="_blank" rel="noopener">YouTube</a>` : ""}${okLink("discord", i.dc) ? `<a class="btn dc" href="${esc(i.dc)}" target="_blank" rel="noopener">Discord</a>` : ""}</div>`;
   $("#dView").showModal();
 }
+$("#vBody").onclick = e => { if (e.target.closest('a[href^="#u="]')) $("#dView").close(); };
 $("#vClose").onclick = () => $("#dView").close();
 const openCard = e => { const c = e.target.closest("[data-v]"); if (!c || (e.type !== "click" && e.key !== "Enter")) return; const i = live.find(x => x.id === c.dataset.v); if (i && okPath(i.path)) location.href = i.path; else openView(c.dataset.v); };
-$("#grid").onclick = openCard; $("#grid").onkeydown = openCard;
+$("#grid").onclick = openCard; $("#grid").onkeydown = openCard; $("#pGrid").onclick = openCard; $("#pGrid").onkeydown = openCard;
 
 /* ---------- Conta ---------- */
 function openAuth(m) {
@@ -442,30 +495,103 @@ $("#aGo").onclick = async () => {
 };
 $("#pubBtn").onclick = () => user ? openDash() : (pubIntent = true, openAuth("signup"));
 $("#logoutBtn").onclick = async () => { await B.logout(); head(); go("home"); refresh(); };
-$("#setBtn").onclick = () => {
+$("#setBtn").onclick = async () => {
   $("#sn").value = nameOf(user); $("#sl").value = lang; $("#serr").textContent = "";
+  let p = null; try { p = await B.profile(user.uid); } catch (e) {}
+  $("#pb").value = p?.bio || ""; SOC.forEach(([k]) => $("#lk-" + k).value = p?.links?.[k] || "");
   const g = JSON.parse(localStorage.getItem("gh") || "{}"); $("#gr").value = g.repo || ""; $("#gb").value = g.branch || "main"; $("#gt").value = g.token || "";
   $("#ghBox").hidden = demo || !isAdmin(); $("#dSet").showModal();
 };
 $("#sl").onchange = e => setLang(e.target.value);
 $("#gSave").onclick = () => { localStorage.setItem("gh", JSON.stringify({repo: $("#gr").value.trim(), branch: $("#gb").value.trim() || "main", token: $("#gt").value.trim()})); $("#serr").textContent = tr("GitHub saved on this device."); };
 $("#sClose").onclick = () => $("#dSet").close();
-$("#sSave").onclick = async () => { const n = $("#sn").value.trim(); if (!n) return; try { await B.rename(n); head(); $("#serr").textContent = tr("Name saved."); } catch (e) { $("#serr").textContent = tr("Could not save."); } };
+$("#sSave").onclick = async () => {
+  const n = $("#sn").value.trim(); if (!n) return; const links = {};
+  for (const [k, l] of SOC) { const v = $("#lk-" + k).value.trim(); if (v && !okLink(k, v)) { $("#serr").textContent = tr("Use a valid https link for {0}.", l); return; } if (v) links[k] = v; }
+  try { await B.rename(n); await B.setProfile({name: n, bio: $("#pb").value.trim().slice(0, 300), links}); head(); $("#serr").textContent = tr("Profile saved."); } catch (e) { $("#serr").textContent = tr("Could not save."); }
+};
+$("#profBtn").onclick = () => { location.hash = "#u=" + user.uid; };
+async function showProfile(uid) {
+  if (!live.length) await refresh();
+  go("profile"); let p = null; try { p = await B.profile(uid); } catch (e) {}
+  const list = live.filter(x => x.authorUid === uid), nm = p?.name || list[0]?.authorName || tr("Creator");
+  $("#pName").textContent = nm; $("#pAv").textContent = nm.charAt(0).toUpperCase(); $("#pBio").textContent = p?.bio || "";
+  $("#pLinks").innerHTML = SOC.filter(([k]) => okLink(k, p?.links?.[k])).map(([k, l]) => `<a class="btn ${k === "discord" ? "dc" : "ghost"} sm" href="${esc(p.links[k])}" target="_blank" rel="noopener noreferrer">${l}</a>`).join("");
+  $("#pGrid").innerHTML = list.length ? list.map(card).join("") : `<div class="empty">${tr("No addons yet.")}</div>`;
+}
+function route() {
+  const h = location.hash, m = /^#u=([A-Za-z0-9_-]+)$/.exec(h);
+  if (h === "#login") { history.replaceState(null, "", location.pathname + location.search); if (!user) openAuth("login"); }
+  else if (m) showProfile(m[1]);
+  else if (!$("#profile").hidden) go("home");
+}
+window.addEventListener("hashchange", route);
 $("#sPw").onclick = async () => { try { await B.reset(); $("#serr").textContent = tr("We sent you an email to change your password."); } catch (e) { $("#serr").textContent = tr("Could not send the email."); } };
 
 /* ---------- Páginas no GitHub: addons/criador/nome.html (sempre em inglês) ---------- */
 const slug = (s, f) => (s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || f;
 const okPath = p => /^addons\/[a-z0-9-]+\/[a-z0-9-]+\.html$/.test(p || "");
-const pageHtml = i => `<!DOCTYPE html>
+async function pageMain(CFG, ID) {  // roda dentro de cada página addons/criador/nome.html (curtidas e comentários)
+  const b = "https://www.gstatic.com/firebasejs/10.12.2/";
+  const [{initializeApp}, A, F] = await Promise.all([import(b + "firebase-app.js"), import(b + "firebase-auth.js"), import(b + "firebase-firestore.js")]);
+  const app = initializeApp(CFG), db = F.getFirestore(app), auth = A.initializeAuth(app, {persistence: [A.indexedDBLocalPersistence, A.browserLocalPersistence]});
+  const $ = s => document.querySelector(s), mk = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; };
+  let me = null, admin = false, liked = false, count = 0;
+  const paint = () => { $("#lc").textContent = count; $("#like").classList.toggle("on", liked); };
+  async function loadLikes() { try { count = (await F.getCountFromServer(F.collection(db, "addons", ID, "likes"))).data().count; } catch (e) {} paint(); }
+  $("#like").onclick = async () => {
+    if (!me) { location.href = "../../index.html#login"; return; }
+    const r = F.doc(db, "addons", ID, "likes", me.uid);
+    try { if (liked) { await F.deleteDoc(r); liked = false; count--; } else { await F.setDoc(r, {t: Date.now()}); liked = true; count++; } paint(); } catch (e) {}
+  };
+  async function loadComments() {
+    let cs = [];
+    try { cs = (await F.getDocs(F.query(F.collection(db, "addons", ID, "comments"), F.orderBy("created", "desc"), F.limit(50)))).docs.map(d => ({id: d.id, ...d.data()})); } catch (e) {}
+    const names = {};
+    await Promise.all([...new Set(cs.map(c => c.uid))].map(async u => { try { const p = await F.getDoc(F.doc(db, "users", u)); names[u] = p.exists() ? p.data().name : "User"; } catch (e) { names[u] = "User"; } }));
+    const box = $("#clist"); box.textContent = "";
+    if (!cs.length) box.append(mk("p", "muted", "No comments yet."));
+    cs.forEach(c => {
+      const d = mk("div", "c"), h = mk("div", "ch"), a = mk("a", "", names[c.uid] || "User"); a.href = "../../index.html#u=" + encodeURIComponent(c.uid);
+      h.append(a, mk("span", "muted", new Date(c.created).toLocaleDateString())); d.append(h, mk("p", "ct", c.text));
+      if (me && (me.uid === c.uid || admin)) { const x = mk("button", "del", "Delete"); x.onclick = async () => { try { await F.deleteDoc(F.doc(db, "addons", ID, "comments", c.id)); loadComments(); } catch (e) {} }; d.append(x); }
+      box.append(d);
+    });
+  }
+  function form() {
+    const f = $("#cform"); f.textContent = "";
+    if (!me) { const a = mk("a", "btn ghost", "Sign in to like and comment"); a.href = "../../index.html#login"; f.append(a); return; }
+    const t = mk("textarea"); t.maxLength = 500; t.placeholder = "Write your comment..."; const bt = mk("button", "btn", "Post comment");
+    bt.onclick = async () => { const v = t.value.trim(); if (!v) return; bt.disabled = true; try { await F.addDoc(F.collection(db, "addons", ID, "comments"), {uid: me.uid, text: v, created: Date.now()}); t.value = ""; await loadComments(); } catch (e) {} bt.disabled = false; };
+    f.append(t, bt);
+  }
+  A.onAuthStateChanged(auth, async u => {
+    me = u; admin = false; liked = false;
+    if (u) {
+      try { liked = (await F.getDoc(F.doc(db, "addons", ID, "likes", u.uid))).exists(); } catch (e) {}
+      try { admin = (await F.getDoc(F.doc(db, "admins", u.uid))).exists(); } catch (e) {}
+    }
+    paint(); form(); loadComments();
+  });
+  loadLikes();
+}
+const pageCss = `body{margin:0;background:#0d0617;color:#f6efff;font:16px/1.6 "DM Sans",system-ui,sans-serif}header,footer{padding:14px 5vw;border-bottom:1px solid #3a1d63}footer{border:0;border-top:1px solid #3a1d63;text-align:center;margin-top:40px;padding:28px 5vw}a{color:#ff9cae}header a{color:#b9a6d6;text-decoration:none}main{max-width:720px;margin:0 auto;padding:24px 5vw 20px}.cv{width:100%;border-radius:14px;border-bottom:3px solid #8f2cff}h1{font:800 clamp(1.8rem,6vw,2.6rem)/1.1 "Bricolage Grotesque",sans-serif;margin:16px 0 4px}h2{font-family:"Bricolage Grotesque",sans-serif;margin-top:34px}.by{color:#b9a6d6;margin:0 0 12px}.pill{display:inline-block;border:1px solid #ff2e4f;color:#ff9cae;background:rgba(255,46,79,.18);border-radius:8px;padding:2px 12px;font-weight:700;font-size:.8rem;margin-left:8px}.tg{display:inline-block;margin:0 6px 8px 0;padding:2px 11px;border-radius:99px;border:1px solid #3a1d63;color:#b9a6d6;font-size:.8rem}.acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 20px}.btn{display:inline-block;padding:11px 20px;border-radius:10px;background:linear-gradient(120deg,#8f2cff,#ff2e4f);color:#fff;font:700 1rem "DM Sans",sans-serif;text-decoration:none;border:0;cursor:pointer}.btn.ghost{background:none;border:1px solid #3a1d63}.btn.dc{background:#5865F2}.lk{background:#1f0f38;border:1px solid #3a1d63;border-radius:10px;padding:10px 16px;color:#f6efff;font:700 1rem "DM Sans",sans-serif;cursor:pointer}.lk .h{color:#8a7aa6;font-size:1.2rem}.lk.on .h{color:#ff2e4f}.d img{max-width:100%;border-radius:10px;margin:8px 0}.d blockquote{margin:12px 0;padding:4px 14px;border-left:3px solid #8f2cff;color:#cdbbe8}.d ul,.d ol{margin-left:22px}textarea{width:100%;box-sizing:border-box;min-height:80px;background:#1f0f38;border:1px solid #3a1d63;border-radius:10px;padding:12px;color:#f6efff;font:inherit;margin-bottom:10px}.c{background:#1f0f38;border:1px solid #3a1d63;border-radius:12px;padding:12px 14px;margin-top:12px}.ch{display:flex;gap:10px;align-items:center}.ch a{font-weight:700;text-decoration:none}.muted{color:#b9a6d6;font-size:.85rem}.ct{margin:6px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}.del{background:none;border:0;color:#ff8aa0;cursor:pointer;padding:6px 0 0}`;
+const pageHtml = (i, o) => `<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https: data:; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' https: data:; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'nonce-${o.nonce}' https://www.gstatic.com; connect-src https://*.googleapis.com; frame-src 'none'; base-uri 'none'">
 <title>${esc(i.name)} – ${esc(CONFIG.studio)}</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@800&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
-<style>body{margin:0;background:#0d0617;color:#f6efff;font:16px/1.6 "DM Sans",system-ui,sans-serif}header{padding:14px 5vw;border-bottom:1px solid #3a1d63}header a{color:#b9a6d6;text-decoration:none}main{max-width:720px;margin:0 auto;padding:24px 5vw 60px}img{width:100%;border-radius:14px;border-bottom:3px solid #8f2cff}h1{font:800 clamp(1.8rem,6vw,2.6rem)/1.1 "Bricolage Grotesque",sans-serif;margin:16px 0 4px}.by{color:#b9a6d6;margin:0 0 16px}.pill{display:inline-block;border:1px solid #ff2e4f;color:#ff9cae;background:rgba(255,46,79,.18);border-radius:8px;padding:2px 12px;font-weight:700;font-size:.8rem;margin-left:6px}.d blockquote{margin:12px 0;padding:4px 14px;border-left:3px solid #8f2cff;color:#cdbbe8}.d a{color:#ff9cae}.d ul,.d ol{margin-left:22px}.tg{display:inline-block;margin:0 6px 8px 0;padding:2px 11px;border-radius:99px;border:1px solid #3a1d63;color:#b9a6d6;font-size:.8rem}.btn{display:inline-block;margin-top:12px;padding:12px 22px;border-radius:10px;background:linear-gradient(120deg,#8f2cff,#ff2e4f);color:#fff;font-weight:700;text-decoration:none}</style></head><body>
+<style>${pageCss}</style></head><body>
 <header><a href="../../index.html">← ${esc(CONFIG.studio)}</a></header>
-<main>${safe(i.image) ? `<img src="${esc(safe(i.image))}" alt="">` : ""}<h1>${esc(i.name)}</h1>
-<p class="by">by ${esc(i.authorName || CONFIG.studio)}<span class="pill">${typeLabel(i.type)}</span></p>
-<div>${tagsHtml(i)}</div><div class="d">${clean(i.desc)}</div><a class="btn" href="${esc(safe(i.link))}" rel="noopener noreferrer">Download</a></main></body></html>`;
+<main>${o.cover ? `<img class="cv" src="${esc(o.cover)}" alt="">` : ""}<h1>${esc(i.name)}</h1>
+<p class="by">by <a href="../../index.html#u=${esc(i.authorUid)}">${esc(i.authorName || CONFIG.studio)}</a><span class="pill">${typeLabel(i.type)}</span></p>
+<div>${tagsHtml(i)}</div>
+<div class="acts">${o.dl ? `<a class="btn" href="${esc(o.dl)}" rel="noopener noreferrer"${o.dlFile ? " download" : ""}>Download</a>` : ""}<button class="lk" id="like" type="button"><span class="h">♥</span> <span id="lc">0</span></button>${okLink("youtube", i.yt) ? `<a class="btn ghost" href="${esc(i.yt)}" rel="noopener noreferrer">YouTube</a>` : ""}${okLink("discord", i.dc) ? `<a class="btn dc" href="${esc(i.dc)}" rel="noopener noreferrer">Discord</a>` : ""}</div>
+<div class="d">${o.desc}</div>
+<h2>Comments</h2><div id="cform"></div><div id="clist"></div></main>
+<footer><a class="btn dc" href="${esc(CONFIG.discord)}" rel="noopener noreferrer">Join our Discord</a></footer>
+<script type="module" nonce="${o.nonce}">(${pageMain})(${JSON.stringify(CONFIG.firebase).replace(/</g, "\\u003c")}, ${JSON.stringify(i.id)});<\/script>
+</body></html>`;
 async function gh(method, path, body) {
   const c = JSON.parse(localStorage.getItem("gh") || "null"); if (!c?.repo || !c?.token) throw new Error("nogh");
   const r = await fetch(`https://api.github.com/repos/${c.repo}/contents/${path}${method === "GET" ? "?ref=" + encodeURIComponent(c.branch || "main") : ""}`, {method, headers: {Authorization: "Bearer " + c.token, Accept: "application/vnd.github+json"}, body: body && JSON.stringify({...body, branch: c.branch || "main"})});
@@ -473,19 +599,28 @@ async function gh(method, path, body) {
   if (!r.ok) throw new Error("gh" + r.status);
   return r.json();
 }
-async function publish(i) {
-  if (demo) return "";
-  let path = `addons/${slug(i.authorName, "creator")}/${slug(i.name, "addon")}.html`;
-  if (mine.some(x => x.id !== i.id && x.path === path)) path = path.replace(".html", "-" + slug(i.id, "x").slice(0, 4) + ".html");
-  const old = await gh("GET", path);
-  await gh("PUT", path, {message: "Publish " + i.name, content: btoa(unescape(encodeURIComponent(pageHtml(i)))), sha: old?.sha});
-  if (i.path && i.path !== path) await unpublish(i.path).catch(() => {});
-  return path;
+async function publish(i) {  // cria addons/criador/nome.html + addons/criador/nome/ (capa, imagens e arquivo)
+  if (demo) return {path: ""};
+  let path = i.path;
+  if (!path) { path = `addons/${slug(i.authorName, "creator")}/${slug(i.name, "addon")}.html`; if (mine.some(x => x.id !== i.id && x.path === path)) path = path.replace(".html", "-" + slug(i.id, "x").slice(0, 4) + ".html"); }
+  const dir = path.replace(/\.html$/, ""), base = dir.split("/").pop(), files = [];
+  let n = 0, cover = "", dl = i.link || "", dlFile = false, filePath = i.filePath || "";
+  const desc = clean(i.desc).replace(/src="data:image\/jpeg;base64,([A-Za-z0-9+\/=]+)"/g, (x, b64) => { files.push([`${dir}/img-${++n}.jpg`, b64]); return `src="${base}/img-${n}.jpg"`; });
+  const cm = /^data:image\/jpeg;base64,(.+)$/.exec(i.image || ""); if (cm) { files.push([`${dir}/cover.jpg`, cm[1]]); cover = `${base}/cover.jpg`; }
+  if (i.file?.chunks > 0) { filePath = `${dir}/${String(i.file.name).replace(/[^A-Za-z0-9._-]+/g, "-")}`; files.push([filePath, (await B.getChunks(i.id, i.file.chunks)).join("")]); }
+  if (!dl && filePath) { dl = `${base}/${filePath.split("/").pop()}`; dlFile = true; }
+  for (const [p, b64] of files) { const old = await gh("GET", p); await gh("PUT", p, {message: "Add file", content: b64, sha: old?.sha}); }
+  const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16)))), old = await gh("GET", path);
+  await gh("PUT", path, {message: "Publish " + i.name, content: btoa(unescape(encodeURIComponent(pageHtml(i, {cover, desc, dl, dlFile, nonce})))), sha: old?.sha});
+  const keep = new Set([...files.map(f => f[0]), filePath]), list = await gh("GET", dir);
+  if (Array.isArray(list)) for (const f of list) if (!keep.has(f.path)) await gh("DELETE", f.path, {message: "Clean up", sha: f.sha});
+  return {path, filePath, file: i.file ? {...i.file, chunks: 0} : null};
 }
 async function unpublish(path) {
   if (demo || !okPath(path)) return;
-  const old = await gh("GET", path);
-  if (old) await gh("DELETE", path, {message: "Remove page", sha: old.sha});
+  const dir = path.replace(/\.html$/, ""), list = await gh("GET", dir);
+  if (Array.isArray(list)) for (const f of list) await gh("DELETE", f.path, {message: "Remove file", sha: f.sha});
+  const old = await gh("GET", path); if (old) await gh("DELETE", path, {message: "Remove page", sha: old.sha});
 }
 
 /* ---------- Painel do criador ---------- */
@@ -518,11 +653,12 @@ $("#dList").onclick = async e => {
       const ask = !adm && i.status === "live";
       if (!confirm(tr(ask ? "Ask the admin to remove this addon?" : "Remove this addon?"))) return;
       if (ask) await B.save({id, status: "pending", rm: true});
-      else { if (adm && i.path) await unpublish(i.path); await B.remove(id); }
+      else { if (adm && i.path) await unpublish(i.path); if (i.file?.chunks > 0) await B.dropChunks(id).catch(() => {}); await B.remove(id); }
     } else if (a === "ok") {
-      const path = await publish(i); await B.status(id, "live", {path, rm: false});
-      if (path) alert(tr("Page created at {0}. GitHub takes about 1 minute to put it online.", path));
-    } else { if (i.path) await unpublish(i.path); await B.status(id, "denied", {path: ""}); }
+      const x = await publish(i); await B.status(id, "live", {path: x.path, rm: false, ...(x.path ? {filePath: x.filePath, ...(x.file ? {file: x.file} : {})} : {})});
+      if (i.file?.chunks > 0 && x.path) await B.dropChunks(id).catch(() => {});
+      if (x.path) alert(tr("Page created at {0}. GitHub takes about 1 minute to put it online.", x.path));
+    } else { if (i.path) await unpublish(i.path); await B.status(id, "denied", {path: "", filePath: ""}); }
     await openDash(); refresh();
   } catch (x) { alert(tr(x.message === "nogh" ? "Before approving, set up GitHub in Settings." : (x.message || "").startsWith("gh") ? "Could not reach GitHub. Check the repository, branch and token in Settings." : "You do not have permission for this action.")); }
 };
@@ -533,6 +669,25 @@ document.querySelectorAll(".seg button").forEach(b => b.onclick = () => setType(
 function drawTags() { $("#tagBox").innerHTML = TAGS.map(t => `<button type="button" class="chip ${tags.includes(t) ? "on" : ""}" data-tg="${t}">${t}</button>`).join(""); $("#tcount").textContent = tr("{0}/5 tags selected", tags.length); }
 $("#tagBox").onclick = e => { const t = e.target.dataset.tg; if (!t) return; if (tags.includes(t)) tags = tags.filter(x => x !== t); else if (tags.length < 5) tags.push(t); drawTags(); };
 const count = () => $("#fcount").textContent = tr("{0}/100 characters", $("#fn").value.length);
+const fileTxt = () => $("#fupTxt").textContent = upFile ? `${upFile.name} (${(upFile.size / 1048576).toFixed(1)} MB)` : tr("Tap to choose a .mcaddon or .mcpack file (up to {0} MB)", MAX_MB);
+$("#fu").onchange = async e => {
+  const f = e.target.files[0]; upFile = null;
+  if (f) {
+    if (!/\.(mcaddon|mcpack)$/i.test(f.name) || f.size > MAX_MB * 1048576) { $("#ferr").textContent = tr("The file must be .mcaddon or .mcpack, up to {0} MB.", MAX_MB); e.target.value = ""; }
+    else {
+      const b64 = await new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(r.result.split(",")[1]); r.onerror = no; r.readAsDataURL(f); });
+      const parts = []; for (let p = 0; p < b64.length; p += CH) parts.push(b64.slice(p, p + CH)); upFile = {name: f.name, size: f.size, parts};
+    }
+  }
+  fileTxt();
+};
+$("#fdi").onchange = e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  const img = new Image();
+  img.onload = () => { const s = Math.min(1, 900 / img.width), c = document.createElement("canvas"); c.width = img.width * s; c.height = img.height * s; c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); $("#fd").focus(); document.execCommand("insertImage", false, c.toDataURL("image/jpeg", .75)); URL.revokeObjectURL(img.src); };
+  img.onerror = () => $("#ferr").textContent = tr("Could not read that image.");
+  img.src = URL.createObjectURL(f);
+};
 function showPrev(src) { $("#prev").src = src || ""; $("#prev").hidden = !src; $("#dropTxt").hidden = !!src; }
 function openForm(it) {
   editing = it || null; imgData = ""; tags = (it?.tags || []).filter(t => TAGS.includes(t));
@@ -540,6 +695,7 @@ function openForm(it) {
   setType(it?.type || "addon"); $("#fn").value = it?.name || ""; count();
   $("#fd").innerHTML = clean(it?.desc || ""); $("#fl").value = it?.link || ""; $("#fReq").checked = false; $("#ff").value = "";
   $("#fo").value = it && !it.studio ? "parceiro" : "studio"; $("#orgBox").hidden = !isAdmin();
+  $("#fy").value = it?.yt || ""; $("#fdc").value = it?.dc || ""; upFile = null; $("#fu").value = ""; fileTxt();
   showPrev(safe(it?.image)); $("#ferr").textContent = ""; drawTags(); go("sub");
 }
 $("#newBtn").onclick = () => openForm();
@@ -551,6 +707,7 @@ document.querySelectorAll(".tb button").forEach(b => {
     const c = b.dataset.c; $("#fd").focus();
     if (c === "link") { const u = prompt(tr("Paste the link (https://...)")); if (u && /^https?:\/\//i.test(u)) document.execCommand("createLink", false, u); }
     else if (c === "formatBlock") document.execCommand("formatBlock", false, "blockquote");
+    else if (c === "image") $("#fdi").click();
     else document.execCommand(c);
   };
 });
@@ -569,19 +726,27 @@ $("#ff").onchange = e => {
 };
 $("#saveBtn").onclick = async () => {
   const name = $("#fn").value.trim(), link = $("#fl").value.trim(), image = imgData || editing?.image || "", adm = isAdmin();
-  const desc = clean($("#fd").innerHTML), err = m => ($("#ferr").textContent = tr(m));
+  const desc = clean($("#fd").innerHTML), err = (m, ...a) => ($("#ferr").textContent = tr(m, ...a));
   if (!image) return err("Upload a thumbnail (16:9).");
   if (!name) return err("Write a title.");
   if (!$("#fd").textContent.trim()) return err("Write a description.");
   if (desc.length > 20000) return err("The description is too long.");
   if (!tags.length) return err("Choose at least 1 tag.");
-  let host = ""; try { host = new URL(link).hostname; } catch (e) {}
-  if (!/^https?:\/\//i.test(link) || !host) return err("Paste a download link starting with https://");
+  const yt = $("#fy").value.trim(), dc = $("#fdc").value.trim();
+  if (link && !/^https?:\/\/[^\s/]+/i.test(link)) return err("Paste a download link starting with https://");
+  if (!link && !upFile && !(editing?.file?.chunks > 0) && !editing?.filePath) return err("Add a download link or upload a file.");
+  if (yt && !okLink("youtube", yt)) return err("Use a valid https link for {0}.", "YouTube");
+  if (dc && !okLink("discord", dc)) return err("Use a valid https link for {0}.", "Discord");
   if (ptype === "addon" && !$("#fReq").checked) return err("Confirm that the addon does not use player.json.");
-  const it = {id: editing?.id, name, desc, type: ptype, tags: [...tags], link, image, studio: adm && $("#fo").value === "studio", status: "pending"};
-  if (!editing) { it.authorUid = user.uid; it.authorName = nameOf(user); it.path = ""; }
-  try { await B.save(it); await openDash(); refresh(); }
-  catch (e) { err("Could not save. Try signing in again."); }
+  const it = {id: editing?.id, name, desc, type: ptype, tags: [...tags], link, yt, dc, image, studio: adm && $("#fo").value === "studio", status: "pending"};
+  if (!editing) { it.authorUid = user.uid; it.authorName = nameOf(user); it.path = ""; it.filePath = ""; }
+  if (upFile) it.file = {name: upFile.name, size: upFile.size, chunks: upFile.parts.length};
+  if (JSON.stringify(it).length > 900000) return err("The post is too big. Remove some images from the description.");
+  try {
+    const id = await B.save(it);
+    if (upFile) { await B.dropChunks(id); await B.putChunks(id, upFile.parts, (k, t) => err("Uploading file {0}/{1}...", k, t)); }
+    upFile = null; await openDash(); refresh();
+  } catch (e) { err(upFile ? "Could not upload the file. Edit the post and try again." : "Could not save. Try signing in again."); }
 };
 
 /* ---------- Trocar idioma ---------- */
@@ -593,12 +758,12 @@ function retitle() {
 function setLang(l) {
   lang = l === "pt" ? "pt" : "en"; localStorage.setItem("lang", lang); $("#sl").value = lang;
   applyLang(); retitle(); head(); renderHome(); if (!$("#dash").hidden) renderDash();
-  if (!$("#sub").hidden) { $("#fTitle").textContent = tr(editing ? "Edit post" : "Submit new post"); count(); drawTags(); }
+  if (!$("#sub").hidden) { $("#fTitle").textContent = tr(editing ? "Edit post" : "Submit new post"); count(); drawTags(); fileTxt(); }
   ["#aerr", "#serr", "#ferr"].forEach(x => $(x).textContent = "");
 }
 
 await initBackend();
-$("#sl").value = lang; applyLang(); retitle(); count(); drawTags(); head(); refresh();
+$("#sl").value = lang; applyLang(); retitle(); count(); drawTags(); fileTxt(); head(); refresh(); route();
 </script>
 </body>
 </html>
