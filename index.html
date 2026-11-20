@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>McNexus Studio – Addons para Minecraft</title>
+<title>McNexus Studio – Minecraft addons</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -26,6 +26,7 @@ header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;paddin
 #menu{padding:14px 5vw;border-bottom:1px solid var(--line);background:var(--bg2);display:flex;flex-direction:column;gap:6px}
 #menu input{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin-bottom:6px}
 #menu button{background:none;border:0;text-align:left;padding:10px 4px;font-size:1.1rem;color:var(--m);cursor:pointer}
+#menu .row{gap:18px;border-top:1px solid var(--line);margin-top:6px}
 .btn{border:0;cursor:pointer;border-radius:10px;padding:10px 18px;font-weight:700;background:var(--g);color:#fff;text-decoration:none;display:inline-block}
 .btn:hover{filter:brightness(1.12)}
 .btn.ghost{background:transparent;border:1px solid var(--line)}
@@ -68,120 +69,176 @@ dialog{background:var(--bg2);color:var(--t);border:1px solid var(--line);border-
 dialog::backdrop{background:rgba(0,0,0,.72)}
 dialog h2{margin-bottom:12px}
 label{display:block;margin:10px 0 4px;color:var(--m);font-size:.9rem}
-dialog input,dialog textarea,dialog select{width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-textarea{min-height:90px;resize:vertical}
-.prev{margin-top:8px;max-height:140px;border-radius:10px;display:none}
+dialog input,dialog select{width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
 .note{font-size:.82rem;color:var(--m);margin-top:6px}
 .err{color:#ff8aa0;font-size:.9rem;margin:8px 0;min-height:1.2em}
 #vBody img{width:100%;border-radius:12px;margin-bottom:12px}
 .by{color:var(--m);margin:2px 0 12px}
-.desc{white-space:pre-wrap;margin-bottom:16px}
 footer{padding:30px 5vw;border-top:1px solid var(--line);color:var(--m);text-align:center;font-size:.9rem}
 #demo{background:var(--r);text-align:center;font-size:.85rem;padding:6px;display:none}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:5px;gap:5px}
+.seg button{flex:1;border:0;background:none;border-radius:8px;padding:12px;font-weight:700;letter-spacing:.06em;color:var(--m);cursor:pointer}
+.seg button.on{background:var(--g);color:#fff}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;aspect-ratio:16/9;border:2px dashed var(--line);border-radius:16px;overflow:hidden;cursor:pointer;text-align:center;color:var(--m);margin:0}
+.drop img{width:100%;height:100%;object-fit:cover}
+.drop small{display:block;margin-top:6px}
+#sub{max-width:760px;margin:0 auto;padding-bottom:50px}
+#sub input:not([type=checkbox]):not([type=file]),#sub select{width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.ed{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.tb{display:flex;flex-wrap:wrap;gap:4px;padding:8px;border-bottom:1px solid var(--line)}
+.tb button{background:none;border:1px solid transparent;border-radius:8px;min-width:40px;height:40px;cursor:pointer;color:var(--t)}
+.tb button:hover{background:var(--bg2);border-color:var(--line)}
+#fd{min-height:200px;padding:14px;outline:none}
+#fd:empty:before{content:attr(data-ph);color:var(--m)}
+.rich blockquote,#fd blockquote{margin:10px 0;padding:4px 14px;border-left:3px solid var(--p);color:#cdbbe8}
+.rich ul,.rich ol,#fd ul,#fd ol{margin:8px 0 8px 22px}
+.rich a,#fd a{color:#ff9cae}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:none;border-radius:99px;padding:8px 16px;cursor:pointer;color:var(--t)}
+.chip.on{background:var(--p);border-color:var(--p)}
+.tg{display:inline-block;margin:0 6px 8px 0;padding:2px 11px;border-radius:99px;border:1px solid var(--line);color:var(--m);font-size:.8rem}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:20px}
+.box h3{margin-bottom:10px}
+.chk{display:flex;gap:12px;align-items:flex-start;margin:0;color:var(--t);cursor:pointer}
+.chk input{width:22px;height:22px;margin-top:4px;accent-color:var(--p)}
+.rules{list-style:none;padding:0;color:var(--m)}.rules li{margin:8px 0}
 </style>
 </head>
 <body>
-<div id="demo">Modo demo: tudo fica só neste navegador e as páginas addons/... não são criadas. Entre com um e-mail que comece com “admin” para ser o administrador; as outras contas ficam em análise.</div>
+<div id="demo">Demo mode: everything stays only in this browser and the addons/... pages are not created. Sign in with an email starting with “admin” to be the administrator; other accounts stay in review.</div>
 <header>
-  <button class="ic" id="menuBtn" aria-label="Abrir menu">☰</button>
-  <a class="logo" id="logo"></a>
+  <button class="ic" id="menuBtn" aria-label="Open menu">☰</button>
+  <a class="logo" id="logo" data-d></a>
   <div class="acc">
-    <button class="btn sm" id="loginBtn">Entrar</button>
-    <button class="av" id="avBtn" hidden aria-label="Minha conta"></button>
+    <button class="btn sm" id="loginBtn">Sign in</button>
+    <button class="av" id="avBtn" aria-label="My account" data-d hidden></button>
     <div class="dd" id="dd" hidden>
-      <button id="dashBtn">Painel do criador</button>
-      <button id="setBtn">Configurações</button>
-      <button class="out" id="logoutBtn">Sair</button>
+      <button id="dashBtn">Creator dashboard</button>
+      <button id="setBtn">Settings</button>
+      <button class="out" id="logoutBtn">Sign out</button>
     </div>
   </div>
 </header>
 <nav id="menu" hidden>
-  <input id="q" type="search" placeholder="Buscar addon">
-  <button data-t="todos">Todos</button>
+  <input id="q" type="search" placeholder="Search addons">
+  <button data-t="todos">All</button>
   <button data-t="addon">Addons</button>
-  <button data-t="modpack">Modpacks</button>
+  <button data-t="addonpack">Addonpacks</button>
+  <div class="row"><button data-l="en">English</button><button data-l="pt">Português</button></div>
 </nav>
 
 <section id="home">
   <div class="hero">
-    <h1 id="heroTitle"></h1>
-    <p>Addons e modpacks para Minecraft Bedrock e PE, do nosso studio e de parceiros. Quer publicar o seu? Crie uma conta de criador.</p>
-    <button class="btn" id="pubBtn">Publicar meu addon</button>
+    <h1 id="heroTitle" data-d></h1>
+    <p>Minecraft Bedrock and PE addons and addonpacks from our studio and partners. Want to publish yours? Create a creator account.</p>
+    <button class="btn" id="pubBtn">Publish my addon</button>
   </div>
   <div class="wrap">
-    <h2 class="t">Addons e modpacks para Minecraft Bedrock</h2>
-    <p class="sub" id="count"></p>
+    <h2 class="t">Minecraft Bedrock addons and addonpacks</h2>
+    <p class="sub" id="count" data-d></p>
     <div class="filters">
-      <select id="fType" aria-label="Tipo"><option value="todos">Todos os tipos</option><option value="addon">Addons</option><option value="modpack">Modpacks</option></select>
-      <select id="fOrg" aria-label="Origem"><option value="todos">Studio e parceiros</option><option value="studio">Do studio</option><option value="parceiro">Parceiros</option></select>
-      <select id="fSort" aria-label="Ordem"><option value="new">Mais recentes</option><option value="az">Ordem A–Z</option></select>
+      <select id="fType" aria-label="Type"><option value="todos">All types</option><option value="addon">Addons</option><option value="addonpack">Addonpacks</option></select>
+      <select id="fOrg" aria-label="Origin"><option value="todos">Studio and partners</option><option value="studio">From the studio</option><option value="parceiro">Partners</option></select>
+      <select id="fTag" aria-label="Tags"></select>
+      <select id="fSort" aria-label="Order"><option value="new">Newest</option><option value="az">A–Z order</option></select>
     </div>
-    <div class="grid" id="grid"></div>
-    <div class="pg" id="pg"></div>
+    <div class="grid" id="grid" data-d></div>
+    <div class="pg" id="pg" data-d></div>
   </div>
 </section>
 
 <section id="dash" class="wrap" hidden>
-  <h2 class="t">Painel do criador</h2>
-  <p class="sub" id="dWho"></p>
-  <button class="btn" id="newBtn">Adicionar addon</button>
-  <div class="stats" id="stats"></div>
-  <div class="tabs" id="dTabs"></div>
-  <div id="dList"></div>
+  <h2 class="t">Creator dashboard</h2>
+  <p class="sub" id="dWho" data-d></p>
+  <button class="btn" id="newBtn">Add addon</button>
+  <div class="stats" id="stats" data-d></div>
+  <div class="tabs" id="dTabs" data-d></div>
+  <div id="dList" data-d></div>
 </section>
-<footer id="foot"></footer>
+
+<section id="sub" class="wrap" hidden>
+  <h2 class="t" id="fTitle" data-d>Submit new post</h2>
+  <p class="sub">Share your creation with the community</p>
+  <label>Post type</label>
+  <div class="seg"><button type="button" data-pt="addon" class="on">ADDON</button><button type="button" data-pt="addonpack">ADDONPACK</button></div>
+  <label>Thumbnail *</label>
+  <label class="drop" for="ff"><img id="prev" alt="" hidden><div id="dropTxt">Tap to upload a thumbnail<small>Recommended: 800x450 (16:9)</small></div></label>
+  <input id="ff" type="file" accept="image/*" hidden>
+  <label for="fn">Title *</label>
+  <input id="fn" maxlength="100" placeholder="Give your creation a catchy title">
+  <p class="note" id="fcount" data-d>0/100 characters</p>
+  <label>Description *</label>
+  <div class="ed">
+    <div class="tb">
+      <button type="button" data-c="bold" title="Bold"><b>B</b></button>
+      <button type="button" data-c="italic" title="Italic"><i>I</i></button>
+      <button type="button" data-c="strikeThrough" title="Strikethrough"><s>S</s></button>
+      <button type="button" data-c="formatBlock" title="Quote">❝</button>
+      <button type="button" data-c="insertUnorderedList" title="Bulleted list">•≡</button>
+      <button type="button" data-c="insertOrderedList" title="Numbered list">1.</button>
+      <button type="button" data-c="justifyLeft" title="Align left">⇤</button>
+      <button type="button" data-c="justifyCenter" title="Center">↔</button>
+      <button type="button" data-c="justifyRight" title="Align right">⇥</button>
+      <button type="button" data-c="link" title="Link">🔗</button>
+      <button type="button" data-c="removeFormat" title="Clear formatting">Tx</button>
+    </div>
+    <div id="fd" contenteditable="true" data-ph="Describe your creation" data-d></div>
+  </div>
+  <label>Tags * (choose up to 5)</label>
+  <div class="chips" id="tagBox" data-d></div>
+  <p class="note" id="tcount" data-d>0/5 tags selected</p>
+  <div id="orgBox" hidden><label for="fo">Origin</label><select id="fo"><option value="studio">Studio addon</option><option value="parceiro">Partner addon</option></select></div>
+  <label for="fl">Download link *</label>
+  <input id="fl" type="url" placeholder="https://www.mediafire.com/your-download">
+  <p class="note">Upload your file (.mcaddon or .mcpack, up to 100 MB) to Mediafire, Drive or GitHub Releases and paste the link here. The admin downloads it to check before approving.</p>
+  <div class="box" id="reqBox"><h3>⚠ Addon requirements</h3>
+    <label class="chk"><input type="checkbox" id="fReq"><span><b>This addon does NOT use player.json</b><br><small style="color:var(--m)">Addons must not modify player.json to be compatible</small></span></label>
+  </div>
+  <div class="box"><h3>Content rules</h3>
+    <ul class="rules"><li>✓ You must own all the content you upload</li><li>✓ No stolen or unauthorized content</li><li>✓ Follow the community guidelines</li></ul>
+  </div>
+  <p class="note" style="margin-top:16px">After you submit, the post stays “In review” until the admin approves it. Only then is its page created.</p>
+  <div class="err" id="ferr" data-d></div>
+  <div class="row"><button class="btn ghost" id="fClose">Cancel</button><button class="btn" id="saveBtn">SUBMIT FOR REVIEW</button></div>
+</section>
+<footer id="foot" data-d></footer>
 
 <dialog id="dAuth">
-  <h2 id="aTitle">Entrar</h2>
-  <div id="nameBox" hidden><label for="an">Nome de criador</label><input id="an" maxlength="30"></div>
-  <label for="ae">E-mail</label><input id="ae" type="email" autocomplete="email">
-  <label for="ap">Senha</label><input id="ap" type="password" autocomplete="current-password">
-  <div class="err" id="aerr"></div>
+  <h2 id="aTitle" data-d>Sign in</h2>
+  <div id="nameBox" hidden><label for="an">Creator name</label><input id="an" maxlength="30"></div>
+  <label for="ae">Email</label><input id="ae" type="email" autocomplete="email">
+  <label for="ap">Password</label><input id="ap" type="password" autocomplete="current-password">
+  <div class="err" id="aerr" data-d></div>
   <div class="row">
-    <button class="btn" id="aGo">Entrar</button>
-    <button class="btn ghost" id="aSwap">Criar conta</button>
-    <button class="btn ghost" id="aClose">Fechar</button>
+    <button class="btn" id="aGo" data-d>Sign in</button>
+    <button class="btn ghost" id="aSwap" data-d>Create account</button>
+    <button class="btn ghost" id="aClose">Close</button>
   </div>
 </dialog>
 
 <dialog id="dSet">
-  <h2>Configurações</h2>
-  <label for="sn">Nome de criador</label><input id="sn" maxlength="30">
+  <h2>Settings</h2>
+  <label for="sn">Creator name</label><input id="sn" maxlength="30">
+  <label for="sl">Language</label><select id="sl"><option value="en">English</option><option value="pt">Português</option></select>
   <div id="ghBox" hidden style="border-top:1px solid var(--line);margin-top:16px;padding-top:4px">
-    <label for="gr">Repositório do site (usuario/repositorio)</label><input id="gr" placeholder="seuuser/meusite">
+    <label for="gr">Site repository (user/repository)</label><input id="gr" placeholder="youruser/yoursite">
     <label for="gb">Branch</label><input id="gb" value="main">
-    <label for="gt">Token do GitHub</label><input id="gt" type="password" autocomplete="off">
-    <p class="note">Serve só para criar a pasta addons/ no repositório quando você aprova um addon. Fica salvo apenas neste aparelho, nunca no código. Crie em GitHub → Settings → Developer settings → Fine-grained tokens, só para esse repositório, com Contents: Read and write.</p>
-    <button class="btn ghost sm" id="gSave" style="margin-top:8px">Salvar GitHub</button>
+    <label for="gt">GitHub token</label><input id="gt" type="password" autocomplete="off">
+    <p class="note">Only used to create the addons/ folder in the repository when you approve an addon. Saved only on this device, never in the code. Create one at GitHub → Settings → Developer settings → Fine-grained tokens, for this repository only, with Contents: Read and write.</p>
+    <button class="btn ghost sm" id="gSave" style="margin-top:8px">Save GitHub</button>
   </div>
-  <div class="err" id="serr"></div>
+  <div class="err" id="serr" data-d></div>
   <div class="row">
-    <button class="btn" id="sSave">Salvar nome</button>
-    <button class="btn ghost" id="sPw">Trocar senha por e-mail</button>
-    <button class="btn ghost" id="sClose">Fechar</button>
+    <button class="btn" id="sSave">Save name</button>
+    <button class="btn ghost" id="sPw">Change password by email</button>
+    <button class="btn ghost" id="sClose">Close</button>
   </div>
 </dialog>
 
-<dialog id="dForm">
-  <h2 id="fTitle">Adicionar addon</h2>
-  <label for="fn">Nome</label><input id="fn" maxlength="60">
-  <label for="fd">Descrição</label><textarea id="fd" maxlength="1000"></textarea>
-  <label for="ft">Tipo</label><select id="ft"><option value="addon">Addon</option><option value="modpack">Modpack</option></select>
-  <div id="orgBox" hidden><label for="fo">Origem</label><select id="fo"><option value="studio">Addon do studio</option><option value="parceiro">Addon de parceiro</option></select></div>
-  <label for="fl">Link de download</label><input id="fl" type="url" placeholder="https://...">
-  <p class="note">Suba o arquivo (.mcaddon ou .mcpack) no Mediafire, Drive ou GitHub Releases e cole o link aqui.</p>
-  <label for="fi">Imagem (link)</label><input id="fi" type="url" placeholder="https://...">
-  <label for="ff">ou enviar do celular</label><input id="ff" type="file" accept="image/*">
-  <img class="prev" id="prev" alt="">
-  <p class="note">Depois de salvar, o addon fica “Em análise” até o admin aprovar. Só então a página dele é criada.</p>
-  <div class="err" id="ferr"></div>
-  <div class="row"><button class="btn" id="saveBtn">Salvar addon</button><button class="btn ghost" id="fClose">Cancelar</button></div>
-</dialog>
-
-<dialog id="dView"><div id="vBody"></div><div class="row" style="margin-top:10px"><button class="btn ghost" id="vClose">Fechar</button></div></dialog>
+<dialog id="dView"><div id="vBody" data-d></div><div class="row" style="margin-top:10px"><button class="btn ghost" id="vClose">Close</button></div></dialog>
 
 <script type="module">
-/* ====== CONFIGURAÇÃO: edite aqui ====== */
+/* ====== SETTINGS: edit here ====== */
 const CONFIG = {
   studio: "McNexus Studio",
   firebase: {
@@ -191,21 +248,94 @@ const CONFIG = {
     appId: "1:832770315862:web:d8bd00a311c27d308b4df7"
   }
 };
-/* ======================================= */
+/* ================================= */
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const safe = u => /^(https?:\/\/|data:image\/)/i.test(u || "") ? u : "";
+
+/* ---------- Idioma: inglês (padrão) e português ---------- */
+const PT = {
+  "Open menu":"Abrir menu","Sign in":"Entrar","My account":"Minha conta","Creator dashboard":"Painel do criador","Settings":"Configurações","Sign out":"Sair",
+  "Search addons":"Buscar addon","All":"Todos",
+  "Demo mode: everything stays only in this browser and the addons/... pages are not created. Sign in with an email starting with “admin” to be the administrator; other accounts stay in review.":"Modo demo: tudo fica só neste navegador e as páginas addons/... não são criadas. Entre com um e-mail que comece com “admin” para ser o administrador; as outras contas ficam em análise.",
+  "Minecraft Bedrock and PE addons and addonpacks from our studio and partners. Want to publish yours? Create a creator account.":"Addons e addonpacks para Minecraft Bedrock e PE, do nosso studio e de parceiros. Quer publicar o seu? Crie uma conta de criador.",
+  "Publish my addon":"Publicar meu addon","Minecraft Bedrock addons and addonpacks":"Addons e addonpacks para Minecraft Bedrock",
+  "Type":"Tipo","Origin":"Origem","Order":"Ordem","All types":"Todos os tipos","Studio and partners":"Studio e parceiros","From the studio":"Do studio","Partners":"Parceiros","Newest":"Mais recentes","A–Z order":"Ordem A–Z","All tags":"Todas as tags",
+  "Showing {0}-{1} of {2} results":"Mostrando {0}-{1} de {2} resultados","No results":"Nenhum resultado","No addons here yet. Check back soon!":"Nenhum addon por aqui ainda. Volte em breve!",
+  "Previous":"Anterior","Next":"Próxima","Page {0} of {1}":"Página {0} de {1}","Partner":"Parceiro",
+  "Hello, {0}":"Olá, {0}",". As admin, you can see and approve all addons.":". Como admin, você vê e aprova os addons de todos.",
+  "Add addon":"Adicionar addon","Live":"No ar","In review":"Em análise","Denied":"Negados","Approve":"Aprovar","Deny":"Negar","Edit":"Editar","Remove":"Remover","Request removal":"Pedir remoção","requested removal":"pediu remoção",
+  "Nothing here yet. Tap “Add addon” to get started.":"Nada por aqui ainda. Toque em “Adicionar addon” para começar.",
+  "Ask the admin to remove this addon?":"Pedir ao admin para remover este addon?","Remove this addon?":"Remover este addon?",
+  "Page created at {0}. GitHub takes about 1 minute to put it online.":"Página criada em {0}. O GitHub leva cerca de 1 minuto para colocá-la no ar.",
+  "Before approving, set up GitHub in Settings.":"Antes de aprovar, configure o GitHub em Configurações.",
+  "Could not reach GitHub. Check the repository, branch and token in Settings.":"Não foi possível mexer no GitHub. Confira o repositório, a branch e o token em Configurações.",
+  "You do not have permission for this action.":"Você não tem permissão para essa ação.",
+  "Create creator account":"Criar conta de criador","Create account":"Criar conta","I already have an account":"Já tenho conta","Close":"Fechar","Creator name":"Nome de criador","Email":"E-mail","Password":"Senha",
+  "Choose a creator name.":"Escolha um nome de criador.","Could not create the account: use a valid email and a password with 6+ characters.":"Não foi possível criar a conta: use um e-mail válido e senha com 6+ caracteres.","Wrong email or password.":"E-mail ou senha incorretos.",
+  "Language":"Idioma","Save name":"Salvar nome","Change password by email":"Trocar senha por e-mail","Site repository (user/repository)":"Repositório do site (usuario/repositorio)","GitHub token":"Token do GitHub",
+  "Only used to create the addons/ folder in the repository when you approve an addon. Saved only on this device, never in the code. Create one at GitHub → Settings → Developer settings → Fine-grained tokens, for this repository only, with Contents: Read and write.":"Serve só para criar a pasta addons/ no repositório quando você aprova um addon. Fica salvo apenas neste aparelho, nunca no código. Crie em GitHub → Settings → Developer settings → Fine-grained tokens, só para esse repositório, com Contents: Read and write.",
+  "Save GitHub":"Salvar GitHub","Name saved.":"Nome salvo.","Could not save.":"Não foi possível salvar.","We sent you an email to change your password.":"Enviamos um e-mail para trocar a senha.","Could not send the email.":"Não foi possível enviar o e-mail.","GitHub saved on this device.":"GitHub salvo neste aparelho.",
+  "by {0}":"por {0}","Download":"Baixar",
+  "Submit new post":"Enviar novo post","Edit post":"Editar post","Share your creation with the community":"Compartilhe sua criação com a comunidade","Post type":"Tipo do post","Thumbnail *":"Miniatura *",
+  "Tap to upload a thumbnail":"Toque para enviar a miniatura","Recommended: 800x450 (16:9)":"Recomendado: 800x450 (16:9)","Title *":"Título *","Give your creation a catchy title":"Dê um título chamativo à sua criação","{0}/100 characters":"{0}/100 caracteres",
+  "Description *":"Descrição *","Bold":"Negrito","Italic":"Itálico","Strikethrough":"Riscado","Quote":"Citação","Bulleted list":"Lista","Numbered list":"Lista numerada","Align left":"Alinhar à esquerda","Center":"Centralizar","Align right":"Alinhar à direita","Link":"Link","Clear formatting":"Limpar formatação",
+  "Describe your creation":"Descreva sua criação","Tags * (choose up to 5)":"Tags * (escolha até 5)","{0}/5 tags selected":"{0}/5 tags selecionadas","Studio addon":"Addon do studio","Partner addon":"Addon de parceiro","Download link *":"Link de download *",
+  "Upload your file (.mcaddon or .mcpack, up to 100 MB) to Mediafire, Drive or GitHub Releases and paste the link here. The admin downloads it to check before approving.":"Suba o arquivo (.mcaddon ou .mcpack, até 100 MB) no Mediafire, Drive ou GitHub Releases e cole o link aqui. O admin baixa por ele para verificar antes de aprovar.",
+  "⚠ Addon requirements":"⚠ Requisitos do addon","This addon does NOT use player.json":"Este addon NÃO usa player.json","Addons must not modify player.json to be compatible":"Addons não podem modificar o player.json para serem compatíveis",
+  "Content rules":"Regras de conteúdo","✓ You must own all the content you upload":"✓ Você deve ser dono de todo o conteúdo que enviar","✓ No stolen or unauthorized content":"✓ Nada de conteúdo roubado ou sem autorização","✓ Follow the community guidelines":"✓ Seguir as diretrizes da comunidade",
+  "After you submit, the post stays “In review” until the admin approves it. Only then is its page created.":"Depois de enviar, o post fica “Em análise” até o admin aprovar. Só então a página dele é criada.",
+  "Cancel":"Cancelar","SUBMIT FOR REVIEW":"ENVIAR PARA ANÁLISE",
+  "Upload a thumbnail (16:9).":"Envie a miniatura (16:9).","Write a title.":"Escreva o título.","Write a description.":"Escreva a descrição.","The description is too long.":"A descrição está muito longa.","Choose at least 1 tag.":"Escolha pelo menos 1 tag.",
+  "Paste a download link starting with https://":"Cole um link de download que comece com https://","Confirm that the addon does not use player.json.":"Confirme que o addon não usa player.json.","Could not read that image.":"Não foi possível ler essa imagem.","Could not save. Try signing in again.":"Não foi possível salvar. Tente entrar de novo.",
+  "Paste the link (https://...)":"Cole o link (https://...)",
+  "© {0} {1}. Not affiliated with Mojang or Microsoft.":"© {0} {1}. Não afiliado à Mojang ou Microsoft.","{0} – Minecraft addons":"{0} – Addons para Minecraft","{0}: addons for your world":"{0}: addons para o seu mundo"
+};
+let lang = localStorage.getItem("lang") === "pt" ? "pt" : "en";
+const tr = (s, ...a) => { let r = lang === "pt" ? (PT[s] ?? s) : s; a.forEach((v, i) => r = r.split("{" + i + "}").join(v)); return r; };
+function applyLang() {  // traduz o que está escrito direto no HTML
+  document.documentElement.lang = lang === "pt" ? "pt-BR" : "en";
+  const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let n; (n = w.nextNode());) {
+    const p = n.parentElement; if (!p || p.closest("script,[data-d]")) continue;
+    const raw = n._o ?? (n._o = n.textContent), k = raw.trim(); if (!k) continue;
+    n.textContent = raw.replace(k, () => lang === "pt" ? (PT[k] ?? k) : k);
+  }
+  document.querySelectorAll("[placeholder],[aria-label],[title],[data-ph]").forEach(el => ["placeholder", "aria-label", "title", "data-ph"].forEach(a => {
+    if (!el.hasAttribute(a)) return; const o = el["_o" + a] ?? (el["_o" + a] = el.getAttribute(a));
+    el.setAttribute(a, lang === "pt" ? (PT[o] ?? o) : o);
+  }));
+}
+
+/* ---------- Dados e utilitários ---------- */
+const TAGS = ["Animals","Armor","Biomes","Bosses","Building","Creative","Food","Furniture","Machines","Monsters","Structures","Survival","Weapons"];
+const OKTAG = {B:1,STRONG:1,I:1,EM:1,S:1,STRIKE:1,DEL:1,BLOCKQUOTE:1,UL:1,OL:1,LI:1,P:1,BR:1,DIV:1,A:1};
+function clean(html) {  // deixa só formatação segura na descrição
+  const doc = new DOMParser().parseFromString("<body>" + (html || "") + "</body>", "text/html");
+  const walk = (n, out) => {
+    for (const c of [...n.childNodes]) {
+      if (c.nodeType === 3) out.append(document.createTextNode(c.textContent));
+      else if (c.nodeType === 1) {
+        if (/^(SCRIPT|STYLE)$/.test(c.tagName)) continue;
+        if (!OKTAG[c.tagName]) { walk(c, out); continue; }
+        const e = document.createElement(c.tagName.toLowerCase());
+        if (c.tagName === "A") { const h = c.getAttribute("href") || ""; if (/^https?:\/\//i.test(h)) { e.href = h; e.target = "_blank"; e.rel = "noopener noreferrer nofollow"; } }
+        const ta = /text-align:\s*(left|center|right)/i.exec(c.getAttribute("style") || ""); if (ta) e.style.textAlign = ta[1].toLowerCase();
+        walk(c, e); out.append(e);
+      }
+    }
+  };
+  const box = document.createElement("div"); walk(doc.body, box); return box.innerHTML;
+}
+const tagsHtml = i => (i.tags || []).filter(t => TAGS.includes(t)).map(t => `<span class="tg">${esc(t)}</span>`).join("");
+const typeLabel = x => x === "addonpack" ? "Addonpack" : "Addon";
 const demo = !CONFIG.firebase.apiKey, PER = 8;
-const ST = {live: "No ar", pending: "Em análise", denied: "Negado"};
-let live = [], mine = [], user = null, adminOk = false, editing = null, imgData = "", B, page = 1, dtab = "todos", mode = "login";
+let live = [], mine = [], user = null, adminOk = false, editing = null, imgData = "", B, page = 1, dtab = "todos", mode = "login", pubIntent = false, ptype = "addon", tags = [];
 const isAdmin = () => !!user && (demo ? /^admin/i.test(user.email) : adminOk);
 const nameOf = u => u?.displayName || (u?.email || "").split("@")[0];
-
-document.title = CONFIG.studio + " – Addons para Minecraft";
+$("#fTag").innerHTML = '<option value="todas">All tags</option>' + TAGS.map(t => `<option>${t}</option>`).join("");
 $("#logo").textContent = CONFIG.studio;
-$("#heroTitle").textContent = CONFIG.studio + ": addons para o seu mundo";
-$("#foot").textContent = "© " + new Date().getFullYear() + " " + CONFIG.studio + ". Não afiliado à Mojang ou Microsoft.";
 if (demo) $("#demo").style.display = "block";
 
 /* ---------- Backend ---------- */
@@ -247,7 +377,7 @@ async function initBackend() {
 }
 
 /* ---------- Navegação ---------- */
-function go(v) { $("#home").hidden = v !== "home"; $("#dash").hidden = v !== "dash"; scrollTo(0, 0); }
+function go(v) { $("#home").hidden = v !== "home"; $("#dash").hidden = v !== "dash"; $("#sub").hidden = v !== "sub"; scrollTo(0, 0); }
 function head() {
   $("#loginBtn").hidden = !!user; $("#avBtn").hidden = !user; $("#dd").hidden = true;
   if (user) $("#avBtn").textContent = nameOf(user).charAt(0).toUpperCase();
@@ -257,36 +387,37 @@ $("#logo").onclick = () => { go("home"); refresh(); };
 $("#avBtn").onclick = e => { e.stopPropagation(); $("#dd").hidden = !$("#dd").hidden; };
 document.addEventListener("click", () => $("#dd").hidden = true);
 document.querySelectorAll("#menu [data-t]").forEach(b => b.onclick = () => { $("#fType").value = b.dataset.t; page = 1; go("home"); $("#menu").hidden = true; renderHome(); });
+document.querySelectorAll("#menu [data-l]").forEach(b => b.onclick = () => { setLang(b.dataset.l); $("#menu").hidden = true; });
 $("#q").oninput = () => { page = 1; go("home"); renderHome(); };
-["fType", "fOrg", "fSort"].forEach(id => $("#" + id).onchange = () => { page = 1; renderHome(); });
+["fType", "fOrg", "fSort", "fTag"].forEach(id => $("#" + id).onchange = () => { page = 1; renderHome(); });
 
 /* ---------- Início ---------- */
 function filtered() {
-  const q = $("#q").value.trim().toLowerCase(), t = $("#fType").value, o = $("#fOrg").value, s = $("#fSort").value;
-  return live.filter(i => (t === "todos" || i.type === t) && (o === "todos" || (o === "studio") === !!i.studio) && (i.name + " " + (i.desc || "") + " " + (i.authorName || "")).toLowerCase().includes(q))
+  const q = $("#q").value.trim().toLowerCase(), t = $("#fType").value, o = $("#fOrg").value, s = $("#fSort").value, tg = $("#fTag").value;
+  return live.filter(i => (t === "todos" || i.type === t) && (tg === "todas" || (i.tags || []).includes(tg)) && (o === "todos" || (o === "studio") === !!i.studio) && (i.name + " " + (i.desc || "") + " " + (i.authorName || "")).toLowerCase().includes(q))
     .sort((x, y) => s === "az" ? x.name.localeCompare(y.name) : (y.created || 0) - (x.created || 0));
 }
 function renderHome() {
   const a = filtered(), pages = Math.max(1, Math.ceil(a.length / PER)); page = Math.min(page, pages);
   const from = (page - 1) * PER, show = a.slice(from, from + PER);
-  $("#count").textContent = a.length ? `Mostrando ${from + 1}-${from + show.length} de ${a.length} resultados` : "Nenhum resultado";
+  $("#count").textContent = a.length ? tr("Showing {0}-{1} of {2} results", from + 1, from + show.length, a.length) : tr("No results");
   $("#grid").innerHTML = show.length ? show.map(i => `
     <article class="card" tabindex="0" data-v="${esc(i.id)}">
       ${safe(i.image) ? `<img src="${esc(safe(i.image))}" alt="" loading="lazy">` : `<div class="ph"></div>`}
-      <span class="tag ${i.studio ? "" : "pt"}">${i.studio ? "Studio" : "Parceiro"}</span>
-      <div class="ov"><h3>${esc(i.name)}</h3><div class="st"><span class="pill">${i.type === "modpack" ? "Modpack" : "Addon"}</span></div></div>
-    </article>`).join("") : `<div class="empty">Nenhum addon por aqui ainda. Volte em breve!</div>`;
-  $("#pg").innerHTML = pages > 1 ? `<button class="btn ghost sm" data-p="-1" ${page < 2 ? "disabled" : ""}>Anterior</button><span>Página ${page} de ${pages}</span><button class="btn ghost sm" data-p="1" ${page >= pages ? "disabled" : ""}>Próxima</button>` : "";
+      <span class="tag ${i.studio ? "" : "pt"}">${i.studio ? "Studio" : tr("Partner")}</span>
+      <div class="ov"><h3>${esc(i.name)}</h3><div class="st"><span class="pill">${typeLabel(i.type)}</span></div></div>
+    </article>`).join("") : `<div class="empty">${tr("No addons here yet. Check back soon!")}</div>`;
+  $("#pg").innerHTML = pages > 1 ? `<button class="btn ghost sm" data-p="-1" ${page < 2 ? "disabled" : ""}>${tr("Previous")}</button><span>${tr("Page {0} of {1}", page, pages)}</span><button class="btn ghost sm" data-p="1" ${page >= pages ? "disabled" : ""}>${tr("Next")}</button>` : "";
 }
 $("#pg").onclick = e => { const p = e.target.dataset.p; if (p) { page += +p; renderHome(); scrollTo(0, 300); } };
 async function refresh() { try { live = await B.list(); } catch (e) { live = []; } renderHome(); }
 
-/* ---------- Detalhes e download ---------- */
+/* ---------- Detalhes ---------- */
 function openView(id) {
   const i = live.find(x => x.id === id) || mine.find(x => x.id === id); if (!i) return;
   $("#vBody").innerHTML = `${safe(i.image) ? `<img src="${esc(safe(i.image))}" alt="">` : ""}<h2>${esc(i.name)}</h2>
-    <p class="by">por ${esc(i.authorName || CONFIG.studio)} · ${i.type === "modpack" ? "Modpack" : "Addon"}</p>
-    <p class="desc">${esc(i.desc)}</p><a class="btn" href="${esc(safe(i.link))}" target="_blank" rel="noopener">Baixar</a>`;
+    <p class="by">${esc(tr("by {0}", i.authorName || CONFIG.studio))} · ${typeLabel(i.type)}</p>
+    <div>${tagsHtml(i)}</div><div class="rich">${clean(i.desc)}</div><a class="btn" href="${esc(safe(i.link))}" target="_blank" rel="noopener">${tr("Download")}</a>`;
   $("#dView").showModal();
 }
 $("#vClose").onclick = () => $("#dView").close();
@@ -296,8 +427,8 @@ $("#grid").onclick = openCard; $("#grid").onkeydown = openCard;
 /* ---------- Conta ---------- */
 function openAuth(m) {
   mode = m; const s = m === "signup";
-  $("#aTitle").textContent = s ? "Criar conta de criador" : "Entrar";
-  $("#aGo").textContent = s ? "Criar conta" : "Entrar"; $("#aSwap").textContent = s ? "Já tenho conta" : "Criar conta";
+  $("#aTitle").textContent = tr(s ? "Create creator account" : "Sign in");
+  $("#aGo").textContent = tr(s ? "Create account" : "Sign in"); $("#aSwap").textContent = tr(s ? "I already have an account" : "Create account");
   $("#nameBox").hidden = !s; $("#aerr").textContent = ""; $("#dAuth").showModal();
 }
 $("#loginBtn").onclick = () => openAuth("login");
@@ -305,32 +436,36 @@ $("#aSwap").onclick = () => openAuth(mode === "login" ? "signup" : "login");
 $("#aClose").onclick = () => $("#dAuth").close();
 $("#aGo").onclick = async () => {
   const e = $("#ae").value.trim(), p = $("#ap").value, n = $("#an").value.trim();
-  if (mode === "signup" && !n) { $("#aerr").textContent = "Escolha um nome de criador."; return; }
+  if (mode === "signup" && !n) { $("#aerr").textContent = tr("Choose a creator name."); return; }
   try { mode === "signup" ? await B.signup(e, p, n) : await B.login(e, p); $("#dAuth").close(); $("#ap").value = ""; head(); await refresh(); if (!$("#dash").hidden || pubIntent) openDash(); pubIntent = false; }
-  catch (x) { $("#aerr").textContent = mode === "signup" ? "Não foi possível criar a conta: use um e-mail válido e senha com 6+ caracteres." : "E-mail ou senha incorretos."; }
+  catch (x) { $("#aerr").textContent = tr(mode === "signup" ? "Could not create the account: use a valid email and a password with 6+ characters." : "Wrong email or password."); }
 };
-let pubIntent = false;
 $("#pubBtn").onclick = () => user ? openDash() : (pubIntent = true, openAuth("signup"));
 $("#logoutBtn").onclick = async () => { await B.logout(); head(); go("home"); refresh(); };
-$("#setBtn").onclick = () => { $("#sn").value = nameOf(user); $("#serr").textContent = ""; const g = JSON.parse(localStorage.getItem("gh") || "{}"); $("#gr").value = g.repo || ""; $("#gb").value = g.branch || "main"; $("#gt").value = g.token || ""; $("#ghBox").hidden = demo || !isAdmin(); $("#dSet").showModal(); };
-$("#gSave").onclick = () => { localStorage.setItem("gh", JSON.stringify({repo: $("#gr").value.trim(), branch: $("#gb").value.trim() || "main", token: $("#gt").value.trim()})); $("#serr").textContent = "GitHub salvo neste aparelho."; };
+$("#setBtn").onclick = () => {
+  $("#sn").value = nameOf(user); $("#sl").value = lang; $("#serr").textContent = "";
+  const g = JSON.parse(localStorage.getItem("gh") || "{}"); $("#gr").value = g.repo || ""; $("#gb").value = g.branch || "main"; $("#gt").value = g.token || "";
+  $("#ghBox").hidden = demo || !isAdmin(); $("#dSet").showModal();
+};
+$("#sl").onchange = e => setLang(e.target.value);
+$("#gSave").onclick = () => { localStorage.setItem("gh", JSON.stringify({repo: $("#gr").value.trim(), branch: $("#gb").value.trim() || "main", token: $("#gt").value.trim()})); $("#serr").textContent = tr("GitHub saved on this device."); };
 $("#sClose").onclick = () => $("#dSet").close();
-$("#sSave").onclick = async () => { const n = $("#sn").value.trim(); if (!n) return; try { await B.rename(n); head(); $("#serr").textContent = "Nome salvo."; } catch (e) { $("#serr").textContent = "Não foi possível salvar."; } };
-$("#sPw").onclick = async () => { try { await B.reset(); $("#serr").textContent = "Enviamos um e-mail para trocar a senha."; } catch (e) { $("#serr").textContent = "Não foi possível enviar o e-mail."; } };
+$("#sSave").onclick = async () => { const n = $("#sn").value.trim(); if (!n) return; try { await B.rename(n); head(); $("#serr").textContent = tr("Name saved."); } catch (e) { $("#serr").textContent = tr("Could not save."); } };
+$("#sPw").onclick = async () => { try { await B.reset(); $("#serr").textContent = tr("We sent you an email to change your password."); } catch (e) { $("#serr").textContent = tr("Could not send the email."); } };
 
-/* ---------- Páginas no GitHub: addons/criador/nome.html ---------- */
+/* ---------- Páginas no GitHub: addons/criador/nome.html (sempre em inglês) ---------- */
 const slug = (s, f) => (s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || f;
 const okPath = p => /^addons\/[a-z0-9-]+\/[a-z0-9-]+\.html$/.test(p || "");
 const pageHtml = i => `<!DOCTYPE html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https: data:; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com">
 <title>${esc(i.name)} – ${esc(CONFIG.studio)}</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@800&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
-<style>body{margin:0;background:#0d0617;color:#f6efff;font:16px/1.6 "DM Sans",system-ui,sans-serif}header{padding:14px 5vw;border-bottom:1px solid #3a1d63}header a{color:#b9a6d6;text-decoration:none}main{max-width:720px;margin:0 auto;padding:24px 5vw 60px}img{width:100%;border-radius:14px;border-bottom:3px solid #8f2cff}h1{font:800 clamp(1.8rem,6vw,2.6rem)/1.1 "Bricolage Grotesque",sans-serif;margin:16px 0 4px}.by{color:#b9a6d6;margin:0 0 16px}.pill{display:inline-block;border:1px solid #ff2e4f;color:#ff9cae;background:rgba(255,46,79,.18);border-radius:8px;padding:2px 12px;font-weight:700;font-size:.8rem;margin-left:6px}p.d{white-space:pre-wrap}.btn{display:inline-block;margin-top:12px;padding:12px 22px;border-radius:10px;background:linear-gradient(120deg,#8f2cff,#ff2e4f);color:#fff;font-weight:700;text-decoration:none}</style></head><body>
+<style>body{margin:0;background:#0d0617;color:#f6efff;font:16px/1.6 "DM Sans",system-ui,sans-serif}header{padding:14px 5vw;border-bottom:1px solid #3a1d63}header a{color:#b9a6d6;text-decoration:none}main{max-width:720px;margin:0 auto;padding:24px 5vw 60px}img{width:100%;border-radius:14px;border-bottom:3px solid #8f2cff}h1{font:800 clamp(1.8rem,6vw,2.6rem)/1.1 "Bricolage Grotesque",sans-serif;margin:16px 0 4px}.by{color:#b9a6d6;margin:0 0 16px}.pill{display:inline-block;border:1px solid #ff2e4f;color:#ff9cae;background:rgba(255,46,79,.18);border-radius:8px;padding:2px 12px;font-weight:700;font-size:.8rem;margin-left:6px}.d blockquote{margin:12px 0;padding:4px 14px;border-left:3px solid #8f2cff;color:#cdbbe8}.d a{color:#ff9cae}.d ul,.d ol{margin-left:22px}.tg{display:inline-block;margin:0 6px 8px 0;padding:2px 11px;border-radius:99px;border:1px solid #3a1d63;color:#b9a6d6;font-size:.8rem}.btn{display:inline-block;margin-top:12px;padding:12px 22px;border-radius:10px;background:linear-gradient(120deg,#8f2cff,#ff2e4f);color:#fff;font-weight:700;text-decoration:none}</style></head><body>
 <header><a href="../../index.html">← ${esc(CONFIG.studio)}</a></header>
 <main>${safe(i.image) ? `<img src="${esc(safe(i.image))}" alt="">` : ""}<h1>${esc(i.name)}</h1>
-<p class="by">por ${esc(i.authorName || CONFIG.studio)}<span class="pill">${i.type === "modpack" ? "Modpack" : "Addon"}</span></p>
-<p class="d">${esc(i.desc)}</p><a class="btn" href="${esc(safe(i.link))}" rel="noopener noreferrer">Baixar</a></main></body></html>`;
+<p class="by">by ${esc(i.authorName || CONFIG.studio)}<span class="pill">${typeLabel(i.type)}</span></p>
+<div>${tagsHtml(i)}</div><div class="d">${clean(i.desc)}</div><a class="btn" href="${esc(safe(i.link))}" rel="noopener noreferrer">Download</a></main></body></html>`;
 async function gh(method, path, body) {
   const c = JSON.parse(localStorage.getItem("gh") || "null"); if (!c?.repo || !c?.token) throw new Error("nogh");
   const r = await fetch(`https://api.github.com/repos/${c.repo}/contents/${path}${method === "GET" ? "?ref=" + encodeURIComponent(c.branch || "main") : ""}`, {method, headers: {Authorization: "Bearer " + c.token, Accept: "application/vnd.github+json"}, body: body && JSON.stringify({...body, branch: c.branch || "main"})});
@@ -340,17 +475,17 @@ async function gh(method, path, body) {
 }
 async function publish(i) {
   if (demo) return "";
-  let path = `addons/${slug(i.authorName, "criador")}/${slug(i.name, "addon")}.html`;
+  let path = `addons/${slug(i.authorName, "creator")}/${slug(i.name, "addon")}.html`;
   if (mine.some(x => x.id !== i.id && x.path === path)) path = path.replace(".html", "-" + slug(i.id, "x").slice(0, 4) + ".html");
   const old = await gh("GET", path);
-  await gh("PUT", path, {message: "Publicar " + i.name, content: btoa(unescape(encodeURIComponent(pageHtml(i)))), sha: old?.sha});
+  await gh("PUT", path, {message: "Publish " + i.name, content: btoa(unescape(encodeURIComponent(pageHtml(i)))), sha: old?.sha});
   if (i.path && i.path !== path) await unpublish(i.path).catch(() => {});
   return path;
 }
 async function unpublish(path) {
   if (demo || !okPath(path)) return;
   const old = await gh("GET", path);
-  if (old) await gh("DELETE", path, {message: "Remover página", sha: old.sha});
+  if (old) await gh("DELETE", path, {message: "Remove page", sha: old.sha});
 }
 
 /* ---------- Painel do criador ---------- */
@@ -358,19 +493,20 @@ $("#dashBtn").onclick = () => openDash();
 async function openDash() { go("dash"); try { mine = await B.mine(); } catch (e) { mine = []; } renderDash(); }
 function renderDash() {
   const c = s => mine.filter(x => s === "todos" || x.status === s).length, adm = isAdmin();
-  $("#dWho").textContent = "Olá, " + nameOf(user) + (adm ? ". Como admin, você vê e aprova os addons de todos." : "");
-  $("#stats").innerHTML = [["Total", c("todos")], ["No ar", c("live")], ["Em análise", c("pending")], ["Negados", c("denied")]].map(([l, v]) => `<div class="stat"><span>${l}</span><b>${v}</b></div>`).join("");
-  $("#dTabs").innerHTML = [["todos", "Todos"], ["live", "No ar"], ["pending", "Em análise"], ["denied", "Negados"]].map(([k, l]) => `<button class="tab ${dtab === k ? "on" : ""}" data-dt="${k}">${l} (${c(k)})</button>`).join("");
+  const ST = {live: tr("Live"), pending: tr("In review"), denied: tr("Denied")};
+  $("#dWho").textContent = tr("Hello, {0}", nameOf(user)) + (adm ? tr(". As admin, you can see and approve all addons.") : "");
+  $("#stats").innerHTML = [[tr("Total"), c("todos")], [ST.live, c("live")], [ST.pending, c("pending")], [ST.denied, c("denied")]].map(([l, v]) => `<div class="stat"><span>${l}</span><b>${v}</b></div>`).join("");
+  $("#dTabs").innerHTML = [["todos", tr("All")], ["live", ST.live], ["pending", ST.pending], ["denied", ST.denied]].map(([k, l]) => `<button class="tab ${dtab === k ? "on" : ""}" data-dt="${k}">${l} (${c(k)})</button>`).join("");
   const a = mine.filter(x => dtab === "todos" || x.status === dtab).sort((x, y) => (y.created || 0) - (x.created || 0));
   $("#dList").innerHTML = a.length ? a.map(i => `
     <div class="item">${safe(i.image) ? `<img src="${esc(safe(i.image))}" alt="">` : `<div class="ph"></div>`}
-      <div class="info"><b>${esc(i.name)}</b><span class="s ${esc(i.status)}">${ST[i.status] || ""}</span><br><small>${esc(i.authorName || "")}${i.rm ? " · pediu remoção" : ""}${i.path ? " · " + esc(i.path) : ""}</small></div>
+      <div class="info"><b>${esc(i.name)}</b><span class="s ${esc(i.status)}">${ST[i.status] || ""}</span><br><small>${esc(i.authorName || "")}${i.rm ? " · " + tr("requested removal") : ""}${i.path ? " · " + esc(i.path) : ""}</small></div>
       <div class="row">
-        ${adm && i.status !== "live" ? `<button class="btn sm" data-a="ok" data-id="${esc(i.id)}">Aprovar</button>` : ""}
-        ${adm && i.status !== "denied" ? `<button class="btn ghost sm" data-a="no" data-id="${esc(i.id)}">Negar</button>` : ""}
-        <button class="btn ghost sm" data-a="edit" data-id="${esc(i.id)}">Editar</button>
-        <button class="btn del sm" data-a="del" data-id="${esc(i.id)}">${!adm && i.status === "live" ? "Pedir remoção" : "Remover"}</button>
-      </div></div>`).join("") : `<div class="empty">Nada por aqui ainda. Toque em “Adicionar addon” para começar.</div>`;
+        ${adm && i.status !== "live" ? `<button class="btn sm" data-a="ok" data-id="${esc(i.id)}">${tr("Approve")}</button>` : ""}
+        ${adm && i.status !== "denied" ? `<button class="btn ghost sm" data-a="no" data-id="${esc(i.id)}">${tr("Deny")}</button>` : ""}
+        <button class="btn ghost sm" data-a="edit" data-id="${esc(i.id)}">${tr("Edit")}</button>
+        <button class="btn del sm" data-a="del" data-id="${esc(i.id)}">${!adm && i.status === "live" ? tr("Request removal") : tr("Remove")}</button>
+      </div></div>`).join("") : `<div class="empty">${tr("Nothing here yet. Tap “Add addon” to get started.")}</div>`;
 }
 $("#dTabs").onclick = e => { if (e.target.dataset.dt) { dtab = e.target.dataset.dt; renderDash(); } };
 $("#dList").onclick = async e => {
@@ -380,52 +516,89 @@ $("#dList").onclick = async e => {
     if (a === "edit") return openForm(i);
     if (a === "del") {
       const ask = !adm && i.status === "live";
-      if (!confirm(ask ? "Pedir ao admin para remover este addon?" : "Remover este addon?")) return;
+      if (!confirm(tr(ask ? "Ask the admin to remove this addon?" : "Remove this addon?"))) return;
       if (ask) await B.save({id, status: "pending", rm: true});
       else { if (adm && i.path) await unpublish(i.path); await B.remove(id); }
     } else if (a === "ok") {
       const path = await publish(i); await B.status(id, "live", {path, rm: false});
-      if (path) alert("Página criada em " + path + ". O GitHub leva cerca de 1 minuto para colocá-la no ar.");
+      if (path) alert(tr("Page created at {0}. GitHub takes about 1 minute to put it online.", path));
     } else { if (i.path) await unpublish(i.path); await B.status(id, "denied", {path: ""}); }
     await openDash(); refresh();
-  } catch (x) { alert(x.message === "nogh" ? "Antes de aprovar, configure o GitHub em Configurações." : (x.message || "").startsWith("gh") ? "Não foi possível mexer no GitHub. Confira o repositório, a branch e o token em Configurações." : "Você não tem permissão para essa ação."); }
+  } catch (x) { alert(tr(x.message === "nogh" ? "Before approving, set up GitHub in Settings." : (x.message || "").startsWith("gh") ? "Could not reach GitHub. Check the repository, branch and token in Settings." : "You do not have permission for this action.")); }
 };
 
-/* ---------- Formulário ---------- */
+/* ---------- Formulário de novo post ---------- */
+function setType(t) { ptype = t; document.querySelectorAll(".seg button").forEach(b => b.classList.toggle("on", b.dataset.pt === t)); $("#reqBox").hidden = t !== "addon"; }
+document.querySelectorAll(".seg button").forEach(b => b.onclick = () => setType(b.dataset.pt));
+function drawTags() { $("#tagBox").innerHTML = TAGS.map(t => `<button type="button" class="chip ${tags.includes(t) ? "on" : ""}" data-tg="${t}">${t}</button>`).join(""); $("#tcount").textContent = tr("{0}/5 tags selected", tags.length); }
+$("#tagBox").onclick = e => { const t = e.target.dataset.tg; if (!t) return; if (tags.includes(t)) tags = tags.filter(x => x !== t); else if (tags.length < 5) tags.push(t); drawTags(); };
+const count = () => $("#fcount").textContent = tr("{0}/100 characters", $("#fn").value.length);
+function showPrev(src) { $("#prev").src = src || ""; $("#prev").hidden = !src; $("#dropTxt").hidden = !!src; }
 function openForm(it) {
-  editing = it || null; imgData = ""; const adm = isAdmin();
-  $("#fTitle").textContent = it ? "Editar addon" : "Adicionar addon";
-  $("#fn").value = it?.name || ""; $("#fd").value = it?.desc || ""; $("#ft").value = it?.type || "addon";
-  $("#fo").value = it && !it.studio ? "parceiro" : "studio"; $("#orgBox").hidden = !adm;
-  $("#fl").value = it?.link || ""; $("#fi").value = it?.image && !it.image.startsWith("data:") ? it.image : ""; $("#ff").value = ""; $("#ferr").textContent = "";
-  const p = $("#prev"); p.src = it?.image || ""; p.style.display = it?.image ? "block" : "none";
-  $("#dForm").showModal();
+  editing = it || null; imgData = ""; tags = (it?.tags || []).filter(t => TAGS.includes(t));
+  $("#fTitle").textContent = tr(it ? "Edit post" : "Submit new post");
+  setType(it?.type || "addon"); $("#fn").value = it?.name || ""; count();
+  $("#fd").innerHTML = clean(it?.desc || ""); $("#fl").value = it?.link || ""; $("#fReq").checked = false; $("#ff").value = "";
+  $("#fo").value = it && !it.studio ? "parceiro" : "studio"; $("#orgBox").hidden = !isAdmin();
+  showPrev(safe(it?.image)); $("#ferr").textContent = ""; drawTags(); go("sub");
 }
 $("#newBtn").onclick = () => openForm();
-$("#fClose").onclick = () => $("#dForm").close();
-$("#fi").oninput = e => { const p = $("#prev"); p.src = e.target.value; p.style.display = e.target.value ? "block" : "none"; };
+$("#fClose").onclick = () => openDash();
+$("#fn").oninput = count;
+document.querySelectorAll(".tb button").forEach(b => {
+  b.onmousedown = e => e.preventDefault();
+  b.onclick = () => {
+    const c = b.dataset.c; $("#fd").focus();
+    if (c === "link") { const u = prompt(tr("Paste the link (https://...)")); if (u && /^https?:\/\//i.test(u)) document.execCommand("createLink", false, u); }
+    else if (c === "formatBlock") document.execCommand("formatBlock", false, "blockquote");
+    else document.execCommand(c);
+  };
+});
+$("#fd").addEventListener("paste", e => { e.preventDefault(); document.execCommand("insertText", false, e.clipboardData.getData("text/plain")); });
 $("#ff").onchange = e => {
   const f = e.target.files[0]; if (!f) return;
-  const img = new Image(); img.onload = () => {
-    const s = Math.min(1, 700 / img.width), c = document.createElement("canvas");
-    c.width = img.width * s; c.height = img.height * s; c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
-    imgData = c.toDataURL("image/jpeg", .75); const p = $("#prev"); p.src = imgData; p.style.display = "block";
-  }; img.src = URL.createObjectURL(f);
+  const img = new Image();
+  img.onload = () => {
+    const W = 800, H = 450, c = document.createElement("canvas"); c.width = W; c.height = H;
+    const k = Math.max(W / img.width, H / img.height), w = img.width * k, h = img.height * k;
+    c.getContext("2d").drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
+    imgData = c.toDataURL("image/jpeg", .8); showPrev(imgData); URL.revokeObjectURL(img.src);
+  };
+  img.onerror = () => $("#ferr").textContent = tr("Could not read that image.");
+  img.src = URL.createObjectURL(f);
 };
 $("#saveBtn").onclick = async () => {
-  const name = $("#fn").value.trim(), link = $("#fl").value.trim(), image = imgData || $("#fi").value.trim() || editing?.image || "", adm = isAdmin();
-  const err = m => $("#ferr").textContent = m;
-  if (!name) return err("Escreva o nome do addon.");
-  if (!/^https?:\/\//i.test(link)) return err("Cole um link de download que comece com https://");
-  if (image && !safe(image)) return err("O link da imagem precisa começar com https://");
-  const it = {id: editing?.id, name, desc: $("#fd").value.trim(), type: $("#ft").value, link, image, studio: adm && $("#fo").value === "studio", status: "pending"};
+  const name = $("#fn").value.trim(), link = $("#fl").value.trim(), image = imgData || editing?.image || "", adm = isAdmin();
+  const desc = clean($("#fd").innerHTML), err = m => ($("#ferr").textContent = tr(m));
+  if (!image) return err("Upload a thumbnail (16:9).");
+  if (!name) return err("Write a title.");
+  if (!$("#fd").textContent.trim()) return err("Write a description.");
+  if (desc.length > 20000) return err("The description is too long.");
+  if (!tags.length) return err("Choose at least 1 tag.");
+  let host = ""; try { host = new URL(link).hostname; } catch (e) {}
+  if (!/^https?:\/\//i.test(link) || !host) return err("Paste a download link starting with https://");
+  if (ptype === "addon" && !$("#fReq").checked) return err("Confirm that the addon does not use player.json.");
+  const it = {id: editing?.id, name, desc, type: ptype, tags: [...tags], link, image, studio: adm && $("#fo").value === "studio", status: "pending"};
   if (!editing) { it.authorUid = user.uid; it.authorName = nameOf(user); it.path = ""; }
-  try { await B.save(it); $("#dForm").close(); await openDash(); refresh(); }
-  catch (e) { err("Não foi possível salvar. Tente entrar de novo."); }
+  try { await B.save(it); await openDash(); refresh(); }
+  catch (e) { err("Could not save. Try signing in again."); }
 };
 
+/* ---------- Trocar idioma ---------- */
+function retitle() {
+  document.title = tr("{0} – Minecraft addons", CONFIG.studio);
+  $("#heroTitle").textContent = tr("{0}: addons for your world", CONFIG.studio);
+  $("#foot").textContent = tr("© {0} {1}. Not affiliated with Mojang or Microsoft.", new Date().getFullYear(), CONFIG.studio);
+}
+function setLang(l) {
+  lang = l === "pt" ? "pt" : "en"; localStorage.setItem("lang", lang); $("#sl").value = lang;
+  applyLang(); retitle(); head(); renderHome(); if (!$("#dash").hidden) renderDash();
+  if (!$("#sub").hidden) { $("#fTitle").textContent = tr(editing ? "Edit post" : "Submit new post"); count(); drawTags(); }
+  ["#aerr", "#serr", "#ferr"].forEach(x => $(x).textContent = "");
+}
+
 await initBackend();
-head(); refresh();
+$("#sl").value = lang; applyLang(); retitle(); count(); drawTags(); head(); refresh();
 </script>
 </body>
 </html>
