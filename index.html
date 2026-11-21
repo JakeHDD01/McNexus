@@ -83,7 +83,7 @@ footer{padding:30px 5vw;border-top:1px solid var(--line);color:var(--m);text-ali
 .drop img{width:100%;height:100%;object-fit:cover}
 .drop small{display:block;margin-top:6px}
 #sub{max-width:760px;margin:0 auto;padding-bottom:50px}
-#sub input:not([type=checkbox]):not([type=file]),#sub select{width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+#sub input:not([type=checkbox]):not([type=file]):not([type=color]),#sub select{width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
 .ed{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .tb{display:flex;flex-wrap:wrap;gap:4px;padding:8px;border-bottom:1px solid var(--line)}
 .tb button{background:none;border:1px solid transparent;border-radius:8px;min-width:40px;height:40px;cursor:pointer;color:var(--t)}
@@ -112,6 +112,22 @@ dialog textarea{width:100%;background:var(--card);border:1px solid var(--line);b
 .pbox{display:flex;gap:16px;align-items:center;margin:26px 0 8px}
 .pav{width:84px;height:84px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:2.2rem;font-weight:800;flex:none}
 .pbio{color:var(--m);white-space:pre-wrap;margin:8px 0 14px}
+.steps{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.step{border:1px solid var(--line);background:none;border-radius:10px;padding:8px 14px;cursor:pointer;color:var(--m)}
+.step.on{background:var(--card);border-color:var(--p);color:var(--t)}
+#pv{max-width:340px;margin:6px 0 14px;cursor:default}
+#sub input[type=file]{width:100%;background:var(--card);border:1px dashed var(--line);border-radius:10px;padding:12px;color:var(--m)}
+#sub input[type=color]{width:46px;height:38px;padding:2px;background:none;border:1px solid var(--line);border-radius:8px}
+#prev{width:100%;max-width:420px;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin-top:10px}
+.shots{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+.shot{position:relative;width:110px}.shot img{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px}
+.shot button{position:absolute;top:-6px;right:-6px;width:24px;height:24px;border-radius:50%;border:0;background:var(--r);color:#fff;cursor:pointer}
+.swatches{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sw{width:38px;height:38px;border-radius:50%;border:3px solid transparent;cursor:pointer}.sw.on{border-color:#fff}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opts button{border:1px solid var(--line);background:none;border-radius:10px;padding:10px 18px;cursor:pointer;color:var(--m)}
+.opts button.on{border-color:var(--p);background:var(--card);color:var(--t)}
+.bar{margin-top:22px}.chk{margin-top:14px}
 </style>
 </head>
 <body>
@@ -176,17 +192,37 @@ dialog textarea{width:100%;background:var(--card);border:1px solid var(--line);b
 </section>
 
 <section id="sub" class="wrap" hidden>
-  <h2 class="t" id="fTitle" data-d>Submit new post</h2>
-  <p class="sub">Share your creation with the community</p>
-  <label>Post type</label>
-  <div class="seg"><button type="button" data-pt="addon" class="on">ADDON</button><button type="button" data-pt="addonpack">ADDONPACK</button></div>
-  <label>Thumbnail *</label>
-  <label class="drop" for="ff"><img id="prev" alt="" hidden><div id="dropTxt">Tap to upload a thumbnail<small>Recommended: 800x450 (16:9)</small></div></label>
-  <input id="ff" type="file" accept="image/*" hidden>
-  <label for="fn">Title *</label>
-  <input id="fn" maxlength="100" placeholder="Give your creation a catchy title">
-  <p class="note" id="fcount" data-d>0/100 characters</p>
-  <label>Description *</label>
+  <h2 class="t" id="fTitle" data-d>Create an addon page</h2>
+  <p class="sub">Build the page people will see. You can edit everything later.</p>
+  <div class="steps" id="steps" data-d></div>
+  <div class="card" id="pv" data-d></div>
+
+  <div class="panel" data-s="0">
+    <label for="fn">Name *</label>
+    <input id="fn" maxlength="100" placeholder="What is your addon called?">
+    <p class="note" id="fcount" data-d>0/100 characters</p>
+    <label for="ft">Kind of post</label>
+    <select id="ft"><option value="addon">Addon</option><option value="addonpack">Addonpack (several addons together)</option></select>
+    <label>Tags * (choose up to 5)</label>
+    <div class="chips" id="tagBox" data-d></div>
+    <p class="note" id="tcount" data-d>0/5 tags selected</p>
+    <div id="orgBox" hidden><label for="fo">Origin</label><select id="fo"><option value="studio">Studio addon</option><option value="parceiro">Partner addon</option></select></div>
+    <label for="fmv">Minecraft version (optional)</label><input id="fmv" maxlength="20" placeholder="1.21.x">
+    <label for="fver">Addon version (optional)</label><input id="fver" maxlength="20" placeholder="1.0">
+    <label class="chk"><input type="checkbox" id="fexp"><span>Needs Experimental toggles</span></label>
+  </div>
+
+  <div class="panel" data-s="1" hidden>
+    <label for="ff">Cover image * (16:9 works best)</label>
+    <input id="ff" type="file" accept="image/*">
+    <img id="prev" alt="" hidden>
+    <label for="fg">Screenshots (up to 4)</label>
+    <input id="fg" type="file" accept="image/*" multiple>
+    <div class="shots" id="shots" data-d></div>
+  </div>
+
+  <div class="panel" data-s="2" hidden>
+    <label>Description *</label>
   <div class="ed">
     <div class="tb">
       <button type="button" data-c="bold" title="Bold"><b>B</b></button>
@@ -204,27 +240,36 @@ dialog textarea{width:100%;background:var(--card);border:1px solid var(--line);b
     </div>
     <div id="fd" contenteditable="true" data-ph="Describe your creation" data-d></div>
   </div>
-  <label>Tags * (choose up to 5)</label>
-  <div class="chips" id="tagBox" data-d></div>
-  <p class="note" id="tcount" data-d>0/5 tags selected</p>
-  <div id="orgBox" hidden><label for="fo">Origin</label><select id="fo"><option value="studio">Studio addon</option><option value="parceiro">Partner addon</option></select></div>
-  <label for="fl">Download link (optional)</label>
-  <input id="fl" type="url" placeholder="https://www.mediafire.com/your-download">
-  <label for="fu">Download file (optional)</label>
-  <label class="fup" for="fu" id="fupTxt" data-d></label>
-  <input id="fu" type="file" hidden>
-  <p class="note">If you do not paste a link, the uploaded file is used for the download. You need at least one of them.</p>
-  <label for="fy">YouTube link (optional)</label><input id="fy" type="url" placeholder="https://www.youtube.com/...">
-  <label for="fdc">Discord link (optional)</label><input id="fdc" type="url" placeholder="https://discord.gg/...">
-  <div class="box" id="reqBox"><h3>⚠ Addon requirements</h3>
-    <label class="chk"><input type="checkbox" id="fReq"><span><b>This addon does NOT use player.json</b><br><small style="color:var(--m)">Addons must not modify player.json to be compatible</small></span></label>
   </div>
-  <div class="box"><h3>Content rules</h3>
-    <ul class="rules"><li>✓ You must own all the content you upload</li><li>✓ No stolen or unauthorized content</li><li>✓ Follow the community guidelines</li></ul>
+
+  <div class="panel" data-s="3" hidden>
+    <label for="fl">Download link (optional)</label>
+    <input id="fl" type="url" placeholder="https://www.mediafire.com/your-download">
+    <label for="fu">Download file (optional)</label>
+    <input id="fu" type="file">
+    <p class="note" id="fupTxt" data-d></p>
+    <p class="note">If you do not paste a link, the uploaded file is used for the download. You need at least one of them.</p>
+    <label for="fy">YouTube video (optional)</label><input id="fy" type="url" placeholder="https://www.youtube.com/...">
+    <label for="fdc">Discord server (optional)</label><input id="fdc" type="url" placeholder="https://discord.gg/...">
   </div>
-  <p class="note" style="margin-top:16px">After you submit, the post stays “In review” until the admin approves it. Only then is its page created.</p>
+
+  <div class="panel" data-s="4" hidden>
+    <label>Accent color</label>
+    <div class="swatches" id="swatches" data-d></div>
+    <label>Page theme</label>
+    <div class="opts" id="themeOpts"><button type="button" data-th="dark">Dark</button><button type="button" data-th="purple">Purple</button><button type="button" data-th="light">Light</button></div>
+    <label>Cover layout</label>
+    <div class="opts" id="layoutOpts"><button type="button" data-ly="banner">Banner</button><button type="button" data-ly="poster">Poster</button></div>
+  </div>
+
+  <div class="panel" data-s="5" hidden>
+    <label class="chk"><input type="checkbox" id="fOwn"><span>I made this, or I have permission to share it</span></label>
+    <label class="chk" id="reqBox"><input type="checkbox" id="fReq"><span>This addon does not modify player.json</span></label>
+    <p class="note" style="margin-top:16px">After you submit, the page stays “In review” until the admin approves it. Only then is it published.</p>
+  </div>
+
   <div class="err" id="ferr" data-d></div>
-  <div class="row"><button class="btn ghost" id="fClose">Cancel</button><button class="btn" id="saveBtn">SUBMIT FOR REVIEW</button></div>
+  <div class="row bar"><button class="btn ghost" id="fPrev">Back</button><button class="btn" id="fNext">Next</button><button class="btn" id="saveBtn">Submit for review</button><button class="btn ghost" id="fClose">Cancel</button></div>
 </section>
 <footer><a class="btn dc" id="dcBtn" target="_blank" rel="noopener">Join our Discord</a><p id="foot" data-d></p></footer>
 
@@ -264,17 +309,13 @@ dialog textarea{width:100%;background:var(--card);border:1px solid var(--line);b
 
 <dialog id="dView"><div id="vBody" data-d></div><div class="row" style="margin-top:10px"><button class="btn ghost" id="vClose">Close</button></div></dialog>
 
+<script src="firebase-config.js"></script>
 <script type="module">
 /* ====== SETTINGS: edit here ====== */
 const CONFIG = {
   studio: "McNexus Studio",
   discord: "https://discord.gg/uXgJgdWtHj",
-  firebase: {
-    apiKey: "AIzaSyDtSj7gpOWfOidOzfteODf3WlmTixHpekE",
-    authDomain: "sitemcnexusstudio.firebaseapp.com",
-    projectId: "sitemcnexusstudio",
-    appId: "1:832770315862:web:d8bd00a311c27d308b4df7"
-  }
+  firebase: window.FIREBASE_CONFIG || {apiKey: "", authDomain: "", projectId: "", appId: ""}  // vem do arquivo firebase-config.js
 };
 /* ================================= */
 
@@ -325,7 +366,19 @@ const PT = {
   "YouTube link (optional)":"Link do YouTube (opcional)","Discord link (optional)":"Link do Discord (opcional)","Image":"Imagem","Social links":"Redes sociais","No addons yet.":"Nenhum addon ainda.","Creator":"Criador",
   "Use a valid https link for {0}.":"Use um link https válido para {0}.","Add a download link or upload a file.":"Adicione um link de download ou envie um arquivo.",
   "The file must be .mcaddon or .mcpack, up to {0} MB.":"O arquivo precisa ser .mcaddon ou .mcpack, até {0} MB.","Uploading file {0}/{1}...":"Enviando arquivo {0}/{1}...",
-  "The post is too big. Remove some images from the description.":"O post está grande demais. Tire algumas imagens da descrição.","Could not upload the file. Edit the post and try again.":"Não foi possível enviar o arquivo. Edite o post e tente de novo."
+  "The post is too big. Remove some images from the description.":"O post está grande demais. Tire algumas imagens da descrição.","Could not upload the file. Edit the post and try again.":"Não foi possível enviar o arquivo. Edite o post e tente de novo.",
+  "Create an addon page":"Criar página de addon","Edit addon page":"Editar página de addon","Build the page people will see. You can edit everything later.":"Monte a página que as pessoas vão ver. Você pode editar tudo depois.",
+  "Name *":"Nome *","What is your addon called?":"Como se chama o seu addon?","Kind of post":"Tipo de post","Addonpack (several addons together)":"Addonpack (vários addons juntos)",
+  "Minecraft version (optional)":"Versão do Minecraft (opcional)","Addon version (optional)":"Versão do addon (opcional)","Needs Experimental toggles":"Precisa dos recursos Experimentais",
+  "Cover image * (16:9 works best)":"Imagem de capa * (16:9 fica melhor)","Screenshots (up to 4)":"Capturas de tela (até 4)",
+  "Accepted: .mcaddon or .mcpack, up to {0} MB.":"Aceito: .mcaddon ou .mcpack, até {0} MB.","Selected: {0} ({1} MB)":"Selecionado: {0} ({1} MB)","Current file: {0}":"Arquivo atual: {0}",
+  "YouTube video (optional)":"Vídeo do YouTube (opcional)","Discord server (optional)":"Servidor do Discord (opcional)",
+  "Accent color":"Cor de destaque","Page theme":"Tema da página","Dark":"Escuro","Purple":"Roxo","Light":"Claro","Cover layout":"Layout da capa","Poster":"Pôster",
+  "I made this, or I have permission to share it":"Eu criei isto, ou tenho permissão para compartilhar","This addon does not modify player.json":"Este addon não modifica o player.json",
+  "After you submit, the page stays “In review” until the admin approves it. Only then is it published.":"Depois de enviar, a página fica “Em análise” até o admin aprovar. Só então ela é publicada.",
+  "Back":"Voltar","Submit for review":"Enviar para análise","Basics":"Básico","Media":"Mídia","Description":"Descrição","Files and links":"Arquivos e links","Style":"Estilo","Review":"Revisar","Your addon name":"Nome do seu addon",
+  "Write a name.":"Escreva o nome.","Upload a cover image.":"Envie a imagem de capa.","Please confirm the checklist before submitting.":"Confirme a lista antes de enviar.",
+  "This addon has no download link or file. Edit it first.":"Este addon não tem link nem arquivo de download. Edite antes."
 };
 let lang = localStorage.getItem("lang") === "pt" ? "pt" : "en";
 const tr = (s, ...a) => { let r = lang === "pt" ? (PT[s] ?? s) : s; a.forEach((v, i) => r = r.split("{" + i + "}").join(v)); return r; };
@@ -353,7 +406,7 @@ function clean(html) {  // deixa só formatação segura na descrição
       if (c.nodeType === 3) out.append(document.createTextNode(c.textContent));
       else if (c.nodeType === 1) {
         if (/^(SCRIPT|STYLE)$/.test(c.tagName)) continue;
-        if (c.tagName === "IMG") { const sr = c.getAttribute("src") || ""; if (/^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(sr) || /^[a-z0-9-]+\/img-\d+\.jpg$/.test(sr)) { const e = document.createElement("img"); e.setAttribute("src", sr); e.alt = ""; out.append(e); } continue; }
+        if (c.tagName === "IMG") { const sr = c.getAttribute("src") || ""; if (/^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(sr) || /^img-\d+\.jpg$/.test(sr)) { const e = document.createElement("img"); e.setAttribute("src", sr); e.alt = ""; out.append(e); } continue; }
         if (!OKTAG[c.tagName]) { walk(c, out); continue; }
         const e = document.createElement(c.tagName.toLowerCase());
         if (c.tagName === "A") { const h = c.getAttribute("href") || ""; if (/^https?:\/\//i.test(h)) { e.href = h; e.target = "_blank"; e.rel = "noopener noreferrer nofollow"; } }
@@ -447,7 +500,7 @@ function filtered() {
     .sort((x, y) => s === "az" ? x.name.localeCompare(y.name) : (y.created || 0) - (x.created || 0));
 }
 const card = i => `
-    <article class="card" tabindex="0" data-v="${esc(i.id)}">
+    <article class="card" tabindex="0" data-v="${esc(i.id)}" style="border-bottom-color:${hex(i.accent)}">
       ${safe(i.image) ? `<img src="${esc(safe(i.image))}" alt="" loading="lazy">` : `<div class="ph"></div>`}
       <span class="tag ${i.studio ? "" : "pt"}">${i.studio ? "Studio" : tr("Partner")}</span>
       <div class="ov"><h3>${esc(i.name)}</h3><div class="st"><span class="pill">${typeLabel(i.type)}</span></div></div>
@@ -474,7 +527,7 @@ function openView(id) {
 }
 $("#vBody").onclick = e => { if (e.target.closest('a[href^="#u="]')) $("#dView").close(); };
 $("#vClose").onclick = () => $("#dView").close();
-const openCard = e => { const c = e.target.closest("[data-v]"); if (!c || (e.type !== "click" && e.key !== "Enter")) return; const i = live.find(x => x.id === c.dataset.v); if (i && okPath(i.path)) location.href = i.path; else openView(c.dataset.v); };
+const openCard = e => { const c = e.target.closest("[data-v]"); if (!c || (e.type !== "click" && e.key !== "Enter")) return; const i = live.find(x => x.id === c.dataset.v); if (i && okPath(i.path)) location.href = i.path.replace(/index\.html$/, ""); else openView(c.dataset.v); };
 $("#grid").onclick = openCard; $("#grid").onkeydown = openCard; $("#pGrid").onclick = openCard; $("#pGrid").onkeydown = openCard;
 
 /* ---------- Conta ---------- */
@@ -530,7 +583,7 @@ $("#sPw").onclick = async () => { try { await B.reset(); $("#serr").textContent 
 
 /* ---------- Páginas no GitHub: addons/criador/nome.html (sempre em inglês) ---------- */
 const slug = (s, f) => (s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || f;
-const okPath = p => /^addons\/[a-z0-9-]+\/[a-z0-9-]+\.html$/.test(p || "");
+const okPath = p => /^addons\/[a-z0-9-]+\/[a-z0-9-]+(\/index)?\.html$/.test(p || "");
 async function pageMain(CFG, ID) {  // roda dentro de cada página addons/criador/nome.html (curtidas e comentários)
   const b = "https://www.gstatic.com/firebasejs/10.12.2/";
   const [{initializeApp}, A, F] = await Promise.all([import(b + "firebase-app.js"), import(b + "firebase-auth.js"), import(b + "firebase-firestore.js")]);
@@ -540,7 +593,7 @@ async function pageMain(CFG, ID) {  // roda dentro de cada página addons/criado
   const paint = () => { $("#lc").textContent = count; $("#like").classList.toggle("on", liked); };
   async function loadLikes() { try { count = (await F.getCountFromServer(F.collection(db, "addons", ID, "likes"))).data().count; } catch (e) {} paint(); }
   $("#like").onclick = async () => {
-    if (!me) { location.href = "../../index.html#login"; return; }
+    if (!me) { location.href = "../../../index.html#login"; return; }
     const r = F.doc(db, "addons", ID, "likes", me.uid);
     try { if (liked) { await F.deleteDoc(r); liked = false; count--; } else { await F.setDoc(r, {t: Date.now()}); liked = true; count++; } paint(); } catch (e) {}
   };
@@ -552,7 +605,7 @@ async function pageMain(CFG, ID) {  // roda dentro de cada página addons/criado
     const box = $("#clist"); box.textContent = "";
     if (!cs.length) box.append(mk("p", "muted", "No comments yet."));
     cs.forEach(c => {
-      const d = mk("div", "c"), h = mk("div", "ch"), a = mk("a", "", names[c.uid] || "User"); a.href = "../../index.html#u=" + encodeURIComponent(c.uid);
+      const d = mk("div", "c"), h = mk("div", "ch"), a = mk("a", "", names[c.uid] || "User"); a.href = "../../../index.html#u=" + encodeURIComponent(c.uid);
       h.append(a, mk("span", "muted", new Date(c.created).toLocaleDateString())); d.append(h, mk("p", "ct", c.text));
       if (me && (me.uid === c.uid || admin)) { const x = mk("button", "del", "Delete"); x.onclick = async () => { try { await F.deleteDoc(F.doc(db, "addons", ID, "comments", c.id)); loadComments(); } catch (e) {} }; d.append(x); }
       box.append(d);
@@ -560,7 +613,7 @@ async function pageMain(CFG, ID) {  // roda dentro de cada página addons/criado
   }
   function form() {
     const f = $("#cform"); f.textContent = "";
-    if (!me) { const a = mk("a", "btn ghost", "Sign in to like and comment"); a.href = "../../index.html#login"; f.append(a); return; }
+    if (!me) { const a = mk("a", "btn ghost", "Sign in to like and comment"); a.href = "../../../index.html#login"; f.append(a); return; }
     const t = mk("textarea"); t.maxLength = 500; t.placeholder = "Write your comment..."; const bt = mk("button", "btn", "Post comment");
     bt.onclick = async () => { const v = t.value.trim(); if (!v) return; bt.disabled = true; try { await F.addDoc(F.collection(db, "addons", ID, "comments"), {uid: me.uid, text: v, created: Date.now()}); t.value = ""; await loadComments(); } catch (e) {} bt.disabled = false; };
     f.append(t, bt);
@@ -575,23 +628,28 @@ async function pageMain(CFG, ID) {  // roda dentro de cada página addons/criado
   });
   loadLikes();
 }
-const pageCss = `body{margin:0;background:#0d0617;color:#f6efff;font:16px/1.6 "DM Sans",system-ui,sans-serif}header,footer{padding:14px 5vw;border-bottom:1px solid #3a1d63}footer{border:0;border-top:1px solid #3a1d63;text-align:center;margin-top:40px;padding:28px 5vw}a{color:#ff9cae}header a{color:#b9a6d6;text-decoration:none}main{max-width:720px;margin:0 auto;padding:24px 5vw 20px}.cv{width:100%;border-radius:14px;border-bottom:3px solid #8f2cff}h1{font:800 clamp(1.8rem,6vw,2.6rem)/1.1 "Bricolage Grotesque",sans-serif;margin:16px 0 4px}h2{font-family:"Bricolage Grotesque",sans-serif;margin-top:34px}.by{color:#b9a6d6;margin:0 0 12px}.pill{display:inline-block;border:1px solid #ff2e4f;color:#ff9cae;background:rgba(255,46,79,.18);border-radius:8px;padding:2px 12px;font-weight:700;font-size:.8rem;margin-left:8px}.tg{display:inline-block;margin:0 6px 8px 0;padding:2px 11px;border-radius:99px;border:1px solid #3a1d63;color:#b9a6d6;font-size:.8rem}.acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 20px}.btn{display:inline-block;padding:11px 20px;border-radius:10px;background:linear-gradient(120deg,#8f2cff,#ff2e4f);color:#fff;font:700 1rem "DM Sans",sans-serif;text-decoration:none;border:0;cursor:pointer}.btn.ghost{background:none;border:1px solid #3a1d63}.btn.dc{background:#5865F2}.lk{background:#1f0f38;border:1px solid #3a1d63;border-radius:10px;padding:10px 16px;color:#f6efff;font:700 1rem "DM Sans",sans-serif;cursor:pointer}.lk .h{color:#8a7aa6;font-size:1.2rem}.lk.on .h{color:#ff2e4f}.d img{max-width:100%;border-radius:10px;margin:8px 0}.d blockquote{margin:12px 0;padding:4px 14px;border-left:3px solid #8f2cff;color:#cdbbe8}.d ul,.d ol{margin-left:22px}textarea{width:100%;box-sizing:border-box;min-height:80px;background:#1f0f38;border:1px solid #3a1d63;border-radius:10px;padding:12px;color:#f6efff;font:inherit;margin-bottom:10px}.c{background:#1f0f38;border:1px solid #3a1d63;border-radius:12px;padding:12px 14px;margin-top:12px}.ch{display:flex;gap:10px;align-items:center}.ch a{font-weight:700;text-decoration:none}.muted{color:#b9a6d6;font-size:.85rem}.ct{margin:6px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}.del{background:none;border:0;color:#ff8aa0;cursor:pointer;padding:6px 0 0}`;
-const pageHtml = (i, o) => `<!DOCTYPE html>
+const THEMES = {dark: ["#0d0617", "#f6efff", "#b9a6d6", "#1f0f38", "#3a1d63"], purple: ["#1a0a33", "#f6efff", "#c8b6ee", "#2a1250", "#4b2a85"], light: ["#f7f3ff", "#1c1030", "#5f4d82", "#ffffff", "#d9cdf0"]};
+const pageCss = `body{margin:0;background:var(--bg);color:var(--t);font:16px/1.6 "DM Sans",system-ui,sans-serif}header,footer{padding:14px 5vw;border-bottom:1px solid var(--l)}footer{border:0;border-top:1px solid var(--l);text-align:center;margin-top:40px;padding:28px 5vw}a{color:var(--a)}header a{color:var(--m);text-decoration:none}main{max-width:760px;margin:0 auto;padding:24px 5vw 20px}.poster .top{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start}.cv{width:100%;border-radius:14px;border-bottom:3px solid var(--a)}.poster .cv{width:240px;max-width:100%}.tt{flex:1;min-width:220px}h1{font:800 clamp(1.8rem,6vw,2.6rem)/1.1 "Bricolage Grotesque",sans-serif;margin:16px 0 4px}.poster h1{margin-top:0}h2{font-family:"Bricolage Grotesque",sans-serif;margin-top:34px}.by{color:var(--m);margin:0 0 12px}.pill{display:inline-block;border:1px solid var(--a);color:var(--a);border-radius:8px;padding:2px 12px;font-weight:700;font-size:.8rem;margin-left:8px}.tg{display:inline-block;margin:0 6px 8px 0;padding:2px 11px;border-radius:99px;border:1px solid var(--l);color:var(--m);font-size:.8rem}.acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 20px}.btn{display:inline-block;padding:11px 20px;border-radius:10px;background:var(--a);color:#fff;font:700 1rem "DM Sans",sans-serif;text-decoration:none;border:0;cursor:pointer}.btn.ghost{background:none;border:1px solid var(--l);color:var(--t)}.btn.dc{background:#5865F2;color:#fff}.lk{background:var(--c);border:1px solid var(--l);border-radius:10px;padding:10px 16px;color:var(--t);font:700 1rem "DM Sans",sans-serif;cursor:pointer}.lk .h{color:#8a7aa6;font-size:1.2rem}.lk.on .h{color:#ff2e4f}.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:14px 0}.gal img{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:10px}.d img{max-width:100%;border-radius:10px;margin:8px 0}.d blockquote{margin:12px 0;padding:4px 14px;border-left:3px solid var(--a);color:var(--m)}.d ul,.d ol{margin-left:22px}textarea{width:100%;box-sizing:border-box;min-height:80px;background:var(--c);border:1px solid var(--l);border-radius:10px;padding:12px;color:var(--t);font:inherit;margin-bottom:10px}.c{background:var(--c);border:1px solid var(--l);border-radius:12px;padding:12px 14px;margin-top:12px}.ch{display:flex;gap:10px;align-items:center}.ch a{font-weight:700;text-decoration:none}.muted{color:var(--m);font-size:.85rem}.ct{margin:6px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}.del{background:none;border:0;color:#ff8aa0;cursor:pointer;padding:6px 0 0}`;
+const pageHtml = (i, o) => {
+  const th = Object.prototype.hasOwnProperty.call(THEMES, i.theme) ? THEMES[i.theme] : THEMES.dark, up = "../../../index.html";
+  const chips = tagsHtml(i) + (i.mcv ? `<span class="tg">Minecraft ${esc(i.mcv)}</span>` : "") + (i.ver ? `<span class="tg">v${esc(i.ver)}</span>` : "") + (i.exp ? `<span class="tg">Experimental toggles</span>` : "");
+  return `<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' https: data:; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'nonce-${o.nonce}' https://www.gstatic.com; connect-src https://*.googleapis.com; frame-src 'none'; base-uri 'none'">
 <title>${esc(i.name)} – ${esc(CONFIG.studio)}</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@800&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
-<style>${pageCss}</style></head><body>
-<header><a href="../../index.html">← ${esc(CONFIG.studio)}</a></header>
-<main>${o.cover ? `<img class="cv" src="${esc(o.cover)}" alt="">` : ""}<h1>${esc(i.name)}</h1>
-<p class="by">by <a href="../../index.html#u=${esc(i.authorUid)}">${esc(i.authorName || CONFIG.studio)}</a><span class="pill">${typeLabel(i.type)}</span></p>
-<div>${tagsHtml(i)}</div>
-<div class="acts">${o.dl ? `<a class="btn" href="${esc(o.dl)}" rel="noopener noreferrer"${o.dlFile ? " download" : ""}>Download</a>` : ""}<button class="lk" id="like" type="button"><span class="h">♥</span> <span id="lc">0</span></button>${okLink("youtube", i.yt) ? `<a class="btn ghost" href="${esc(i.yt)}" rel="noopener noreferrer">YouTube</a>` : ""}${okLink("discord", i.dc) ? `<a class="btn dc" href="${esc(i.dc)}" rel="noopener noreferrer">Discord</a>` : ""}</div>
+<style>:root{--bg:${th[0]};--t:${th[1]};--m:${th[2]};--c:${th[3]};--l:${th[4]};--a:${hex(i.accent)}}${pageCss}</style></head><body>
+<header><a href="${up}">← ${esc(CONFIG.studio)}</a></header>
+<main class="${i.layout === "poster" ? "poster" : ""}"><div class="top">${o.cover ? `<img class="cv" src="${esc(o.cover)}" alt="">` : ""}<div class="tt"><h1>${esc(i.name)}</h1>
+<p class="by">by <a href="${up}#u=${esc(i.authorUid)}">${esc(i.authorName || CONFIG.studio)}</a><span class="pill">${typeLabel(i.type)}</span></p><div>${chips}</div></div></div>
+<div class="acts"><a class="btn" href="${esc(o.dl)}" rel="noopener noreferrer"${o.dlFile ? " download" : ""}>Download</a><button class="lk" id="like" type="button"><span class="h">♥</span> <span id="lc">0</span></button>${okLink("youtube", i.yt) ? `<a class="btn ghost" href="${esc(i.yt)}" rel="noopener noreferrer">YouTube</a>` : ""}${okLink("discord", i.dc) ? `<a class="btn dc" href="${esc(i.dc)}" rel="noopener noreferrer">Discord</a>` : ""}</div>
+${o.shots.length ? `<div class="gal">${o.shots.map(x => `<a href="${esc(x)}"><img src="${esc(x)}" alt=""></a>`).join("")}</div>` : ""}
 <div class="d">${o.desc}</div>
 <h2>Comments</h2><div id="cform"></div><div id="clist"></div></main>
 <footer><a class="btn dc" href="${esc(CONFIG.discord)}" rel="noopener noreferrer">Join our Discord</a></footer>
 <script type="module" nonce="${o.nonce}">(${pageMain})(${JSON.stringify(CONFIG.firebase).replace(/</g, "\\u003c")}, ${JSON.stringify(i.id)});<\/script>
 </body></html>`;
+};
 async function gh(method, path, body) {
   const c = JSON.parse(localStorage.getItem("gh") || "null"); if (!c?.repo || !c?.token) throw new Error("nogh");
   const r = await fetch(`https://api.github.com/repos/${c.repo}/contents/${path}${method === "GET" ? "?ref=" + encodeURIComponent(c.branch || "main") : ""}`, {method, headers: {Authorization: "Bearer " + c.token, Accept: "application/vnd.github+json"}, body: body && JSON.stringify({...body, branch: c.branch || "main"})});
@@ -599,28 +657,35 @@ async function gh(method, path, body) {
   if (!r.ok) throw new Error("gh" + r.status);
   return r.json();
 }
-async function publish(i) {  // cria addons/criador/nome.html + addons/criador/nome/ (capa, imagens e arquivo)
+const dirOf = p => p.replace(/\/index\.html$|\.html$/, "");
+async function publish(i) {  // cria addons/criador/nome/ com index.html, capa, imagens e arquivo juntos
   if (demo) return {path: ""};
-  let path = i.path;
-  if (!path) { path = `addons/${slug(i.authorName, "creator")}/${slug(i.name, "addon")}.html`; if (mine.some(x => x.id !== i.id && x.path === path)) path = path.replace(".html", "-" + slug(i.id, "x").slice(0, 4) + ".html"); }
-  const dir = path.replace(/\.html$/, ""), base = dir.split("/").pop(), files = [];
-  let n = 0, cover = "", dl = i.link || "", dlFile = false, filePath = i.filePath || "";
-  const desc = clean(i.desc).replace(/src="data:image\/jpeg;base64,([A-Za-z0-9+\/=]+)"/g, (x, b64) => { files.push([`${dir}/img-${++n}.jpg`, b64]); return `src="${base}/img-${n}.jpg"`; });
-  const cm = /^data:image\/jpeg;base64,(.+)$/.exec(i.image || ""); if (cm) { files.push([`${dir}/cover.jpg`, cm[1]]); cover = `${base}/cover.jpg`; }
+  let path = /^addons\/[a-z0-9-]+\/[a-z0-9-]+\/index\.html$/.test(i.path || "") ? i.path : "";
+  if (!path) { const cr = slug(i.authorName, "creator"); let nm = slug(i.name, "addon"); if (mine.some(x => x.id !== i.id && x.path === `addons/${cr}/${nm}/index.html`)) nm += "-" + slug(i.id, "x").slice(0, 4); path = `addons/${cr}/${nm}/index.html`; }
+  const dir = dirOf(path), files = [], shots = [];
+  let n = 0, cover = "", filePath = (i.filePath || "").startsWith(dir + "/") ? i.filePath : "";
+  const put = (name, b64) => { files.push([`${dir}/${name}`, b64]); return name; };
+  const desc = clean(i.desc).replace(/src="data:image\/jpeg;base64,([A-Za-z0-9+\/=]+)"/g, (x, b64) => `src="${put(`img-${++n}.jpg`, b64)}"`);
+  const cm = /^data:image\/jpeg;base64,(.+)$/.exec(i.image || ""); if (cm) cover = put("cover.jpg", cm[1]);
+  (i.gallery || []).slice(0, 4).forEach((g, k) => { const gm = /^data:image\/jpeg;base64,(.+)$/.exec(g); if (gm) shots.push(put(`shot-${k + 1}.jpg`, gm[1])); });
   if (i.file?.chunks > 0) { filePath = `${dir}/${String(i.file.name).replace(/[^A-Za-z0-9._-]+/g, "-")}`; files.push([filePath, (await B.getChunks(i.id, i.file.chunks)).join("")]); }
-  if (!dl && filePath) { dl = `${base}/${filePath.split("/").pop()}`; dlFile = true; }
+  const dl = i.link || (filePath ? filePath.split("/").pop() : ""); if (!dl) throw new Error("nodl");
   for (const [p, b64] of files) { const old = await gh("GET", p); await gh("PUT", p, {message: "Add file", content: b64, sha: old?.sha}); }
   const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16)))), old = await gh("GET", path);
-  await gh("PUT", path, {message: "Publish " + i.name, content: btoa(unescape(encodeURIComponent(pageHtml(i, {cover, desc, dl, dlFile, nonce})))), sha: old?.sha});
-  const keep = new Set([...files.map(f => f[0]), filePath]), list = await gh("GET", dir);
+  await gh("PUT", path, {message: "Publish " + i.name, content: btoa(unescape(encodeURIComponent(pageHtml(i, {cover, shots, desc, dl, dlFile: !i.link, nonce})))), sha: old?.sha});
+  const keep = new Set([...files.map(f => f[0]), filePath, path]), list = await gh("GET", dir);
   if (Array.isArray(list)) for (const f of list) if (!keep.has(f.path)) await gh("DELETE", f.path, {message: "Clean up", sha: f.sha});
+  if (i.path && i.path !== path) {  // migra páginas do formato antigo (nome.html)
+    if (dirOf(i.path) === dir) { const o2 = await gh("GET", i.path); if (o2 && !Array.isArray(o2)) await gh("DELETE", i.path, {message: "Remove old page", sha: o2.sha}); }
+    else await unpublish(i.path).catch(() => {});
+  }
   return {path, filePath, file: i.file ? {...i.file, chunks: 0} : null};
 }
 async function unpublish(path) {
   if (demo || !okPath(path)) return;
-  const dir = path.replace(/\.html$/, ""), list = await gh("GET", dir);
+  const list = await gh("GET", dirOf(path));
   if (Array.isArray(list)) for (const f of list) await gh("DELETE", f.path, {message: "Remove file", sha: f.sha});
-  const old = await gh("GET", path); if (old) await gh("DELETE", path, {message: "Remove page", sha: old.sha});
+  const old = await gh("GET", path); if (old && !Array.isArray(old)) await gh("DELETE", path, {message: "Remove page", sha: old.sha});
 }
 
 /* ---------- Painel do criador ---------- */
@@ -660,47 +725,83 @@ $("#dList").onclick = async e => {
       if (x.path) alert(tr("Page created at {0}. GitHub takes about 1 minute to put it online.", x.path));
     } else { if (i.path) await unpublish(i.path); await B.status(id, "denied", {path: "", filePath: ""}); }
     await openDash(); refresh();
-  } catch (x) { alert(tr(x.message === "nogh" ? "Before approving, set up GitHub in Settings." : (x.message || "").startsWith("gh") ? "Could not reach GitHub. Check the repository, branch and token in Settings." : "You do not have permission for this action.")); }
+  } catch (x) { alert(tr(x.message === "nodl" ? "This addon has no download link or file. Edit it first." : x.message === "nogh" ? "Before approving, set up GitHub in Settings." : (x.message || "").startsWith("gh") ? "Could not reach GitHub. Check the repository, branch and token in Settings." : "You do not have permission for this action.")); }
 };
 
-/* ---------- Formulário de novo post ---------- */
-function setType(t) { ptype = t; document.querySelectorAll(".seg button").forEach(b => b.classList.toggle("on", b.dataset.pt === t)); $("#reqBox").hidden = t !== "addon"; }
-document.querySelectorAll(".seg button").forEach(b => b.onclick = () => setType(b.dataset.pt));
+/* ---------- Criar página de addon ---------- */
+const ACC = ["#8f2cff", "#ff2e4f", "#2e9bff", "#22c55e", "#f59e0b", "#ec4899", "#14b8a6", "#eab308"];
+const STEPS = ["Basics", "Media", "Description", "Files and links", "Style", "Review"];
+let step = 0, accent = ACC[0], theme = "dark", layout = "banner", galData = [];
+const hex = c => /^#[0-9a-f]{6}$/i.test(c || "") ? c : ACC[0];
+const count = () => $("#fcount").textContent = tr("{0}/100 characters", $("#fn").value.length);
+const fileTxt = () => $("#fupTxt").textContent = upFile ? tr("Selected: {0} ({1} MB)", upFile.name, (upFile.size / 1048576).toFixed(1)) : editing?.file?.name ? tr("Current file: {0}", editing.file.name) : tr("Accepted: .mcaddon or .mcpack, up to {0} MB.", MAX_MB);
+const resize = (f, W, q, H) => new Promise(ok => {  // reduz a imagem (com corte 16:9 se H for dado)
+  const img = new Image();
+  img.onload = () => {
+    const c = document.createElement("canvas"), x = c.getContext("2d");
+    if (H) { c.width = W; c.height = H; const k = Math.max(W / img.width, H / img.height); x.drawImage(img, (W - img.width * k) / 2, (H - img.height * k) / 2, img.width * k, img.height * k); }
+    else { const k = Math.min(1, W / img.width); c.width = img.width * k; c.height = img.height * k; x.drawImage(img, 0, 0, c.width, c.height); }
+    URL.revokeObjectURL(img.src); ok(c.toDataURL("image/jpeg", q));
+  };
+  img.onerror = () => ok(""); img.src = URL.createObjectURL(f);
+});
 function drawTags() { $("#tagBox").innerHTML = TAGS.map(t => `<button type="button" class="chip ${tags.includes(t) ? "on" : ""}" data-tg="${t}">${t}</button>`).join(""); $("#tcount").textContent = tr("{0}/5 tags selected", tags.length); }
 $("#tagBox").onclick = e => { const t = e.target.dataset.tg; if (!t) return; if (tags.includes(t)) tags = tags.filter(x => x !== t); else if (tags.length < 5) tags.push(t); drawTags(); };
-const count = () => $("#fcount").textContent = tr("{0}/100 characters", $("#fn").value.length);
-const fileTxt = () => $("#fupTxt").textContent = upFile ? `${upFile.name} (${(upFile.size / 1048576).toFixed(1)} MB)` : tr("Tap to choose a .mcaddon or .mcpack file (up to {0} MB)", MAX_MB);
+function drawShots() { $("#shots").innerHTML = galData.map((g, k) => `<div class="shot"><img src="${esc(g)}" alt=""><button type="button" data-gx="${k}" aria-label="${tr("Remove")}">×</button></div>`).join(""); }
+function showPrev(src) { $("#prev").src = src || ""; $("#prev").hidden = !src; }
+function updPv() {
+  const img = safe(imgData || editing?.image || ""), pv = $("#pv"); pv.style.borderBottomColor = accent;
+  pv.innerHTML = `${img ? `<img src="${esc(img)}" alt="">` : `<div class="ph" style="background:${accent}"></div>`}<div class="ov"><h3>${esc($("#fn").value.trim() || tr("Your addon name"))}</h3><div class="st"><span class="pill">${typeLabel(ptype)}</span></div></div>`;
+}
+function drawStyle() {
+  $("#swatches").innerHTML = ACC.map(c => `<button type="button" class="sw ${c === accent ? "on" : ""}" data-c="${c}" style="background:${c}" aria-label="${c}"></button>`).join("") + `<input type="color" id="fac" value="${accent}">`;
+  document.querySelectorAll("[data-th]").forEach(b => b.classList.toggle("on", b.dataset.th === theme));
+  document.querySelectorAll("[data-ly]").forEach(b => b.classList.toggle("on", b.dataset.ly === layout));
+  updPv();
+}
+function showStep(n) {
+  step = Math.max(0, Math.min(STEPS.length - 1, n));
+  document.querySelectorAll("#sub .panel").forEach(p => p.hidden = +p.dataset.s !== step);
+  $("#steps").innerHTML = STEPS.map((x, k) => `<button type="button" class="step ${k === step ? "on" : ""}" data-k="${k}">${k + 1}. ${tr(x)}</button>`).join("");
+  $("#fPrev").hidden = step === 0; $("#fNext").hidden = step === STEPS.length - 1; $("#saveBtn").hidden = step !== STEPS.length - 1;
+  $("#ferr").textContent = ""; if (step === 4) drawStyle(); else updPv();
+}
+function openForm(it) {
+  editing = it || null; imgData = ""; upFile = null; tags = (it?.tags || []).filter(t => TAGS.includes(t)); galData = (it?.gallery || []).filter(g => safe(g)).slice(0, 4);
+  accent = hex(it?.accent); theme = ["dark", "purple", "light"].includes(it?.theme) ? it.theme : "dark"; layout = it?.layout === "poster" ? "poster" : "banner";
+  $("#fTitle").textContent = tr(it ? "Edit addon page" : "Create an addon page");
+  ptype = it?.type || "addon"; $("#ft").value = ptype; $("#reqBox").hidden = ptype !== "addon";
+  $("#fn").value = it?.name || ""; count(); $("#fd").innerHTML = clean(it?.desc || "");
+  $("#fl").value = it?.link || ""; $("#fy").value = it?.yt || ""; $("#fdc").value = it?.dc || ""; $("#fmv").value = it?.mcv || ""; $("#fver").value = it?.ver || ""; $("#fexp").checked = !!it?.exp;
+  $("#fo").value = it && !it.studio ? "parceiro" : "studio"; $("#orgBox").hidden = !isAdmin();
+  $("#fOwn").checked = false; $("#fReq").checked = false; $("#fu").value = ""; $("#ff").value = ""; $("#fg").value = "";
+  fileTxt(); showPrev(safe(it?.image)); drawTags(); drawShots(); go("sub"); showStep(0);
+}
+$("#newBtn").onclick = () => openForm();
+$("#fClose").onclick = () => openDash();
+$("#fNext").onclick = () => showStep(step + 1); $("#fPrev").onclick = () => showStep(step - 1);
+$("#steps").onclick = e => { const k = e.target.dataset.k; if (k != null) showStep(+k); };
+$("#fn").oninput = () => { count(); updPv(); };
+$("#ft").onchange = () => { ptype = $("#ft").value; $("#reqBox").hidden = ptype !== "addon"; updPv(); };
+$("#swatches").onclick = e => { const c = e.target.dataset.c; if (c) { accent = c; drawStyle(); } };
+$("#swatches").oninput = e => { if (e.target.id === "fac") { accent = e.target.value; updPv(); } };
+$("#themeOpts").onclick = e => { if (e.target.dataset.th) { theme = e.target.dataset.th; drawStyle(); } };
+$("#layoutOpts").onclick = e => { if (e.target.dataset.ly) { layout = e.target.dataset.ly; drawStyle(); } };
+$("#ff").onchange = async e => { const f = e.target.files[0]; if (!f) return; const g = await resize(f, 800, .8, 450); if (g) { imgData = g; showPrev(g); updPv(); } else $("#ferr").textContent = tr("Could not read that image."); };
+$("#fg").onchange = async e => { for (const f of [...e.target.files]) { if (galData.length >= 4) break; const g = await resize(f, 900, .72); if (g) galData.push(g); } e.target.value = ""; drawShots(); };
+$("#shots").onclick = e => { const k = e.target.dataset.gx; if (k != null) { galData.splice(+k, 1); drawShots(); } };
 $("#fu").onchange = async e => {
   const f = e.target.files[0]; upFile = null;
   if (f) {
     if (!/\.(mcaddon|mcpack)$/i.test(f.name) || f.size > MAX_MB * 1048576) { $("#ferr").textContent = tr("The file must be .mcaddon or .mcpack, up to {0} MB.", MAX_MB); e.target.value = ""; }
     else {
       const b64 = await new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(r.result.split(",")[1]); r.onerror = no; r.readAsDataURL(f); });
-      const parts = []; for (let p = 0; p < b64.length; p += CH) parts.push(b64.slice(p, p + CH)); upFile = {name: f.name, size: f.size, parts};
+      const parts = []; for (let p = 0; p < b64.length; p += CH) parts.push(b64.slice(p, p + CH)); upFile = {name: f.name, size: f.size, parts}; $("#ferr").textContent = "";
     }
   }
   fileTxt();
 };
-$("#fdi").onchange = e => {
-  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
-  const img = new Image();
-  img.onload = () => { const s = Math.min(1, 900 / img.width), c = document.createElement("canvas"); c.width = img.width * s; c.height = img.height * s; c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); $("#fd").focus(); document.execCommand("insertImage", false, c.toDataURL("image/jpeg", .75)); URL.revokeObjectURL(img.src); };
-  img.onerror = () => $("#ferr").textContent = tr("Could not read that image.");
-  img.src = URL.createObjectURL(f);
-};
-function showPrev(src) { $("#prev").src = src || ""; $("#prev").hidden = !src; $("#dropTxt").hidden = !!src; }
-function openForm(it) {
-  editing = it || null; imgData = ""; tags = (it?.tags || []).filter(t => TAGS.includes(t));
-  $("#fTitle").textContent = tr(it ? "Edit post" : "Submit new post");
-  setType(it?.type || "addon"); $("#fn").value = it?.name || ""; count();
-  $("#fd").innerHTML = clean(it?.desc || ""); $("#fl").value = it?.link || ""; $("#fReq").checked = false; $("#ff").value = "";
-  $("#fo").value = it && !it.studio ? "parceiro" : "studio"; $("#orgBox").hidden = !isAdmin();
-  $("#fy").value = it?.yt || ""; $("#fdc").value = it?.dc || ""; upFile = null; $("#fu").value = ""; fileTxt();
-  showPrev(safe(it?.image)); $("#ferr").textContent = ""; drawTags(); go("sub");
-}
-$("#newBtn").onclick = () => openForm();
-$("#fClose").onclick = () => openDash();
-$("#fn").oninput = count;
+$("#fdi").onchange = async e => { const f = e.target.files[0]; e.target.value = ""; if (!f) return; const g = await resize(f, 900, .75); if (g) { $("#fd").focus(); document.execCommand("insertImage", false, g); } else $("#ferr").textContent = tr("Could not read that image."); };
 document.querySelectorAll(".tb button").forEach(b => {
   b.onmousedown = e => e.preventDefault();
   b.onclick = () => {
@@ -712,41 +813,29 @@ document.querySelectorAll(".tb button").forEach(b => {
   };
 });
 $("#fd").addEventListener("paste", e => { e.preventDefault(); document.execCommand("insertText", false, e.clipboardData.getData("text/plain")); });
-$("#ff").onchange = e => {
-  const f = e.target.files[0]; if (!f) return;
-  const img = new Image();
-  img.onload = () => {
-    const W = 800, H = 450, c = document.createElement("canvas"); c.width = W; c.height = H;
-    const k = Math.max(W / img.width, H / img.height), w = img.width * k, h = img.height * k;
-    c.getContext("2d").drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
-    imgData = c.toDataURL("image/jpeg", .8); showPrev(imgData); URL.revokeObjectURL(img.src);
-  };
-  img.onerror = () => $("#ferr").textContent = tr("Could not read that image.");
-  img.src = URL.createObjectURL(f);
-};
 $("#saveBtn").onclick = async () => {
   const name = $("#fn").value.trim(), link = $("#fl").value.trim(), image = imgData || editing?.image || "", adm = isAdmin();
-  const desc = clean($("#fd").innerHTML), err = (m, ...a) => ($("#ferr").textContent = tr(m, ...a));
-  if (!image) return err("Upload a thumbnail (16:9).");
-  if (!name) return err("Write a title.");
-  if (!$("#fd").textContent.trim()) return err("Write a description.");
-  if (desc.length > 20000) return err("The description is too long.");
-  if (!tags.length) return err("Choose at least 1 tag.");
-  const yt = $("#fy").value.trim(), dc = $("#fdc").value.trim();
-  if (link && !/^https?:\/\/[^\s/]+/i.test(link)) return err("Paste a download link starting with https://");
-  if (!link && !upFile && !(editing?.file?.chunks > 0) && !editing?.filePath) return err("Add a download link or upload a file.");
-  if (yt && !okLink("youtube", yt)) return err("Use a valid https link for {0}.", "YouTube");
-  if (dc && !okLink("discord", dc)) return err("Use a valid https link for {0}.", "Discord");
-  if (ptype === "addon" && !$("#fReq").checked) return err("Confirm that the addon does not use player.json.");
-  const it = {id: editing?.id, name, desc, type: ptype, tags: [...tags], link, yt, dc, image, studio: adm && $("#fo").value === "studio", status: "pending"};
+  const desc = clean($("#fd").innerHTML), yt = $("#fy").value.trim(), dc = $("#fdc").value.trim();
+  const bad = (k, m, ...a) => { showStep(k); $("#ferr").textContent = tr(m, ...a); };
+  if (!name) return bad(0, "Write a name.");
+  if (!tags.length) return bad(0, "Choose at least 1 tag.");
+  if (!image) return bad(1, "Upload a cover image.");
+  if (!$("#fd").textContent.trim()) return bad(2, "Write a description.");
+  if (desc.length > 20000) return bad(2, "The description is too long.");
+  if (link && !/^https?:\/\/[^\s/]+/i.test(link)) return bad(3, "Paste a download link starting with https://");
+  if (!link && !upFile && !(editing?.file?.chunks > 0) && !editing?.filePath) return bad(3, "Add a download link or upload a file.");
+  if (yt && !okLink("youtube", yt)) return bad(3, "Use a valid https link for {0}.", "YouTube");
+  if (dc && !okLink("discord", dc)) return bad(3, "Use a valid https link for {0}.", "Discord");
+  if (!$("#fOwn").checked || (ptype === "addon" && !$("#fReq").checked)) return bad(5, "Please confirm the checklist before submitting.");
+  const it = {id: editing?.id, name, desc, type: ptype, tags: [...tags], link, yt, dc, image, gallery: [...galData], accent, theme, layout, mcv: $("#fmv").value.trim().slice(0, 20), ver: $("#fver").value.trim().slice(0, 20), exp: $("#fexp").checked, studio: adm && $("#fo").value === "studio", status: "pending"};
   if (!editing) { it.authorUid = user.uid; it.authorName = nameOf(user); it.path = ""; it.filePath = ""; }
   if (upFile) it.file = {name: upFile.name, size: upFile.size, chunks: upFile.parts.length};
-  if (JSON.stringify(it).length > 900000) return err("The post is too big. Remove some images from the description.");
+  if (JSON.stringify(it).length > 900000) return bad(1, "The post is too big. Remove some images from the description.");
   try {
     const id = await B.save(it);
-    if (upFile) { await B.dropChunks(id); await B.putChunks(id, upFile.parts, (k, t) => err("Uploading file {0}/{1}...", k, t)); }
+    if (upFile) { await B.dropChunks(id); await B.putChunks(id, upFile.parts, (k, t) => $("#ferr").textContent = tr("Uploading file {0}/{1}...", k, t)); }
     upFile = null; await openDash(); refresh();
-  } catch (e) { err(upFile ? "Could not upload the file. Edit the post and try again." : "Could not save. Try signing in again."); }
+  } catch (e) { $("#ferr").textContent = tr(upFile ? "Could not upload the file. Edit the post and try again." : "Could not save. Try signing in again."); }
 };
 
 /* ---------- Trocar idioma ---------- */
@@ -758,7 +847,7 @@ function retitle() {
 function setLang(l) {
   lang = l === "pt" ? "pt" : "en"; localStorage.setItem("lang", lang); $("#sl").value = lang;
   applyLang(); retitle(); head(); renderHome(); if (!$("#dash").hidden) renderDash();
-  if (!$("#sub").hidden) { $("#fTitle").textContent = tr(editing ? "Edit post" : "Submit new post"); count(); drawTags(); fileTxt(); }
+  if (!$("#sub").hidden) { $("#fTitle").textContent = tr(editing ? "Edit addon page" : "Create an addon page"); count(); drawTags(); fileTxt(); showStep(step); }
   ["#aerr", "#serr", "#ferr"].forEach(x => $(x).textContent = "");
 }
 
