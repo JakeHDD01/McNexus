@@ -128,6 +128,10 @@ dialog textarea{width:100%;background:var(--card);border:1px solid var(--line);b
 .opts button{border:1px solid var(--line);background:none;border-radius:10px;padding:10px 18px;cursor:pointer;color:var(--m)}
 .opts button.on{border-color:var(--p);background:var(--card);color:var(--t)}
 .bar{margin-top:22px}.chk{margin-top:14px}
+.warn{flex-basis:100%;background:rgba(255,46,79,.12);border:1px solid var(--r);border-radius:10px;padding:10px 14px;color:#ffc2cd}
+#dAlert{cursor:pointer;margin:14px 0 0}
+.pcover{height:150px;border-radius:16px;background:var(--g);overflow:hidden;margin-top:22px}.pcover img{width:100%;height:100%;object-fit:cover;display:block}
+#dScope{margin:16px 0 0}
 </style>
 </head>
 <body>
@@ -178,12 +182,15 @@ dialog textarea{width:100%;background:var(--card);border:1px solid var(--line);b
   <h2 class="t">Creator dashboard</h2>
   <p class="sub" id="dWho" data-d></p>
   <button class="btn" id="newBtn">Add addon</button>
+  <div class="opts" id="dScope" data-d hidden></div>
+  <div class="warn" id="dAlert" data-d hidden role="button"></div>
   <div class="stats" id="stats" data-d></div>
   <div class="tabs" id="dTabs" data-d></div>
   <div id="dList" data-d></div>
 </section>
 
 <section id="profile" class="wrap" hidden>
+  <div class="pcover" id="pCover" data-d></div>
   <div class="pbox"><div class="pav" id="pAv" data-d></div><h2 id="pName" data-d></h2></div>
   <p class="pbio" id="pBio" data-d></p>
   <div class="row" id="pLinks" data-d></div>
@@ -206,7 +213,9 @@ dialog textarea{width:100%;background:var(--card);border:1px solid var(--line);b
     <label>Tags * (choose up to 5)</label>
     <div class="chips" id="tagBox" data-d></div>
     <p class="note" id="tcount" data-d>0/5 tags selected</p>
-    <div id="orgBox" hidden><label for="fo">Origin</label><select id="fo"><option value="studio">Studio addon</option><option value="parceiro">Partner addon</option></select></div>
+    <div id="orgBox" hidden><label for="fo">Origin</label><select id="fo"><option value="studio">Studio addon</option><option value="parceiro">Partner addon</option></select>
+      <label for="fcr">Author credit (for partner addons)</label><input id="fcr" maxlength="30" placeholder="Partner name">
+      <p class="note">Leave empty to credit yourself.</p></div>
     <label for="fmv">Minecraft version (optional)</label><input id="fmv" maxlength="20" placeholder="1.21.x">
     <label for="fver">Addon version (optional)</label><input id="fver" maxlength="20" placeholder="1.0">
     <label class="chk"><input type="checkbox" id="fexp"><span>Needs Experimental toggles</span></label>
@@ -291,6 +300,10 @@ dialog textarea{width:100%;background:var(--card);border:1px solid var(--line);b
   <label for="sn">Creator name</label><input id="sn" maxlength="30">
   <label for="sl">Language</label><select id="sl"><option value="en">English</option><option value="pt">Português</option></select>
   <label for="pb">Bio</label><textarea id="pb" maxlength="300"></textarea>
+  <label for="pcov">Profile cover</label>
+  <input id="pcov" type="file" accept="image/*">
+  <img id="pcPrev" alt="" hidden style="width:100%;border-radius:10px;margin-top:8px;aspect-ratio:3.5/1;object-fit:cover">
+  <button class="btn ghost sm" id="pcRm" type="button" hidden style="margin-top:8px">Remove cover</button>
   <label>Social links</label><div id="lkBox" data-d></div>
   <div id="ghBox" hidden style="border-top:1px solid var(--line);margin-top:16px;padding-top:4px">
     <label for="gr">Site repository (user/repository)</label><input id="gr" placeholder="youruser/yoursite">
@@ -378,7 +391,11 @@ const PT = {
   "After you submit, the page stays “In review” until the admin approves it. Only then is it published.":"Depois de enviar, a página fica “Em análise” até o admin aprovar. Só então ela é publicada.",
   "Back":"Voltar","Submit for review":"Enviar para análise","Basics":"Básico","Media":"Mídia","Description":"Descrição","Files and links":"Arquivos e links","Style":"Estilo","Review":"Revisar","Your addon name":"Nome do seu addon",
   "Write a name.":"Escreva o nome.","Upload a cover image.":"Envie a imagem de capa.","Please confirm the checklist before submitting.":"Confirme a lista antes de enviar.",
-  "This addon has no download link or file. Edit it first.":"Este addon não tem link nem arquivo de download. Edite antes."
+  "This addon has no download link or file. Edit it first.":"Este addon não tem link nem arquivo de download. Edite antes.",
+  "My addons":"Meus addons","Other creators":"Outros criadores","{0} in review":"{0} em análise","Author credit (for partner addons)":"Crédito do autor (para addons de parceiros)",
+  "Partner name":"Nome do parceiro","Leave empty to credit yourself.":"Deixe vazio para creditar você mesmo.","Profile cover":"Capa do perfil","Remove cover":"Remover capa",
+  "Why is it denied? (the creator will see this)":"Por que foi negado? (o criador vai ver isso)","Needs changes":"Precisa de ajustes","No reason was given.":"Nenhum motivo foi informado.",
+  "Tap Edit, fix it and send it again.":"Toque em Editar, corrija e envie de novo.","{0} addon(s) need changes. Tap to see.":"{0} addon(s) precisam de ajustes. Toque para ver."
 };
 let lang = localStorage.getItem("lang") === "pt" ? "pt" : "en";
 const tr = (s, ...a) => { let r = lang === "pt" ? (PT[s] ?? s) : s; a.forEach((v, i) => r = r.split("{" + i + "}").join(v)); return r; };
@@ -419,12 +436,13 @@ function clean(html) {  // deixa só formatação segura na descrição
 }
 const tagsHtml = i => (i.tags || []).filter(t => TAGS.includes(t)).map(t => `<span class="tg">${esc(t)}</span>`).join("");
 const typeLabel = x => x === "addonpack" ? "Addonpack" : "Addon";
+const who = i => i.credit || i.authorName || CONFIG.studio;  // quem aparece como autor (crédito para addons de parceiros)
 const SOC = [["discord","Discord"],["youtube","YouTube"],["twitter","X / Twitter"],["instagram","Instagram"],["tiktok","TikTok"],["website","Website"]];
 const HOSTS = {discord: /(^|\.)(discord\.gg|discord\.com)$/, youtube: /(^|\.)(youtube\.com|youtu\.be)$/, twitter: /(^|\.)(twitter\.com|x\.com)$/, instagram: /(^|\.)instagram\.com$/, tiktok: /(^|\.)tiktok\.com$/, website: /./};
 const okLink = (k, u) => { try { const x = new URL(u); return x.protocol === "https:" && HOSTS[k].test(x.hostname); } catch (e) { return false; } };
 const MAX_MB = 25, CH = 800000;  // limite do arquivo e tamanho de cada pedaço enviado ao Firestore
 const demo = !CONFIG.firebase.apiKey, PER = 8;
-let live = [], mine = [], user = null, adminOk = false, editing = null, imgData = "", B, page = 1, dtab = "todos", mode = "login", pubIntent = false, ptype = "addon", tags = [], upFile = null;
+let live = [], mine = [], user = null, adminOk = false, editing = null, imgData = "", B, page = 1, dtab = "todos", mode = "login", pubIntent = false, ptype = "addon", tags = [], upFile = null, dscope = "mine", covData = "";
 const isAdmin = () => !!user && (demo ? /^admin/i.test(user.email) : adminOk);
 const nameOf = u => u?.displayName || (u?.email || "").split("@")[0];
 $("#fTag").innerHTML = '<option value="todas">All tags</option>' + TAGS.map(t => `<option>${t}</option>`).join("");
@@ -496,7 +514,7 @@ $("#q").oninput = () => { page = 1; go("home"); renderHome(); };
 /* ---------- Início ---------- */
 function filtered() {
   const q = $("#q").value.trim().toLowerCase(), t = $("#fType").value, o = $("#fOrg").value, s = $("#fSort").value, tg = $("#fTag").value;
-  return live.filter(i => (t === "todos" || i.type === t) && (tg === "todas" || (i.tags || []).includes(tg)) && (o === "todos" || (o === "studio") === !!i.studio) && (i.name + " " + (i.authorName || "") + " " + (i.tags || []).join(" ")).toLowerCase().includes(q))
+  return live.filter(i => (t === "todos" || i.type === t) && (tg === "todas" || (i.tags || []).includes(tg)) && (o === "todos" || (o === "studio") === !!i.studio) && (i.name + " " + who(i) + " " + (i.tags || []).join(" ")).toLowerCase().includes(q))
     .sort((x, y) => s === "az" ? x.name.localeCompare(y.name) : (y.created || 0) - (x.created || 0));
 }
 const card = i => `
@@ -518,7 +536,7 @@ async function refresh() { try { live = await B.list(); } catch (e) { live = [];
 /* ---------- Detalhes ---------- */
 function openView(id) {
   const i = live.find(x => x.id === id) || mine.find(x => x.id === id); if (!i) return;
-  const nm = i.authorName || CONFIG.studio, by = esc(tr("by {0}", "@@")).replace("@@", /^[\w-]+$/.test(i.authorUid || "") ? `<a href="#u=${esc(i.authorUid)}" style="color:#ff9cae">${esc(nm)}</a>` : esc(nm));
+  const nm = who(i), by = esc(tr("by {0}", "@@")).replace("@@", !i.credit && /^[\w-]+$/.test(i.authorUid || "") ? `<a href="#u=${esc(i.authorUid)}" style="color:#ff9cae">${esc(nm)}</a>` : esc(nm));
   $("#vBody").innerHTML = `${safe(i.image) ? `<img src="${esc(safe(i.image))}" alt="">` : ""}<h2>${esc(i.name)}</h2>
     <p class="by">${by} · ${typeLabel(i.type)}</p>
     <div>${tagsHtml(i)}</div><div class="rich">${clean(i.desc)}</div>
@@ -551,7 +569,7 @@ $("#logoutBtn").onclick = async () => { await B.logout(); head(); go("home"); re
 $("#setBtn").onclick = async () => {
   $("#sn").value = nameOf(user); $("#sl").value = lang; $("#serr").textContent = "";
   let p = null; try { p = await B.profile(user.uid); } catch (e) {}
-  $("#pb").value = p?.bio || ""; SOC.forEach(([k]) => $("#lk-" + k).value = p?.links?.[k] || "");
+  $("#pb").value = p?.bio || ""; covData = safe(p?.cover || ""); showCov(); SOC.forEach(([k]) => $("#lk-" + k).value = p?.links?.[k] || "");
   const g = JSON.parse(localStorage.getItem("gh") || "{}"); $("#gr").value = g.repo || ""; $("#gb").value = g.branch || "main"; $("#gt").value = g.token || "";
   $("#ghBox").hidden = demo || !isAdmin(); $("#dSet").showModal();
 };
@@ -561,14 +579,17 @@ $("#sClose").onclick = () => $("#dSet").close();
 $("#sSave").onclick = async () => {
   const n = $("#sn").value.trim(); if (!n) return; const links = {};
   for (const [k, l] of SOC) { const v = $("#lk-" + k).value.trim(); if (v && !okLink(k, v)) { $("#serr").textContent = tr("Use a valid https link for {0}.", l); return; } if (v) links[k] = v; }
-  try { await B.rename(n); await B.setProfile({name: n, bio: $("#pb").value.trim().slice(0, 300), links}); head(); $("#serr").textContent = tr("Profile saved."); } catch (e) { $("#serr").textContent = tr("Could not save."); }
+  try { await B.rename(n); await B.setProfile({name: n, bio: $("#pb").value.trim().slice(0, 300), links, ...(covData ? {cover: covData} : {})}); head(); $("#serr").textContent = tr("Profile saved."); } catch (e) { $("#serr").textContent = tr("Could not save."); }
 };
 $("#profBtn").onclick = () => { location.hash = "#u=" + user.uid; };
+const showCov = () => { $("#pcPrev").src = covData; $("#pcPrev").hidden = !covData; $("#pcRm").hidden = !covData; };
+$("#pcov").onchange = async e => { const f = e.target.files[0]; e.target.value = ""; if (!f) return; const g = await resize(f, 1000, .75, 286); if (g) { covData = g; showCov(); } else $("#serr").textContent = tr("Could not read that image."); };
+$("#pcRm").onclick = () => { covData = ""; showCov(); };
 async function showProfile(uid) {
   if (!live.length) await refresh();
   go("profile"); let p = null; try { p = await B.profile(uid); } catch (e) {}
-  const list = live.filter(x => x.authorUid === uid), nm = p?.name || list[0]?.authorName || tr("Creator");
-  $("#pName").textContent = nm; $("#pAv").textContent = nm.charAt(0).toUpperCase(); $("#pBio").textContent = p?.bio || "";
+  const list = live.filter(x => x.authorUid === uid && !x.credit), nm = p?.name || list[0]?.authorName || tr("Creator");
+  $("#pName").textContent = nm; $("#pAv").textContent = nm.charAt(0).toUpperCase(); $("#pBio").textContent = p?.bio || ""; $("#pCover").innerHTML = safe(p?.cover) ? `<img src="${esc(safe(p.cover))}" alt="">` : "";
   $("#pLinks").innerHTML = SOC.filter(([k]) => okLink(k, p?.links?.[k])).map(([k, l]) => `<a class="btn ${k === "discord" ? "dc" : "ghost"} sm" href="${esc(p.links[k])}" target="_blank" rel="noopener noreferrer">${l}</a>`).join("");
   $("#pGrid").innerHTML = list.length ? list.map(card).join("") : `<div class="empty">${tr("No addons yet.")}</div>`;
 }
@@ -641,7 +662,7 @@ const pageHtml = (i, o) => {
 <style>:root{--bg:${th[0]};--t:${th[1]};--m:${th[2]};--c:${th[3]};--l:${th[4]};--a:${hex(i.accent)}}${pageCss}</style></head><body>
 <header><a href="${up}">← ${esc(CONFIG.studio)}</a></header>
 <main class="${i.layout === "poster" ? "poster" : ""}"><div class="top">${o.cover ? `<img class="cv" src="${esc(o.cover)}" alt="">` : ""}<div class="tt"><h1>${esc(i.name)}</h1>
-<p class="by">by <a href="${up}#u=${esc(i.authorUid)}">${esc(i.authorName || CONFIG.studio)}</a><span class="pill">${typeLabel(i.type)}</span></p><div>${chips}</div></div></div>
+<p class="by">by ${i.credit ? esc(i.credit) : `<a href="${up}#u=${esc(i.authorUid)}">${esc(i.authorName || CONFIG.studio)}</a>`}<span class="pill">${typeLabel(i.type)}</span></p><div>${chips}</div></div></div>
 <div class="acts"><a class="btn" href="${esc(o.dl)}" rel="noopener noreferrer"${o.dlFile ? " download" : ""}>Download</a><button class="lk" id="like" type="button"><span class="h">♥</span> <span id="lc">0</span></button>${okLink("youtube", i.yt) ? `<a class="btn ghost" href="${esc(i.yt)}" rel="noopener noreferrer">YouTube</a>` : ""}${okLink("discord", i.dc) ? `<a class="btn dc" href="${esc(i.dc)}" rel="noopener noreferrer">Discord</a>` : ""}</div>
 ${o.shots.length ? `<div class="gal">${o.shots.map(x => `<a href="${esc(x)}"><img src="${esc(x)}" alt=""></a>`).join("")}</div>` : ""}
 <div class="d">${o.desc}</div>
@@ -661,7 +682,7 @@ const dirOf = p => p.replace(/\/index\.html$|\.html$/, "");
 async function publish(i) {  // cria addons/criador/nome/ com index.html, capa, imagens e arquivo juntos
   if (demo) return {path: ""};
   let path = /^addons\/[a-z0-9-]+\/[a-z0-9-]+\/index\.html$/.test(i.path || "") ? i.path : "";
-  if (!path) { const cr = slug(i.authorName, "creator"); let nm = slug(i.name, "addon"); if (mine.some(x => x.id !== i.id && x.path === `addons/${cr}/${nm}/index.html`)) nm += "-" + slug(i.id, "x").slice(0, 4); path = `addons/${cr}/${nm}/index.html`; }
+  if (!path) { const cr = slug(who(i), "creator"); let nm = slug(i.name, "addon"); if (mine.some(x => x.id !== i.id && x.path === `addons/${cr}/${nm}/index.html`)) nm += "-" + slug(i.id, "x").slice(0, 4); path = `addons/${cr}/${nm}/index.html`; }
   const dir = dirOf(path), files = [], shots = [];
   let n = 0, cover = "", filePath = (i.filePath || "").startsWith(dir + "/") ? i.filePath : "";
   const put = (name, b64) => { files.push([`${dir}/${name}`, b64]); return name; };
@@ -692,22 +713,29 @@ async function unpublish(path) {
 $("#dashBtn").onclick = () => openDash();
 async function openDash() { go("dash"); try { mine = await B.mine(); } catch (e) { mine = []; } renderDash(); }
 function renderDash() {
-  const c = s => mine.filter(x => s === "todos" || x.status === s).length, adm = isAdmin();
+  const adm = isAdmin(), mineOf = x => x.authorUid === user.uid;
+  const base = adm ? mine.filter(x => dscope === "mine" ? mineOf(x) : !mineOf(x)) : mine;
+  const c = s => base.filter(x => s === "todos" || x.status === s).length;
+  $("#dScope").hidden = !adm;
+  const dn = c("denied"); $("#dAlert").hidden = adm || !dn; if (!adm && dn) $("#dAlert").textContent = tr("{0} addon(s) need changes. Tap to see.", dn);
+  if (adm) { const o = mine.filter(x => !mineOf(x)), pn = o.filter(x => x.status === "pending").length; $("#dScope").innerHTML = `<button type="button" class="${dscope === "mine" ? "on" : ""}" data-sc="mine">${tr("My addons")} (${mine.length - o.length})</button><button type="button" class="${dscope === "others" ? "on" : ""}" data-sc="others">${tr("Other creators")} (${o.length})${pn ? " · " + tr("{0} in review", pn) : ""}</button>`; }
   const ST = {live: tr("Live"), pending: tr("In review"), denied: tr("Denied")};
   $("#dWho").textContent = tr("Hello, {0}", nameOf(user)) + (adm ? tr(". As admin, you can see and approve all addons.") : "");
   $("#stats").innerHTML = [[tr("Total"), c("todos")], [ST.live, c("live")], [ST.pending, c("pending")], [ST.denied, c("denied")]].map(([l, v]) => `<div class="stat"><span>${l}</span><b>${v}</b></div>`).join("");
   $("#dTabs").innerHTML = [["todos", tr("All")], ["live", ST.live], ["pending", ST.pending], ["denied", ST.denied]].map(([k, l]) => `<button class="tab ${dtab === k ? "on" : ""}" data-dt="${k}">${l} (${c(k)})</button>`).join("");
-  const a = mine.filter(x => dtab === "todos" || x.status === dtab).sort((x, y) => (y.created || 0) - (x.created || 0));
+  const a = base.filter(x => dtab === "todos" || x.status === dtab).sort((x, y) => (y.created || 0) - (x.created || 0));
   $("#dList").innerHTML = a.length ? a.map(i => `
     <div class="item">${safe(i.image) ? `<img src="${esc(safe(i.image))}" alt="">` : `<div class="ph"></div>`}
-      <div class="info"><b>${esc(i.name)}</b><span class="s ${esc(i.status)}">${ST[i.status] || ""}</span><br><small>${esc(i.authorName || "")}${i.rm ? " · " + tr("requested removal") : ""}${i.path ? " · " + esc(i.path) : ""}</small></div>
+      <div class="info"><b>${esc(i.name)}</b><span class="s ${esc(i.status)}">${ST[i.status] || ""}</span><br><small>${esc(who(i))}${i.rm ? " · " + tr("requested removal") : ""}${i.path ? " · " + esc(i.path) : ""}</small></div>
       <div class="row">
         ${adm && i.status !== "live" ? `<button class="btn sm" data-a="ok" data-id="${esc(i.id)}">${tr("Approve")}</button>` : ""}
         ${adm && i.status !== "denied" ? `<button class="btn ghost sm" data-a="no" data-id="${esc(i.id)}">${tr("Deny")}</button>` : ""}
         <button class="btn ghost sm" data-a="edit" data-id="${esc(i.id)}">${tr("Edit")}</button>
         <button class="btn del sm" data-a="del" data-id="${esc(i.id)}">${!adm && i.status === "live" ? tr("Request removal") : tr("Remove")}</button>
-      </div></div>`).join("") : `<div class="empty">${tr("Nothing here yet. Tap “Add addon” to get started.")}</div>`;
+      </div>${i.status === "denied" ? `<div class="warn"><b>${tr("Needs changes")}:</b> ${esc(i.denyReason || tr("No reason was given."))}<br><small>${tr("Tap Edit, fix it and send it again.")}</small></div>` : ""}</div>`).join("") : `<div class="empty">${tr("Nothing here yet. Tap “Add addon” to get started.")}</div>`;
 }
+$("#dAlert").onclick = () => { dtab = "denied"; renderDash(); };
+$("#dScope").onclick = e => { const k = e.target.dataset.sc; if (k) { dscope = k; dtab = k === "others" ? "pending" : "todos"; renderDash(); } };
 $("#dTabs").onclick = e => { if (e.target.dataset.dt) { dtab = e.target.dataset.dt; renderDash(); } };
 $("#dList").onclick = async e => {
   const {a, id} = e.target.dataset; if (!a) return;
@@ -720,10 +748,13 @@ $("#dList").onclick = async e => {
       if (ask) await B.save({id, status: "pending", rm: true});
       else { if (adm && i.path) await unpublish(i.path); if (i.file?.chunks > 0) await B.dropChunks(id).catch(() => {}); await B.remove(id); }
     } else if (a === "ok") {
-      const x = await publish(i); await B.status(id, "live", {path: x.path, rm: false, ...(x.path ? {filePath: x.filePath, ...(x.file ? {file: x.file} : {})} : {})});
+      const x = await publish(i); await B.status(id, "live", {path: x.path, rm: false, denyReason: "", ...(x.path ? {filePath: x.filePath, ...(x.file ? {file: x.file} : {})} : {})});
       if (i.file?.chunks > 0 && x.path) await B.dropChunks(id).catch(() => {});
       if (x.path) alert(tr("Page created at {0}. GitHub takes about 1 minute to put it online.", x.path));
-    } else { if (i.path) await unpublish(i.path); await B.status(id, "denied", {path: "", filePath: ""}); }
+    } else {
+      const why = prompt(tr("Why is it denied? (the creator will see this)")); if (why === null) return;
+      if (i.path) await unpublish(i.path); await B.status(id, "denied", {path: "", filePath: "", denyReason: why.trim().slice(0, 300)});
+    }
     await openDash(); refresh();
   } catch (x) { alert(tr(x.message === "nodl" ? "This addon has no download link or file. Edit it first." : x.message === "nogh" ? "Before approving, set up GitHub in Settings." : (x.message || "").startsWith("gh") ? "Could not reach GitHub. Check the repository, branch and token in Settings." : "You do not have permission for this action.")); }
 };
@@ -773,7 +804,7 @@ function openForm(it) {
   ptype = it?.type || "addon"; $("#ft").value = ptype; $("#reqBox").hidden = ptype !== "addon";
   $("#fn").value = it?.name || ""; count(); $("#fd").innerHTML = clean(it?.desc || "");
   $("#fl").value = it?.link || ""; $("#fy").value = it?.yt || ""; $("#fdc").value = it?.dc || ""; $("#fmv").value = it?.mcv || ""; $("#fver").value = it?.ver || ""; $("#fexp").checked = !!it?.exp;
-  $("#fo").value = it && !it.studio ? "parceiro" : "studio"; $("#orgBox").hidden = !isAdmin();
+  $("#fo").value = it && !it.studio ? "parceiro" : "studio"; $("#fcr").value = it?.credit || ""; $("#orgBox").hidden = !isAdmin();
   $("#fOwn").checked = false; $("#fReq").checked = false; $("#fu").value = ""; $("#ff").value = ""; $("#fg").value = "";
   fileTxt(); showPrev(safe(it?.image)); drawTags(); drawShots(); go("sub"); showStep(0);
 }
@@ -827,7 +858,8 @@ $("#saveBtn").onclick = async () => {
   if (yt && !okLink("youtube", yt)) return bad(3, "Use a valid https link for {0}.", "YouTube");
   if (dc && !okLink("discord", dc)) return bad(3, "Use a valid https link for {0}.", "Discord");
   if (!$("#fOwn").checked || (ptype === "addon" && !$("#fReq").checked)) return bad(5, "Please confirm the checklist before submitting.");
-  const it = {id: editing?.id, name, desc, type: ptype, tags: [...tags], link, yt, dc, image, gallery: [...galData], accent, theme, layout, mcv: $("#fmv").value.trim().slice(0, 20), ver: $("#fver").value.trim().slice(0, 20), exp: $("#fexp").checked, studio: adm && $("#fo").value === "studio", status: "pending"};
+  const it = {id: editing?.id, name, desc, type: ptype, tags: [...tags], link, yt, dc, image, gallery: [...galData], accent, theme, layout, mcv: $("#fmv").value.trim().slice(0, 20), ver: $("#fver").value.trim().slice(0, 20), exp: $("#fexp").checked, studio: adm && $("#fo").value === "studio", credit: adm && $("#fo").value === "parceiro" ? $("#fcr").value.trim().slice(0, 30) : "", status: "pending"};
+  if (editing) it.denyReason = "";
   if (!editing) { it.authorUid = user.uid; it.authorName = nameOf(user); it.path = ""; it.filePath = ""; }
   if (upFile) it.file = {name: upFile.name, size: upFile.size, chunks: upFile.parts.length};
   if (JSON.stringify(it).length > 900000) return bad(1, "The post is too big. Remove some images from the description.");
