@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>McNexus Studio – Minecraft addons</title>
+<meta property="og:type" content="website"><meta property="og:title" content="McNexus Studio – Minecraft addons"><meta property="og:description" content="Minecraft Bedrock and PE addons and addonpacks from McNexus Studio and partners."><meta name="theme-color" content="#8f2cff">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -132,6 +133,16 @@ dialog textarea{width:100%;background:var(--card);border:1px solid var(--line);b
 #dAlert{cursor:pointer;margin:14px 0 0}
 .pcover{height:150px;border-radius:16px;background:var(--g);overflow:hidden;margin-top:22px}.pcover img{width:100%;height:100%;object-fit:cover;display:block}
 #dScope{margin:16px 0 0}
+.fv{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;border:0;background:rgba(13,6,23,.72);color:#ffd36b;font-size:1.1rem;cursor:pointer;z-index:2}
+.strip{display:flex;gap:16px;overflow-x:auto;padding-bottom:10px;margin-bottom:20px}.strip .card{min-width:260px;flex:none}
+.bd{display:inline-block;font-size:.72rem;font-weight:700;padding:1px 9px;border-radius:99px;border:1px solid #5ac8fa;color:#5ac8fa;margin-left:8px;vertical-align:middle}.bd.studio{background:var(--p);border-color:var(--p);color:#fff}
+#faq,#favs{max-width:900px;margin:0 auto;padding-bottom:50px}
+#faq details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-top:12px}
+#faq summary{cursor:pointer;font-weight:700}#faq p{color:var(--m);margin-top:8px}
+.clrow{border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.clrow .row{justify-content:space-between;align-items:center}
+.clrow textarea{width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;min-height:60px;resize:vertical}
+.clrow input{width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px}
 </style>
 </head>
 <body>
@@ -144,6 +155,7 @@ dialog textarea{width:100%;background:var(--card);border:1px solid var(--line);b
     <button class="av" id="avBtn" aria-label="My account" data-d hidden></button>
     <div class="dd" id="dd" hidden>
       <button id="dashBtn">Creator dashboard</button>
+      <button id="favBtn">My favorites</button>
       <button id="profBtn">My profile</button>
       <button id="setBtn">Settings</button>
       <button class="out" id="logoutBtn">Sign out</button>
@@ -155,6 +167,7 @@ dialog textarea{width:100%;background:var(--card);border:1px solid var(--line);b
   <button data-t="todos">All</button>
   <button data-t="addon">Addons</button>
   <button data-t="addonpack">Addonpacks</button>
+  <button data-h="faq">Help (FAQ)</button>
   <div class="row"><button data-l="en">English</button><button data-l="pt">Português</button></div>
 </nav>
 
@@ -167,11 +180,12 @@ dialog textarea{width:100%;background:var(--card);border:1px solid var(--line);b
   <div class="wrap">
     <h2 class="t">Minecraft Bedrock addons and addonpacks</h2>
     <p class="sub" id="count" data-d></p>
+    <div id="featBox" hidden><h2 class="t" style="margin:0 0 12px;font-size:1.3rem">Featured</h2><div class="strip" id="feat" data-d></div></div>
     <div class="filters">
       <select id="fType" aria-label="Type"><option value="todos">All types</option><option value="addon">Addons</option><option value="addonpack">Addonpacks</option></select>
       <select id="fOrg" aria-label="Origin"><option value="todos">Studio and partners</option><option value="studio">From the studio</option><option value="parceiro">Partners</option></select>
       <select id="fTag" aria-label="Tags"></select>
-      <select id="fSort" aria-label="Order"><option value="new">Newest</option><option value="az">A–Z order</option></select>
+      <select id="fSort" aria-label="Order"><option value="new">Newest</option><option value="az">A–Z order</option><option value="likes">Most liked</option></select>
     </div>
     <div class="grid" id="grid" data-d></div>
     <div class="pg" id="pg" data-d></div>
@@ -181,21 +195,43 @@ dialog textarea{width:100%;background:var(--card);border:1px solid var(--line);b
 <section id="dash" class="wrap" hidden>
   <h2 class="t">Creator dashboard</h2>
   <p class="sub" id="dWho" data-d></p>
-  <button class="btn" id="newBtn">Add addon</button>
+  <button class="btn" id="newBtn">Add addon</button> <button class="btn ghost" id="statBtn" type="button">Stats</button>
   <div class="opts" id="dScope" data-d hidden></div>
   <div class="warn" id="dAlert" data-d hidden role="button"></div>
   <div class="stats" id="stats" data-d></div>
   <div class="tabs" id="dTabs" data-d></div>
+  <div id="dStats" data-d hidden></div>
   <div id="dList" data-d></div>
 </section>
 
 <section id="profile" class="wrap" hidden>
   <div class="pcover" id="pCover" data-d></div>
-  <div class="pbox"><div class="pav" id="pAv" data-d></div><h2 id="pName" data-d></h2></div>
+  <div class="pbox"><div class="pav" id="pAv" data-d></div><div><h2 id="pName" data-d></h2><span id="pBd" data-d></span></div></div>
+  <div class="row" style="margin:8px 0"><button class="btn sm" id="pFollow" type="button" data-d hidden></button></div>
+  <div class="row" id="pAdm" hidden style="margin:8px 0"><select id="pBdSel"><option value="">No badge</option><option value="verified">Verified</option><option value="studio">Studio</option></select><button class="btn ghost sm" id="pBdSave" type="button">Save badge</button></div>
   <p class="pbio" id="pBio" data-d></p>
   <div class="row" id="pLinks" data-d></div>
   <h2 class="t">Addons</h2>
   <div class="grid" id="pGrid" data-d></div>
+</section>
+
+<section id="favs" class="wrap" hidden>
+  <h2 class="t">My favorites</h2>
+  <div class="grid" id="fGrid" data-d></div>
+  <h2 class="t">Creators you follow</h2>
+  <div class="row" id="fFol" data-d></div>
+  <h2 class="t">New from creators you follow</h2>
+  <div class="grid" id="fNew" data-d></div>
+</section>
+
+<section id="faq" class="wrap" hidden>
+  <h2 class="t">Frequently asked questions</h2>
+  <details><summary>How do I install an addon on my phone?</summary><p>Tap the download button, then open the downloaded .mcaddon or .mcpack file with Minecraft. It imports by itself. After that, create or edit a world and turn the pack on in Add-ons.</p></details>
+  <details><summary>The download opened another page. What now?</summary><p>Some creators use a link page. Wait a few seconds and press the download button on that page.</p></details>
+  <details><summary>The addon does not work in my world.</summary><p>Check the Minecraft version and the Experimental toggles listed on the addon page. Turn them on before creating the world.</p></details>
+  <details><summary>How do I publish my addon?</summary><p>Create a creator account, open the Creator dashboard and tap Add addon. The admin reviews it before it goes live.</p></details>
+  <details><summary>Why was my addon denied?</summary><p>The admin leaves the reason in your dashboard. Fix it, tap Edit and send it again.</p></details>
+  <details><summary>How do I report something?</summary><p>Open the addon page and use the Report button. You can also report a single comment. The admin sees it in a queue.</p></details>
 </section>
 
 <section id="sub" class="wrap" hidden>
@@ -249,6 +285,9 @@ dialog textarea{width:100%;background:var(--card);border:1px solid var(--line);b
     </div>
     <div id="fd" contenteditable="true" data-ph="Describe your creation" data-d></div>
   </div>
+    <label>Changelog (optional)</label>
+    <div id="clBox" data-d></div>
+    <button type="button" class="btn ghost sm" id="clAdd">Add update</button>
   </div>
 
   <div class="panel" data-s="3" hidden>
@@ -280,7 +319,7 @@ dialog textarea{width:100%;background:var(--card);border:1px solid var(--line);b
   <div class="err" id="ferr" data-d></div>
   <div class="row bar"><button class="btn ghost" id="fPrev">Back</button><button class="btn" id="fNext">Next</button><button class="btn" id="saveBtn">Submit for review</button><button class="btn ghost" id="fClose">Cancel</button></div>
 </section>
-<footer><a class="btn dc" id="dcBtn" target="_blank" rel="noopener">Join our Discord</a><p id="foot" data-d></p></footer>
+<footer><a class="btn dc" id="dcBtn" target="_blank" rel="noopener">Join our Discord</a><p><a href="#faq" style="color:var(--m)">Help (FAQ)</a></p><p id="foot" data-d></p></footer>
 
 <dialog id="dAuth">
   <h2 id="aTitle" data-d>Sign in</h2>
@@ -328,6 +367,7 @@ dialog textarea{width:100%;background:var(--card);border:1px solid var(--line);b
 const CONFIG = {
   studio: "McNexus Studio",
   discord: "https://discord.gg/uXgJgdWtHj",
+  siteUrl: "",  // com domínio próprio, coloque aqui (ex.: "https://meusite.com/")
   firebase: window.FIREBASE_CONFIG || {apiKey: "", authDomain: "", projectId: "", appId: ""}  // vem do arquivo firebase-config.js
 };
 /* ================================= */
@@ -394,6 +434,25 @@ const PT = {
   "This addon has no download link or file. Edit it first.":"Este addon não tem link nem arquivo de download. Edite antes.",
   "My addons":"Meus addons","Other creators":"Outros criadores","{0} in review":"{0} em análise","Author credit (for partner addons)":"Crédito do autor (para addons de parceiros)",
   "Partner name":"Nome do parceiro","Leave empty to credit yourself.":"Deixe vazio para creditar você mesmo.","Profile cover":"Capa do perfil","Remove cover":"Remover capa",
+  "Featured":"Destaques","Most liked":"Mais curtidos","Favorite":"Favorito","Help (FAQ)":"Ajuda (FAQ)","My favorites":"Meus favoritos","Creators you follow":"Criadores que você segue","New from creators you follow":"Novidades de quem você segue",
+  "Follow":"Seguir","Following":"Seguindo","No badge":"Sem selo","Verified":"Verificado","Save badge":"Salvar selo","✔ Verified":"✔ Verificado","Stats":"Estatísticas",
+  "Changelog (optional)":"Histórico de mudanças (opcional)","Add update":"Adicionar atualização","Version (e.g. 1.1)":"Versão (ex.: 1.1)","What changed?":"O que mudou?",
+  "Reports":"Denúncias","Comment":"Comentário","View":"Ver","Delete comment":"Apagar comentário","Dismiss":"Dispensar","No reports. All clear!":"Nenhuma denúncia. Tudo certo!",
+  "Total likes":"Total de curtidas","Total comments":"Total de comentários","Created":"Criado em","No live addons yet.":"Nenhum addon no ar ainda.","Feature":"Destacar","Unfeature":"Tirar destaque",
+  "No favorites yet. Tap the star on an addon.":"Nenhum favorito ainda. Toque na estrela de um addon.","You are not following anyone yet.":"Você ainda não segue ninguém.","Nothing new yet.":"Nada novo ainda.",
+  "Frequently asked questions":"Perguntas frequentes",
+  "How do I install an addon on my phone?":"Como instalo um addon no celular?",
+  "Tap the download button, then open the downloaded .mcaddon or .mcpack file with Minecraft. It imports by itself. After that, create or edit a world and turn the pack on in Add-ons.":"Toque no botão de download e abra o arquivo .mcaddon ou .mcpack baixado com o Minecraft. Ele importa sozinho. Depois, crie ou edite um mundo e ative o pacote em Add-ons.",
+  "The download opened another page. What now?":"O download abriu outra página. E agora?",
+  "Some creators use a link page. Wait a few seconds and press the download button on that page.":"Alguns criadores usam uma página de link. Espere alguns segundos e aperte o botão de download dessa página.",
+  "The addon does not work in my world.":"O addon não funciona no meu mundo.",
+  "Check the Minecraft version and the Experimental toggles listed on the addon page. Turn them on before creating the world.":"Confira a versão do Minecraft e os recursos Experimentais indicados na página do addon. Ative antes de criar o mundo.",
+  "How do I publish my addon?":"Como publico meu addon?",
+  "Create a creator account, open the Creator dashboard and tap Add addon. The admin reviews it before it goes live.":"Crie uma conta de criador, abra o Painel do criador e toque em Adicionar addon. O admin analisa antes de publicar.",
+  "Why was my addon denied?":"Por que meu addon foi negado?",
+  "The admin leaves the reason in your dashboard. Fix it, tap Edit and send it again.":"O admin deixa o motivo no seu painel. Corrija, toque em Editar e envie de novo.",
+  "How do I report something?":"Como denuncio algo?",
+  "Open the addon page and use the Report button. You can also report a single comment. The admin sees it in a queue.":"Abra a página do addon e use o botão Report. Você também pode denunciar um comentário. O admin vê numa fila.",
   "Why is it denied? (the creator will see this)":"Por que foi negado? (o criador vai ver isso)","Needs changes":"Precisa de ajustes","No reason was given.":"Nenhum motivo foi informado.",
   "Tap Edit, fix it and send it again.":"Toque em Editar, corrija e envie de novo.","{0} addon(s) need changes. Tap to see.":"{0} addon(s) precisam de ajustes. Toque para ver."
 };
@@ -436,13 +495,14 @@ function clean(html) {  // deixa só formatação segura na descrição
 }
 const tagsHtml = i => (i.tags || []).filter(t => TAGS.includes(t)).map(t => `<span class="tg">${esc(t)}</span>`).join("");
 const typeLabel = x => x === "addonpack" ? "Addonpack" : "Addon";
+const badgeHtml = u => badges[u] ? `<span class="bd ${badges[u]}">${tr(badges[u] === "studio" ? "★ Studio" : "✔ Verified")}</span>` : "";
 const who = i => i.credit || i.authorName || CONFIG.studio;  // quem aparece como autor (crédito para addons de parceiros)
 const SOC = [["discord","Discord"],["youtube","YouTube"],["twitter","X / Twitter"],["instagram","Instagram"],["tiktok","TikTok"],["website","Website"]];
 const HOSTS = {discord: /(^|\.)(discord\.gg|discord\.com)$/, youtube: /(^|\.)(youtube\.com|youtu\.be)$/, twitter: /(^|\.)(twitter\.com|x\.com)$/, instagram: /(^|\.)instagram\.com$/, tiktok: /(^|\.)tiktok\.com$/, website: /./};
 const okLink = (k, u) => { try { const x = new URL(u); return x.protocol === "https:" && HOSTS[k].test(x.hostname); } catch (e) { return false; } };
 const MAX_MB = 25, CH = 800000;  // limite do arquivo e tamanho de cada pedaço enviado ao Firestore
 const demo = !CONFIG.firebase.apiKey, PER = 8;
-let live = [], mine = [], user = null, adminOk = false, editing = null, imgData = "", B, page = 1, dtab = "todos", mode = "login", pubIntent = false, ptype = "addon", tags = [], upFile = null, dscope = "mine", covData = "";
+let live = [], mine = [], user = null, adminOk = false, editing = null, imgData = "", B, page = 1, dtab = "todos", mode = "login", pubIntent = false, ptype = "addon", tags = [], upFile = null, dscope = "mine", covData = "", prefs = {favs: [], follows: []}, badges = {}, reportsList = [], curProf = "", showStats = false, clog = [];
 const isAdmin = () => !!user && (demo ? /^admin/i.test(user.email) : adminOk);
 const nameOf = u => u?.displayName || (u?.email || "").split("@")[0];
 $("#fTag").innerHTML = '<option value="todas">All tags</option>' + TAGS.map(t => `<option>${t}</option>`).join("");
@@ -465,7 +525,10 @@ async function initBackend() {
       logout: async () => { user = null; localStorage.removeItem("user"); },
       rename: async n => { user.displayName = n; localStorage.setItem("uname", n); }, reset: async () => {},
       profile: async uid => JSON.parse(localStorage.getItem("p:" + uid) || "null"), setProfile: async p => localStorage.setItem("p:" + user.uid, JSON.stringify(p)),
-      putChunks: async () => {}, getChunks: async () => [], dropChunks: async () => {}
+      putChunks: async () => {}, getChunks: async () => [], dropChunks: async () => {},
+      badges: async () => ({}), setBadge: async () => {}, reports: async () => [], dropReport: async () => {}, delComment: async () => {}, counts: async () => 0,
+      prefs: async () => JSON.parse(localStorage.getItem("prefs") || '{"favs":[],"follows":[]}'),
+      setPref: async (k, v, on) => { const p = JSON.parse(localStorage.getItem("prefs") || '{"favs":[],"follows":[]}'); p[k] = on ? p[k].filter(x => x !== v) : [...p[k], v]; localStorage.setItem("prefs", JSON.stringify(p)); }
     };
     const u = localStorage.getItem("user"); if (u) sess(u, localStorage.getItem("uname") || u.split("@")[0]);
     return;
@@ -492,12 +555,20 @@ async function initBackend() {
     putChunks: async (id, parts, cb) => { for (let k = 0; k < parts.length; k++) { await F.setDoc(F.doc(db, "addons", id, "chunks", String(k)), {d: parts[k]}); cb && cb(k + 1, parts.length); } },
     getChunks: async (id, n) => { const o = []; for (let k = 0; k < n; k++) o.push((await F.getDoc(F.doc(db, "addons", id, "chunks", String(k)))).data().d); return o; },
     dropChunks: async id => { const q = await F.getDocs(F.collection(db, "addons", id, "chunks")); await Promise.all(q.docs.map(d => F.deleteDoc(d.ref))); },
+    badges: async () => { const o = {}; (await F.getDocs(F.collection(db, "verified"))).forEach(d => o[d.id] = d.data().kind); return o; },
+    setBadge: (uid, kind) => kind ? F.setDoc(F.doc(db, "verified", uid), {kind}) : F.deleteDoc(F.doc(db, "verified", uid)),
+    prefs: async () => { const p = await F.getDoc(F.doc(db, "prefs", user.uid)); return {favs: p.data()?.favs || [], follows: p.data()?.follows || []}; },
+    setPref: (k, v, on) => F.setDoc(F.doc(db, "prefs", user.uid), {[k]: on ? F.arrayRemove(v) : F.arrayUnion(v)}, {merge: true}),
+    reports: async () => (await F.getDocs(F.collection(db, "reports"))).docs.map(d => ({...d.data(), id: d.id})),
+    dropReport: id => F.deleteDoc(F.doc(db, "reports", id)),
+    delComment: (a, c) => F.deleteDoc(F.doc(db, "addons", a, "comments", c)),
+    counts: async id => (await F.getCountFromServer(F.collection(db, "addons", id, "comments"))).data().count,
     reset: () => A.sendPasswordResetEmail(auth, user.email)
   };
 }
 
 /* ---------- Navegação ---------- */
-function go(v) { $("#home").hidden = v !== "home"; $("#dash").hidden = v !== "dash"; $("#sub").hidden = v !== "sub"; $("#profile").hidden = v !== "profile"; scrollTo(0, 0); }
+function go(v) { $("#home").hidden = v !== "home"; $("#dash").hidden = v !== "dash"; $("#sub").hidden = v !== "sub"; $("#profile").hidden = v !== "profile"; $("#faq").hidden = v !== "faq"; $("#favs").hidden = v !== "favs"; scrollTo(0, 0); }
 function head() {
   $("#loginBtn").hidden = !!user; $("#avBtn").hidden = !user; $("#dd").hidden = true;
   if (user) $("#avBtn").textContent = nameOf(user).charAt(0).toUpperCase();
@@ -508,6 +579,7 @@ $("#avBtn").onclick = e => { e.stopPropagation(); $("#dd").hidden = !$("#dd").hi
 document.addEventListener("click", () => $("#dd").hidden = true);
 document.querySelectorAll("#menu [data-t]").forEach(b => b.onclick = () => { $("#fType").value = b.dataset.t; page = 1; go("home"); $("#menu").hidden = true; renderHome(); });
 document.querySelectorAll("#menu [data-l]").forEach(b => b.onclick = () => { setLang(b.dataset.l); $("#menu").hidden = true; });
+document.querySelectorAll("#menu [data-h]").forEach(b => b.onclick = () => { location.hash = "#" + b.dataset.h; $("#menu").hidden = true; });
 $("#q").oninput = () => { page = 1; go("home"); renderHome(); };
 ["fType", "fOrg", "fSort", "fTag"].forEach(id => $("#" + id).onchange = () => { page = 1; renderHome(); });
 
@@ -515,28 +587,36 @@ $("#q").oninput = () => { page = 1; go("home"); renderHome(); };
 function filtered() {
   const q = $("#q").value.trim().toLowerCase(), t = $("#fType").value, o = $("#fOrg").value, s = $("#fSort").value, tg = $("#fTag").value;
   return live.filter(i => (t === "todos" || i.type === t) && (tg === "todas" || (i.tags || []).includes(tg)) && (o === "todos" || (o === "studio") === !!i.studio) && (i.name + " " + who(i) + " " + (i.tags || []).join(" ")).toLowerCase().includes(q))
-    .sort((x, y) => s === "az" ? x.name.localeCompare(y.name) : (y.created || 0) - (x.created || 0));
+    .sort((x, y) => s === "az" ? x.name.localeCompare(y.name) : s === "likes" ? (y.likes || 0) - (x.likes || 0) : (y.created || 0) - (x.created || 0));
 }
 const card = i => `
     <article class="card" tabindex="0" data-v="${esc(i.id)}" style="border-bottom-color:${hex(i.accent)}">
       ${safe(i.image) ? `<img src="${esc(safe(i.image))}" alt="" loading="lazy">` : `<div class="ph"></div>`}
       <span class="tag ${i.studio ? "" : "pt"}">${i.studio ? "Studio" : tr("Partner")}</span>
+      <button class="fv" type="button" data-fav="${esc(i.id)}" aria-label="${tr("Favorite")}">${prefs.favs.includes(i.id) ? "★" : "☆"}</button>
       <div class="ov"><h3>${esc(i.name)}</h3><div class="st"><span class="pill">${typeLabel(i.type)}</span></div></div>
     </article>`;
 function renderHome() {
   const a = filtered(), pages = Math.max(1, Math.ceil(a.length / PER)); page = Math.min(page, pages);
   const from = (page - 1) * PER, show = a.slice(from, from + PER);
   $("#count").textContent = a.length ? tr("Showing {0}-{1} of {2} results", from + 1, from + show.length, a.length) : tr("No results");
+  const ft = live.filter(x => x.featured).sort((x, y) => (y.created || 0) - (x.created || 0)).slice(0, 6);
+  $("#featBox").hidden = !ft.length; $("#feat").innerHTML = ft.map(card).join("");
   $("#grid").innerHTML = show.length ? show.map(card).join("") : `<div class="empty">${tr("No addons here yet. Check back soon!")}</div>`;
   $("#pg").innerHTML = pages > 1 ? `<button class="btn ghost sm" data-p="-1" ${page < 2 ? "disabled" : ""}>${tr("Previous")}</button><span>${tr("Page {0} of {1}", page, pages)}</span><button class="btn ghost sm" data-p="1" ${page >= pages ? "disabled" : ""}>${tr("Next")}</button>` : "";
 }
 $("#pg").onclick = e => { const p = e.target.dataset.p; if (p) { page += +p; renderHome(); scrollTo(0, 300); } };
-async function refresh() { try { live = await B.list(); } catch (e) { live = []; } renderHome(); }
+async function refresh() {
+  try { live = await B.list(); } catch (e) { live = []; }
+  try { badges = await B.badges(); } catch (e) {}
+  if (user) { try { prefs = await B.prefs(); } catch (e) {} }
+  renderHome();
+}
 
 /* ---------- Detalhes ---------- */
 function openView(id) {
   const i = live.find(x => x.id === id) || mine.find(x => x.id === id); if (!i) return;
-  const nm = who(i), by = esc(tr("by {0}", "@@")).replace("@@", !i.credit && /^[\w-]+$/.test(i.authorUid || "") ? `<a href="#u=${esc(i.authorUid)}" style="color:#ff9cae">${esc(nm)}</a>` : esc(nm));
+  const nm = who(i), by = esc(tr("by {0}", "@@")).replace("@@", !i.credit && /^[\w-]+$/.test(i.authorUid || "") ? `<a href="#u=${esc(i.authorUid)}" style="color:#ff9cae">${esc(nm)}</a>${badgeHtml(i.authorUid)}` : esc(nm));
   $("#vBody").innerHTML = `${safe(i.image) ? `<img src="${esc(safe(i.image))}" alt="">` : ""}<h2>${esc(i.name)}</h2>
     <p class="by">${by} · ${typeLabel(i.type)}</p>
     <div>${tagsHtml(i)}</div><div class="rich">${clean(i.desc)}</div>
@@ -545,8 +625,17 @@ function openView(id) {
 }
 $("#vBody").onclick = e => { if (e.target.closest('a[href^="#u="]')) $("#dView").close(); };
 $("#vClose").onclick = () => $("#dView").close();
-const openCard = e => { const c = e.target.closest("[data-v]"); if (!c || (e.type !== "click" && e.key !== "Enter")) return; const i = live.find(x => x.id === c.dataset.v); if (i && okPath(i.path)) location.href = i.path.replace(/index\.html$/, ""); else openView(c.dataset.v); };
+const openCard = async e => {
+  const f = e.target.closest("[data-fav]");
+  if (f) {
+    e.stopPropagation(); if (e.type !== "click") return; if (!user) return openAuth("login");
+    const id = f.dataset.fav, on = prefs.favs.includes(id);
+    try { await B.setPref("favs", id, on); prefs.favs = on ? prefs.favs.filter(x => x !== id) : [...prefs.favs, id]; renderHome(); if (!$("#favs").hidden) showFavs(); if (!$("#profile").hidden) showProfile(curProf); } catch (x) {}
+    return;
+  }
+  const c = e.target.closest("[data-v]"); if (!c || (e.type !== "click" && e.key !== "Enter")) return; const i = live.find(x => x.id === c.dataset.v); if (i && okPath(i.path)) location.href = i.path.replace(/index\.html$/, ""); else openView(c.dataset.v); };
 $("#grid").onclick = openCard; $("#grid").onkeydown = openCard; $("#pGrid").onclick = openCard; $("#pGrid").onkeydown = openCard;
+["feat", "fGrid", "fNew"].forEach(id => { $("#" + id).onclick = openCard; $("#" + id).onkeydown = openCard; });
 
 /* ---------- Conta ---------- */
 function openAuth(m) {
@@ -565,7 +654,7 @@ $("#aGo").onclick = async () => {
   catch (x) { $("#aerr").textContent = tr(mode === "signup" ? "Could not create the account: use a valid email and a password with 6+ characters." : "Wrong email or password."); }
 };
 $("#pubBtn").onclick = () => user ? openDash() : (pubIntent = true, openAuth("signup"));
-$("#logoutBtn").onclick = async () => { await B.logout(); head(); go("home"); refresh(); };
+$("#logoutBtn").onclick = async () => { await B.logout(); prefs = {favs: [], follows: []}; head(); go("home"); refresh(); };
 $("#setBtn").onclick = async () => {
   $("#sn").value = nameOf(user); $("#sl").value = lang; $("#serr").textContent = "";
   let p = null; try { p = await B.profile(user.uid); } catch (e) {}
@@ -589,15 +678,29 @@ async function showProfile(uid) {
   if (!live.length) await refresh();
   go("profile"); let p = null; try { p = await B.profile(uid); } catch (e) {}
   const list = live.filter(x => x.authorUid === uid && !x.credit), nm = p?.name || list[0]?.authorName || tr("Creator");
-  $("#pName").textContent = nm; $("#pAv").textContent = nm.charAt(0).toUpperCase(); $("#pBio").textContent = p?.bio || ""; $("#pCover").innerHTML = safe(p?.cover) ? `<img src="${esc(safe(p.cover))}" alt="">` : "";
+  curProf = uid; $("#pName").textContent = nm; $("#pBd").innerHTML = badgeHtml(uid); $("#pFollow").hidden = !user || user.uid === uid; $("#pFollow").textContent = tr(prefs.follows.includes(uid) ? "Following" : "Follow"); $("#pAdm").hidden = !isAdmin(); $("#pBdSel").value = badges[uid] || ""; $("#pAv").textContent = nm.charAt(0).toUpperCase(); $("#pBio").textContent = p?.bio || ""; $("#pCover").innerHTML = safe(p?.cover) ? `<img src="${esc(safe(p.cover))}" alt="">` : "";
   $("#pLinks").innerHTML = SOC.filter(([k]) => okLink(k, p?.links?.[k])).map(([k, l]) => `<a class="btn ${k === "discord" ? "dc" : "ghost"} sm" href="${esc(p.links[k])}" target="_blank" rel="noopener noreferrer">${l}</a>`).join("");
   $("#pGrid").innerHTML = list.length ? list.map(card).join("") : `<div class="empty">${tr("No addons yet.")}</div>`;
+}
+$("#pFollow").onclick = async () => { const on = prefs.follows.includes(curProf); try { await B.setPref("follows", curProf, on); prefs.follows = on ? prefs.follows.filter(x => x !== curProf) : [...prefs.follows, curProf]; $("#pFollow").textContent = tr(on ? "Follow" : "Following"); } catch (e) {} };
+$("#pBdSave").onclick = async () => { const k = $("#pBdSel").value; try { await B.setBadge(curProf, k); if (k) badges[curProf] = k; else delete badges[curProf]; $("#pBd").innerHTML = badgeHtml(curProf); renderHome(); } catch (e) {} };
+$("#favBtn").onclick = () => { location.hash = "#favs"; };
+async function showFavs() {
+  if (!live.length) await refresh(); go("favs");
+  const fl = live.filter(x => prefs.favs.includes(x.id));
+  $("#fGrid").innerHTML = fl.length ? fl.map(card).join("") : `<div class="empty">${tr("No favorites yet. Tap the star on an addon.")}</div>`;
+  const names = await Promise.all(prefs.follows.map(async u => live.find(x => x.authorUid === u && !x.credit)?.authorName || (await B.profile(u).catch(() => null))?.name || tr("Creator")));
+  $("#fFol").innerHTML = prefs.follows.length ? prefs.follows.map((u, k) => `<a class="btn ghost sm" href="#u=${esc(u)}">${esc(names[k])}</a>`).join("") : `<div class="empty">${tr("You are not following anyone yet.")}</div>`;
+  const nw = live.filter(x => prefs.follows.includes(x.authorUid) && !x.credit).sort((x, y) => (y.created || 0) - (x.created || 0)).slice(0, 8);
+  $("#fNew").innerHTML = nw.length ? nw.map(card).join("") : `<div class="empty">${tr("Nothing new yet.")}</div>`;
 }
 function route() {
   const h = location.hash, m = /^#u=([A-Za-z0-9_-]+)$/.exec(h);
   if (h === "#login") { history.replaceState(null, "", location.pathname + location.search); if (!user) openAuth("login"); }
   else if (m) showProfile(m[1]);
-  else if (!$("#profile").hidden) go("home");
+  else if (h === "#faq") go("faq");
+  else if (h === "#favs") { if (user) showFavs(); else openAuth("login"); }
+  else if (!$("#profile").hidden || !$("#faq").hidden || !$("#favs").hidden) go("home");
 }
 window.addEventListener("hashchange", route);
 $("#sPw").onclick = async () => { try { await B.reset(); $("#serr").textContent = tr("We sent you an email to change your password."); } catch (e) { $("#serr").textContent = tr("Could not send the email."); } };
@@ -605,70 +708,120 @@ $("#sPw").onclick = async () => { try { await B.reset(); $("#serr").textContent 
 /* ---------- Páginas no GitHub: addons/criador/nome.html (sempre em inglês) ---------- */
 const slug = (s, f) => (s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || f;
 const okPath = p => /^addons\/[a-z0-9-]+\/[a-z0-9-]+(\/index)?\.html$/.test(p || "");
-async function pageMain(CFG, ID) {  // roda dentro de cada página addons/criador/nome.html (curtidas e comentários)
+async function pageMain(CFG, ID, AUID, NAME) {  // roda em cada página do addon: curtir, salvar, seguir, denunciar e comentários
   const b = "https://www.gstatic.com/firebasejs/10.12.2/";
   const [{initializeApp}, A, F] = await Promise.all([import(b + "firebase-app.js"), import(b + "firebase-auth.js"), import(b + "firebase-firestore.js")]);
   const app = initializeApp(CFG), db = F.getFirestore(app), auth = A.initializeAuth(app, {persistence: [A.indexedDBLocalPersistence, A.browserLocalPersistence]});
   const $ = s => document.querySelector(s), mk = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; };
-  let me = null, admin = false, liked = false, count = 0;
-  const paint = () => { $("#lc").textContent = count; $("#like").classList.toggle("on", liked); };
-  async function loadLikes() { try { count = (await F.getCountFromServer(F.collection(db, "addons", ID, "likes"))).data().count; } catch (e) {} paint(); }
-  $("#like").onclick = async () => {
-    if (!me) { location.href = "../../../index.html#login"; return; }
-    const r = F.doc(db, "addons", ID, "likes", me.uid);
-    try { if (liked) { await F.deleteDoc(r); liked = false; count--; } else { await F.setDoc(r, {t: Date.now()}); liked = true; count++; } paint(); } catch (e) {}
+  const UP = "../../../index.html", D = (...p) => F.doc(db, ...p), C = (...p) => F.collection(db, ...p);
+  let me = null, admin = false, liked = false, count = 0, prefs = {favs: [], follows: []}, badges = {};
+  const need = () => { if (me) return true; location.href = UP + "#login"; return false; };
+  const bdg = u => badges[u] ? mk("span", "bd " + badges[u], badges[u] === "studio" ? "★ Studio" : "✔ Verified") : null;
+  const paint = () => {
+    $("#lc").textContent = count; $("#like").classList.toggle("on", liked);
+    const f = prefs.favs.includes(ID); $("#fav").classList.toggle("on", f); $("#fav").textContent = f ? "★ Saved" : "☆ Save";
+    const fo = $("#follow"); if (fo) { const on = prefs.follows.includes(AUID); fo.textContent = on ? "Following" : "Follow"; fo.classList.toggle("on", on); fo.hidden = !!me && me.uid === AUID; }
   };
+  const bp = (async () => { try { (await F.getDocs(C("verified"))).forEach(d => badges[d.id] = d.data().kind); const x = bdg(AUID); if (x && $("#byBd")) $("#byBd").append(x); } catch (e) {} })();
+  async function loadLikes() { try { count = (await F.getCountFromServer(C("addons", ID, "likes"))).data().count; } catch (e) {} paint(); }
+  $("#like").onclick = async () => {
+    if (!need()) return;
+    const r = D("addons", ID, "likes", me.uid), d = liked ? -1 : 1, bt = F.writeBatch(db);
+    if (liked) bt.delete(r); else bt.set(r, {t: Date.now()});
+    bt.update(D("addons", ID), {likes: F.increment(d)});
+    try { await bt.commit(); } catch (e) { try { if (liked) await F.deleteDoc(r); else await F.setDoc(r, {t: Date.now()}); } catch (e2) { return; } }
+    liked = !liked; count += d; paint();
+  };
+  const pref = async (k, v) => {
+    if (!need()) return; const on = prefs[k].includes(v);
+    try { await F.setDoc(D("prefs", me.uid), {[k]: on ? F.arrayRemove(v) : F.arrayUnion(v)}, {merge: true}); prefs[k] = on ? prefs[k].filter(x => x !== v) : [...prefs[k], v]; paint(); } catch (e) {}
+  };
+  $("#fav").onclick = () => pref("favs", ID);
+  if ($("#follow")) $("#follow").onclick = () => pref("follows", AUID);
+  const report = async extra => {
+    if (!need()) return; const why = prompt("Why are you reporting this? (max 300 characters)"); if (!why || !why.trim()) return;
+    try { await F.addDoc(C("reports"), {uid: me.uid, addonId: ID, addonName: NAME, kind: extra ? "comment" : "addon", reason: why.trim().slice(0, 300), created: Date.now(), ...(extra || {})}); alert("Thanks! The admin will take a look."); } catch (e) { alert("Could not send the report."); }
+  };
+  $("#rep").onclick = () => report();
+  const post = async (v, parent) => {
+    v = v.trim(); if (!v) return false;
+    try { await F.addDoc(C("addons", ID, "comments"), {uid: me.uid, text: v.slice(0, 500), created: Date.now(), ...(parent ? {parent} : {})}); return true; } catch (e) { return false; }
+  };
+  function replyBox(d, c) {
+    if (!need() || d.querySelector(".rbox")) return;
+    const w = mk("div", "rbox"), t = mk("textarea"), bt = mk("button", "btn", "Send reply"); t.maxLength = 500; t.placeholder = "Write a reply...";
+    bt.onclick = async () => { bt.disabled = true; if (await post(t.value, c.id)) loadComments(); else bt.disabled = false; };
+    w.append(t, bt); d.append(w);
+  }
   async function loadComments() {
-    let cs = [];
-    try { cs = (await F.getDocs(F.query(F.collection(db, "addons", ID, "comments"), F.orderBy("created", "desc"), F.limit(50)))).docs.map(d => ({id: d.id, ...d.data()})); } catch (e) {}
+    await bp; let cs = [];
+    try { cs = (await F.getDocs(F.query(C("addons", ID, "comments"), F.orderBy("created", "desc"), F.limit(150)))).docs.map(d => ({id: d.id, ...d.data()})); } catch (e) {}
     const names = {};
-    await Promise.all([...new Set(cs.map(c => c.uid))].map(async u => { try { const p = await F.getDoc(F.doc(db, "users", u)); names[u] = p.exists() ? p.data().name : "User"; } catch (e) { names[u] = "User"; } }));
+    await Promise.all([...new Set(cs.map(c => c.uid))].map(async u => { try { const p = await F.getDoc(D("users", u)); names[u] = p.exists() ? p.data().name : "User"; } catch (e) { names[u] = "User"; } }));
     const box = $("#clist"); box.textContent = "";
-    if (!cs.length) box.append(mk("p", "muted", "No comments yet."));
-    cs.forEach(c => {
-      const d = mk("div", "c"), h = mk("div", "ch"), a = mk("a", "", names[c.uid] || "User"); a.href = "../../../index.html#u=" + encodeURIComponent(c.uid);
-      h.append(a, mk("span", "muted", new Date(c.created).toLocaleDateString())); d.append(h, mk("p", "ct", c.text));
-      if (me && (me.uid === c.uid || admin)) { const x = mk("button", "del", "Delete"); x.onclick = async () => { try { await F.deleteDoc(F.doc(db, "addons", ID, "comments", c.id)); loadComments(); } catch (e) {} }; d.append(x); }
-      box.append(d);
-    });
+    const tops = cs.filter(c => !c.parent), kids = p => cs.filter(c => c.parent === p).reverse();
+    if (!tops.length) box.append(mk("p", "muted", "No comments yet."));
+    const draw = (c, host, isReply) => {
+      const d = mk("div", "c" + (isReply ? " rp" : "")), h = mk("div", "ch"), a = mk("a", "", names[c.uid] || "User"); a.href = UP + "#u=" + encodeURIComponent(c.uid);
+      h.append(a); const bg = bdg(c.uid); if (bg) h.append(bg); h.append(mk("span", "muted", new Date(c.created).toLocaleDateString())); d.append(h, mk("p", "ct", c.text));
+      const bar = mk("div", "cb"), lk = !!me && (c.likedBy || []).includes(me.uid), hb = mk("button", "mini" + (lk ? " on" : ""), "♥ " + (c.likedBy || []).length);
+      hb.onclick = async () => { if (!need()) return; try { await F.updateDoc(D("addons", ID, "comments", c.id), {likedBy: lk ? F.arrayRemove(me.uid) : F.arrayUnion(me.uid)}); loadComments(); } catch (e) {} };
+      bar.append(hb);
+      if (!isReply) { const rb = mk("button", "mini", "Reply"); rb.onclick = () => replyBox(d, c); bar.append(rb); }
+      if (me && me.uid !== c.uid) { const rp = mk("button", "mini", "Report"); rp.onclick = () => report({commentId: c.id, text: String(c.text).slice(0, 200)}); bar.append(rp); }
+      if (me && (me.uid === c.uid || admin)) { const x = mk("button", "mini del", "Delete"); x.onclick = async () => { try { await F.deleteDoc(D("addons", ID, "comments", c.id)); loadComments(); } catch (e) {} }; bar.append(x); }
+      d.append(bar); host.append(d);
+      if (!isReply) kids(c.id).forEach(k => draw(k, d, true));
+    };
+    tops.forEach(c => draw(c, box, false));
   }
   function form() {
     const f = $("#cform"); f.textContent = "";
-    if (!me) { const a = mk("a", "btn ghost", "Sign in to like and comment"); a.href = "../../../index.html#login"; f.append(a); return; }
-    const t = mk("textarea"); t.maxLength = 500; t.placeholder = "Write your comment..."; const bt = mk("button", "btn", "Post comment");
-    bt.onclick = async () => { const v = t.value.trim(); if (!v) return; bt.disabled = true; try { await F.addDoc(F.collection(db, "addons", ID, "comments"), {uid: me.uid, text: v, created: Date.now()}); t.value = ""; await loadComments(); } catch (e) {} bt.disabled = false; };
+    if (!me) { const a = mk("a", "btn ghost", "Sign in to like and comment"); a.href = UP + "#login"; f.append(a); return; }
+    const t = mk("textarea"), bt = mk("button", "btn", "Post comment"); t.maxLength = 500; t.placeholder = "Write your comment...";
+    bt.onclick = async () => { bt.disabled = true; if (await post(t.value)) { t.value = ""; await loadComments(); } bt.disabled = false; };
     f.append(t, bt);
   }
   A.onAuthStateChanged(auth, async u => {
-    me = u; admin = false; liked = false;
+    me = u; admin = false; liked = false; prefs = {favs: [], follows: []};
     if (u) {
-      try { liked = (await F.getDoc(F.doc(db, "addons", ID, "likes", u.uid))).exists(); } catch (e) {}
-      try { admin = (await F.getDoc(F.doc(db, "admins", u.uid))).exists(); } catch (e) {}
+      try { liked = (await F.getDoc(D("addons", ID, "likes", u.uid))).exists(); } catch (e) {}
+      try { admin = (await F.getDoc(D("admins", u.uid))).exists(); } catch (e) {}
+      try { const p = await F.getDoc(D("prefs", u.uid)); if (p.exists()) prefs = {favs: p.data().favs || [], follows: p.data().follows || []}; } catch (e) {}
     }
     paint(); form(); loadComments();
   });
   loadLikes();
 }
 const THEMES = {dark: ["#0d0617", "#f6efff", "#b9a6d6", "#1f0f38", "#3a1d63"], purple: ["#1a0a33", "#f6efff", "#c8b6ee", "#2a1250", "#4b2a85"], light: ["#f7f3ff", "#1c1030", "#5f4d82", "#ffffff", "#d9cdf0"]};
-const pageCss = `body{margin:0;background:var(--bg);color:var(--t);font:16px/1.6 "DM Sans",system-ui,sans-serif}header,footer{padding:14px 5vw;border-bottom:1px solid var(--l)}footer{border:0;border-top:1px solid var(--l);text-align:center;margin-top:40px;padding:28px 5vw}a{color:var(--a)}header a{color:var(--m);text-decoration:none}main{max-width:760px;margin:0 auto;padding:24px 5vw 20px}.poster .top{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start}.cv{width:100%;border-radius:14px;border-bottom:3px solid var(--a)}.poster .cv{width:240px;max-width:100%}.tt{flex:1;min-width:220px}h1{font:800 clamp(1.8rem,6vw,2.6rem)/1.1 "Bricolage Grotesque",sans-serif;margin:16px 0 4px}.poster h1{margin-top:0}h2{font-family:"Bricolage Grotesque",sans-serif;margin-top:34px}.by{color:var(--m);margin:0 0 12px}.pill{display:inline-block;border:1px solid var(--a);color:var(--a);border-radius:8px;padding:2px 12px;font-weight:700;font-size:.8rem;margin-left:8px}.tg{display:inline-block;margin:0 6px 8px 0;padding:2px 11px;border-radius:99px;border:1px solid var(--l);color:var(--m);font-size:.8rem}.acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 20px}.btn{display:inline-block;padding:11px 20px;border-radius:10px;background:var(--a);color:#fff;font:700 1rem "DM Sans",sans-serif;text-decoration:none;border:0;cursor:pointer}.btn.ghost{background:none;border:1px solid var(--l);color:var(--t)}.btn.dc{background:#5865F2;color:#fff}.lk{background:var(--c);border:1px solid var(--l);border-radius:10px;padding:10px 16px;color:var(--t);font:700 1rem "DM Sans",sans-serif;cursor:pointer}.lk .h{color:#8a7aa6;font-size:1.2rem}.lk.on .h{color:#ff2e4f}.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:14px 0}.gal img{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:10px}.d img{max-width:100%;border-radius:10px;margin:8px 0}.d blockquote{margin:12px 0;padding:4px 14px;border-left:3px solid var(--a);color:var(--m)}.d ul,.d ol{margin-left:22px}textarea{width:100%;box-sizing:border-box;min-height:80px;background:var(--c);border:1px solid var(--l);border-radius:10px;padding:12px;color:var(--t);font:inherit;margin-bottom:10px}.c{background:var(--c);border:1px solid var(--l);border-radius:12px;padding:12px 14px;margin-top:12px}.ch{display:flex;gap:10px;align-items:center}.ch a{font-weight:700;text-decoration:none}.muted{color:var(--m);font-size:.85rem}.ct{margin:6px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}.del{background:none;border:0;color:#ff8aa0;cursor:pointer;padding:6px 0 0}`;
+const pageCss = `body{margin:0;background:var(--bg);color:var(--t);font:16px/1.6 "DM Sans",system-ui,sans-serif}header,footer{padding:14px 5vw;border-bottom:1px solid var(--l)}footer{border:0;border-top:1px solid var(--l);text-align:center;margin-top:40px;padding:28px 5vw}a{color:var(--a)}header a{color:var(--m);text-decoration:none}main{max-width:760px;margin:0 auto;padding:24px 5vw 20px}.poster .top{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start}.cv{width:100%;border-radius:14px;border-bottom:3px solid var(--a)}.poster .cv{width:240px;max-width:100%}.tt{flex:1;min-width:220px}h1{font:800 clamp(1.8rem,6vw,2.6rem)/1.1 "Bricolage Grotesque",sans-serif;margin:16px 0 4px}.poster h1{margin-top:0}h2{font-family:"Bricolage Grotesque",sans-serif;margin-top:34px}.by{color:var(--m);margin:0 0 12px}.pill{display:inline-block;border:1px solid var(--a);color:var(--a);border-radius:8px;padding:2px 12px;font-weight:700;font-size:.8rem;margin-left:8px}.tg{display:inline-block;margin:0 6px 8px 0;padding:2px 11px;border-radius:99px;border:1px solid var(--l);color:var(--m);font-size:.8rem}.acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 20px}.btn{display:inline-block;padding:11px 20px;border-radius:10px;background:var(--a);color:#fff;font:700 1rem "DM Sans",sans-serif;text-decoration:none;border:0;cursor:pointer}.btn.ghost{background:none;border:1px solid var(--l);color:var(--t)}.btn.dc{background:#5865F2;color:#fff}.lk{background:var(--c);border:1px solid var(--l);border-radius:10px;padding:10px 16px;color:var(--t);font:700 1rem "DM Sans",sans-serif;cursor:pointer}.lk .h{color:#8a7aa6;font-size:1.2rem}.lk.on .h{color:#ff2e4f}.lk.fv.on{border-color:var(--a);color:var(--a)}.mini{background:none;border:1px solid var(--l);border-radius:8px;padding:3px 10px;color:var(--m);font:600 .8rem "DM Sans",sans-serif;cursor:pointer}.mini.on{color:#ff2e4f;border-color:#ff2e4f}.by .mini{margin-left:10px}.bd{display:inline-block;font-size:.72rem;font-weight:700;padding:1px 9px;border-radius:99px;border:1px solid #5ac8fa;color:#5ac8fa;margin-left:8px}.bd.studio{background:var(--a);border-color:var(--a);color:#fff}details{background:var(--c);border:1px solid var(--l);border-radius:12px;padding:10px 14px;margin:14px 0}summary{cursor:pointer;font-weight:700}.cl{border-left:3px solid var(--a);padding-left:12px;margin:12px 0;white-space:pre-wrap}.cl b{display:block}.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:14px 0}.gal img{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:10px}.d img{max-width:100%;border-radius:10px;margin:8px 0}.d blockquote{margin:12px 0;padding:4px 14px;border-left:3px solid var(--a);color:var(--m)}.d ul,.d ol{margin-left:22px}textarea{width:100%;box-sizing:border-box;min-height:80px;background:var(--c);border:1px solid var(--l);border-radius:10px;padding:12px;color:var(--t);font:inherit;margin-bottom:10px}.c{background:var(--c);border:1px solid var(--l);border-radius:12px;padding:12px 14px;margin-top:12px}.rp{margin-left:22px}.ch{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.ch a{font-weight:700;text-decoration:none}.muted{color:var(--m);font-size:.85rem}.ct{margin:6px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}.cb{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.mini.del{color:#ff8aa0}.rbox{margin-top:10px}`;
+const siteUrl = () => {
+  if (CONFIG.siteUrl) return CONFIG.siteUrl.replace(/\/?$/, "/");
+  const c = JSON.parse(localStorage.getItem("gh") || "null"); if (!c?.repo) return "";
+  const [o, r] = c.repo.split("/"); return r.toLowerCase() === o.toLowerCase() + ".github.io" ? `https://${o.toLowerCase()}.github.io/` : `https://${o.toLowerCase()}.github.io/${r}/`;
+};
 const pageHtml = (i, o) => {
   const th = Object.prototype.hasOwnProperty.call(THEMES, i.theme) ? THEMES[i.theme] : THEMES.dark, up = "../../../index.html";
   const chips = tagsHtml(i) + (i.mcv ? `<span class="tg">Minecraft ${esc(i.mcv)}</span>` : "") + (i.ver ? `<span class="tg">v${esc(i.ver)}</span>` : "") + (i.exp ? `<span class="tg">Experimental toggles</span>` : "");
+  const by = i.credit ? esc(i.credit) : `<a href="${up}#u=${esc(i.authorUid)}">${esc(i.authorName || CONFIG.studio)}</a><span id="byBd"></span><button class="mini" id="follow" type="button">Follow</button>`;
+  const log = o.log.length ? `<h2>Changelog</h2>${o.log.map(e => `<div class="cl"><b>${esc(e.v)} · ${esc(e.d)}</b>${esc(e.t)}</div>`).join("")}` : "";
+  const meta = `<meta property="og:type" content="website"><meta property="og:title" content="${esc(i.name)} – ${esc(CONFIG.studio)}"><meta property="og:description" content="${esc(o.blurb)}">${o.ogImg ? `<meta property="og:image" content="${esc(o.ogImg)}">` : ""}${o.url ? `<meta property="og:url" content="${esc(o.url)}">` : ""}<meta name="twitter:card" content="${o.ogImg ? "summary_large_image" : "summary"}"><meta name="theme-color" content="${hex(i.accent)}">`;
   return `<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' https: data:; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'nonce-${o.nonce}' https://www.gstatic.com; connect-src https://*.googleapis.com; frame-src 'none'; base-uri 'none'">
-<title>${esc(i.name)} – ${esc(CONFIG.studio)}</title>
+<title>${esc(i.name)} – ${esc(CONFIG.studio)}</title>${meta}
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@800&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
 <style>:root{--bg:${th[0]};--t:${th[1]};--m:${th[2]};--c:${th[3]};--l:${th[4]};--a:${hex(i.accent)}}${pageCss}</style></head><body>
 <header><a href="${up}">← ${esc(CONFIG.studio)}</a></header>
 <main class="${i.layout === "poster" ? "poster" : ""}"><div class="top">${o.cover ? `<img class="cv" src="${esc(o.cover)}" alt="">` : ""}<div class="tt"><h1>${esc(i.name)}</h1>
-<p class="by">by ${i.credit ? esc(i.credit) : `<a href="${up}#u=${esc(i.authorUid)}">${esc(i.authorName || CONFIG.studio)}</a>`}<span class="pill">${typeLabel(i.type)}</span></p><div>${chips}</div></div></div>
-<div class="acts"><a class="btn" href="${esc(o.dl)}" rel="noopener noreferrer"${o.dlFile ? " download" : ""}>Download</a><button class="lk" id="like" type="button"><span class="h">♥</span> <span id="lc">0</span></button>${okLink("youtube", i.yt) ? `<a class="btn ghost" href="${esc(i.yt)}" rel="noopener noreferrer">YouTube</a>` : ""}${okLink("discord", i.dc) ? `<a class="btn dc" href="${esc(i.dc)}" rel="noopener noreferrer">Discord</a>` : ""}</div>
+<p class="by">by ${by}<span class="pill">${typeLabel(i.type)}</span></p><div>${chips}</div></div></div>
+<div class="acts"><a class="btn" href="${esc(o.dl)}" rel="noopener noreferrer"${o.dlFile ? " download" : ""}>Download</a><button class="lk" id="like" type="button"><span class="h">♥</span> <span id="lc">0</span></button><button class="lk fv" id="fav" type="button">☆ Save</button>${okLink("youtube", i.yt) ? `<a class="btn ghost" href="${esc(i.yt)}" rel="noopener noreferrer">YouTube</a>` : ""}${okLink("discord", i.dc) ? `<a class="btn dc" href="${esc(i.dc)}" rel="noopener noreferrer">Discord</a>` : ""}<button class="mini" id="rep" type="button">Report</button></div>
+<details><summary>How to install</summary><ol><li>Download the file.</li><li>Open it with Minecraft (tap the file and choose Minecraft). It imports by itself.</li><li>Create or edit a world, open Add-ons and turn the packs on.</li><li>If something does not work, turn on the Experimental toggles listed on this page.</li></ol><p class="muted">On iPhone, open the file from the Files app and choose “Open in Minecraft”. If the download opens another page first, wait a few seconds and press its download button.</p></details>
 ${o.shots.length ? `<div class="gal">${o.shots.map(x => `<a href="${esc(x)}"><img src="${esc(x)}" alt=""></a>`).join("")}</div>` : ""}
-<div class="d">${o.desc}</div>
+<div class="d">${o.desc}</div>${log}
 <h2>Comments</h2><div id="cform"></div><div id="clist"></div></main>
 <footer><a class="btn dc" href="${esc(CONFIG.discord)}" rel="noopener noreferrer">Join our Discord</a></footer>
-<script type="module" nonce="${o.nonce}">(${pageMain})(${JSON.stringify(CONFIG.firebase).replace(/</g, "\\u003c")}, ${JSON.stringify(i.id)});<\/script>
+<script type="module" nonce="${o.nonce}">(${pageMain})(${JSON.stringify(CONFIG.firebase).replace(/</g, "\\u003c")}, ${JSON.stringify(i.id)}, ${JSON.stringify(i.authorUid || "")}, ${JSON.stringify(i.name).replace(/</g, "\\u003c")});<\/script>
 </body></html>`;
 };
 async function gh(method, path, body) {
@@ -692,8 +845,11 @@ async function publish(i) {  // cria addons/criador/nome/ com index.html, capa, 
   if (i.file?.chunks > 0) { filePath = `${dir}/${String(i.file.name).replace(/[^A-Za-z0-9._-]+/g, "-")}`; files.push([filePath, (await B.getChunks(i.id, i.file.chunks)).join("")]); }
   const dl = i.link || (filePath ? filePath.split("/").pop() : ""); if (!dl) throw new Error("nodl");
   for (const [p, b64] of files) { const old = await gh("GET", p); await gh("PUT", p, {message: "Add file", content: b64, sha: old?.sha}); }
+  const log = (i.changelog || []).filter(e => e && /^\d{4}-\d{2}-\d{2}$/.test(e.d)).slice(0, 20).map(e => ({v: String(e.v).slice(0, 20), d: e.d, t: String(e.t).slice(0, 500)}));
+  const blurb = new DOMParser().parseFromString(desc, "text/html").body.textContent.replace(/\s+/g, " ").trim().slice(0, 160), site = siteUrl();
   const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16)))), old = await gh("GET", path);
-  await gh("PUT", path, {message: "Publish " + i.name, content: btoa(unescape(encodeURIComponent(pageHtml(i, {cover, shots, desc, dl, dlFile: !i.link, nonce})))), sha: old?.sha});
+  const o = {cover, shots, desc, dl, dlFile: !i.link, nonce, log, blurb, url: site ? `${site}${dir}/` : "", ogImg: site && cover ? `${site}${dir}/${cover}` : ""};
+  await gh("PUT", path, {message: "Publish " + i.name, content: btoa(unescape(encodeURIComponent(pageHtml(i, o)))), sha: old?.sha});
   const keep = new Set([...files.map(f => f[0]), filePath, path]), list = await gh("GET", dir);
   if (Array.isArray(list)) for (const f of list) if (!keep.has(f.path)) await gh("DELETE", f.path, {message: "Clean up", sha: f.sha});
   if (i.path && i.path !== path) {  // migra páginas do formato antigo (nome.html)
@@ -711,14 +867,16 @@ async function unpublish(path) {
 
 /* ---------- Painel do criador ---------- */
 $("#dashBtn").onclick = () => openDash();
-async function openDash() { go("dash"); try { mine = await B.mine(); } catch (e) { mine = []; } renderDash(); }
+async function openDash() { go("dash"); try { mine = await B.mine(); } catch (e) { mine = []; } if (isAdmin()) { try { reportsList = await B.reports(); } catch (e) { reportsList = []; } } renderDash(); }
 function renderDash() {
   const adm = isAdmin(), mineOf = x => x.authorUid === user.uid;
   const base = adm ? mine.filter(x => dscope === "mine" ? mineOf(x) : !mineOf(x)) : mine;
   const c = s => base.filter(x => s === "todos" || x.status === s).length;
   $("#dScope").hidden = !adm;
   const dn = c("denied"); $("#dAlert").hidden = adm || !dn; if (!adm && dn) $("#dAlert").textContent = tr("{0} addon(s) need changes. Tap to see.", dn);
-  if (adm) { const o = mine.filter(x => !mineOf(x)), pn = o.filter(x => x.status === "pending").length; $("#dScope").innerHTML = `<button type="button" class="${dscope === "mine" ? "on" : ""}" data-sc="mine">${tr("My addons")} (${mine.length - o.length})</button><button type="button" class="${dscope === "others" ? "on" : ""}" data-sc="others">${tr("Other creators")} (${o.length})${pn ? " · " + tr("{0} in review", pn) : ""}</button>`; }
+  if (adm) { const o = mine.filter(x => !mineOf(x)), pn = o.filter(x => x.status === "pending").length; $("#dScope").innerHTML = `<button type="button" class="${dscope === "mine" ? "on" : ""}" data-sc="mine">${tr("My addons")} (${mine.length - o.length})</button><button type="button" class="${dscope === "others" ? "on" : ""}" data-sc="others">${tr("Other creators")} (${o.length})${pn ? " · " + tr("{0} in review", pn) : ""}</button><button type="button" class="${dscope === "reports" ? "on" : ""}" data-sc="reports">${tr("Reports")} (${reportsList.length})</button>`; }
+  const rep = adm && dscope === "reports"; $("#stats").hidden = $("#dTabs").hidden = rep; $("#dStats").hidden = rep || !showStats;
+  if (rep) { renderReports(); return; }
   const ST = {live: tr("Live"), pending: tr("In review"), denied: tr("Denied")};
   $("#dWho").textContent = tr("Hello, {0}", nameOf(user)) + (adm ? tr(". As admin, you can see and approve all addons.") : "");
   $("#stats").innerHTML = [[tr("Total"), c("todos")], [ST.live, c("live")], [ST.pending, c("pending")], [ST.denied, c("denied")]].map(([l, v]) => `<div class="stat"><span>${l}</span><b>${v}</b></div>`).join("");
@@ -730,15 +888,28 @@ function renderDash() {
       <div class="row">
         ${adm && i.status !== "live" ? `<button class="btn sm" data-a="ok" data-id="${esc(i.id)}">${tr("Approve")}</button>` : ""}
         ${adm && i.status !== "denied" ? `<button class="btn ghost sm" data-a="no" data-id="${esc(i.id)}">${tr("Deny")}</button>` : ""}
+        ${adm && i.status === "live" ? `<button class="btn ghost sm" data-a="feat" data-id="${esc(i.id)}">${i.featured ? tr("Unfeature") : tr("Feature")}</button>` : ""}
         <button class="btn ghost sm" data-a="edit" data-id="${esc(i.id)}">${tr("Edit")}</button>
         <button class="btn del sm" data-a="del" data-id="${esc(i.id)}">${!adm && i.status === "live" ? tr("Request removal") : tr("Remove")}</button>
       </div>${i.status === "denied" ? `<div class="warn"><b>${tr("Needs changes")}:</b> ${esc(i.denyReason || tr("No reason was given."))}<br><small>${tr("Tap Edit, fix it and send it again.")}</small></div>` : ""}</div>`).join("") : `<div class="empty">${tr("Nothing here yet. Tap “Add addon” to get started.")}</div>`;
+  if (showStats) renderStats(base);
 }
+function renderReports() {
+  $("#dList").innerHTML = reportsList.length ? reportsList.sort((x, y) => (y.created || 0) - (x.created || 0)).map(r => { const ad = live.find(x => x.id === r.addonId) || mine.find(x => x.id === r.addonId), pg = ad && okPath(ad.path) ? ad.path.replace(/index\.html$/, "") : "";
+    return `<div class="item"><div class="info"><b>${esc(r.addonName || "")}</b><span class="s denied">${tr(r.kind === "comment" ? "Comment" : "Addon")}</span><br><small>${esc(r.reason || "")}</small>${r.text ? `<br><small>“${esc(r.text)}”</small>` : ""}</div><div class="row">${pg ? `<a class="btn ghost sm" href="${esc(pg)}">${tr("View")}</a>` : ""}${r.kind === "comment" ? `<button class="btn del sm" data-ra="delc" data-id="${esc(r.id)}">${tr("Delete comment")}</button>` : ""}<button class="btn ghost sm" data-ra="dismiss" data-id="${esc(r.id)}">${tr("Dismiss")}</button></div></div>`; }).join("") : `<div class="empty">${tr("No reports. All clear!")}</div>`;
+}
+async function renderStats(list) {
+  const lv = list.filter(x => x.status === "live"), cm = await Promise.all(lv.map(x => B.counts(x.id).catch(() => 0)));
+  $("#dStats").innerHTML = `<div class="stats"><div class="stat"><span>${tr("Total likes")}</span><b>${lv.reduce((t, x) => t + (x.likes || 0), 0)}</b></div><div class="stat"><span>${tr("Total comments")}</span><b>${cm.reduce((t, n) => t + n, 0)}</b></div></div>` + (lv.length ? lv.map((x, k) => `<div class="item"><div class="info"><b>${esc(x.name)}</b><br><small>${tr("Created")}: ${new Date(x.created || 0).toLocaleDateString()}</small></div><span>♥ ${x.likes || 0}</span><span>💬 ${cm[k]}</span></div>`).join("") : `<div class="empty">${tr("No live addons yet.")}</div>`);
+}
+$("#statBtn").onclick = () => { showStats = !showStats; renderDash(); };
 $("#dAlert").onclick = () => { dtab = "denied"; renderDash(); };
 $("#dScope").onclick = e => { const k = e.target.dataset.sc; if (k) { dscope = k; dtab = k === "others" ? "pending" : "todos"; renderDash(); } };
 $("#dTabs").onclick = e => { if (e.target.dataset.dt) { dtab = e.target.dataset.dt; renderDash(); } };
 $("#dList").onclick = async e => {
-  const {a, id} = e.target.dataset; if (!a) return;
+  const {a, id, ra} = e.target.dataset;
+  if (ra) { const rp = reportsList.find(x => x.id === id); try { if (ra === "delc") await B.delComment(rp.addonId, rp.commentId); await B.dropReport(id); reportsList = reportsList.filter(x => x.id !== id); renderDash(); } catch (x) { alert(tr("You do not have permission for this action.")); } return; }
+  if (!a) return;
   const i = mine.find(x => x.id === id), adm = isAdmin();
   try {
     if (a === "edit") return openForm(i);
@@ -747,6 +918,7 @@ $("#dList").onclick = async e => {
       if (!confirm(tr(ask ? "Ask the admin to remove this addon?" : "Remove this addon?"))) return;
       if (ask) await B.save({id, status: "pending", rm: true});
       else { if (adm && i.path) await unpublish(i.path); if (i.file?.chunks > 0) await B.dropChunks(id).catch(() => {}); await B.remove(id); }
+    } else if (a === "feat") { await B.status(id, "live", {featured: !i.featured});
     } else if (a === "ok") {
       const x = await publish(i); await B.status(id, "live", {path: x.path, rm: false, denyReason: "", ...(x.path ? {filePath: x.filePath, ...(x.file ? {file: x.file} : {})} : {})});
       if (i.file?.chunks > 0 && x.path) await B.dropChunks(id).catch(() => {});
@@ -778,6 +950,10 @@ const resize = (f, W, q, H) => new Promise(ok => {  // reduz a imagem (com corte
 });
 function drawTags() { $("#tagBox").innerHTML = TAGS.map(t => `<button type="button" class="chip ${tags.includes(t) ? "on" : ""}" data-tg="${t}">${t}</button>`).join(""); $("#tcount").textContent = tr("{0}/5 tags selected", tags.length); }
 $("#tagBox").onclick = e => { const t = e.target.dataset.tg; if (!t) return; if (tags.includes(t)) tags = tags.filter(x => x !== t); else if (tags.length < 5) tags.push(t); drawTags(); };
+const drawClog = () => { $("#clBox").innerHTML = clog.map((e, k) => `<div class="clrow"><input data-k="${k}" data-f="v" value="${esc(e.v)}" maxlength="20" placeholder="${tr("Version (e.g. 1.1)")}"><textarea data-k="${k}" data-f="t" maxlength="500" placeholder="${tr("What changed?")}">${esc(e.t)}</textarea><div class="row"><small>${esc(e.d)}</small><button type="button" class="btn del sm" data-cx="${k}">×</button></div></div>`).join(""); };
+$("#clAdd").onclick = () => { if (clog.length < 20) { clog.unshift({v: "", d: new Date().toISOString().slice(0, 10), t: ""}); drawClog(); } };
+$("#clBox").oninput = e => { const k = e.target.dataset.k, f = e.target.dataset.f; if (k != null && f) clog[+k][f] = e.target.value; };
+$("#clBox").onclick = e => { const k = e.target.dataset.cx; if (k != null) { clog.splice(+k, 1); drawClog(); } };
 function drawShots() { $("#shots").innerHTML = galData.map((g, k) => `<div class="shot"><img src="${esc(g)}" alt=""><button type="button" data-gx="${k}" aria-label="${tr("Remove")}">×</button></div>`).join(""); }
 function showPrev(src) { $("#prev").src = src || ""; $("#prev").hidden = !src; }
 function updPv() {
@@ -806,6 +982,7 @@ function openForm(it) {
   $("#fl").value = it?.link || ""; $("#fy").value = it?.yt || ""; $("#fdc").value = it?.dc || ""; $("#fmv").value = it?.mcv || ""; $("#fver").value = it?.ver || ""; $("#fexp").checked = !!it?.exp;
   $("#fo").value = it && !it.studio ? "parceiro" : "studio"; $("#fcr").value = it?.credit || ""; $("#orgBox").hidden = !isAdmin();
   $("#fOwn").checked = false; $("#fReq").checked = false; $("#fu").value = ""; $("#ff").value = ""; $("#fg").value = "";
+  clog = (it?.changelog || []).slice(0, 20).map(e => ({v: String(e.v || ""), d: String(e.d || ""), t: String(e.t || "")})); drawClog();
   fileTxt(); showPrev(safe(it?.image)); drawTags(); drawShots(); go("sub"); showStep(0);
 }
 $("#newBtn").onclick = () => openForm();
@@ -858,7 +1035,7 @@ $("#saveBtn").onclick = async () => {
   if (yt && !okLink("youtube", yt)) return bad(3, "Use a valid https link for {0}.", "YouTube");
   if (dc && !okLink("discord", dc)) return bad(3, "Use a valid https link for {0}.", "Discord");
   if (!$("#fOwn").checked || (ptype === "addon" && !$("#fReq").checked)) return bad(5, "Please confirm the checklist before submitting.");
-  const it = {id: editing?.id, name, desc, type: ptype, tags: [...tags], link, yt, dc, image, gallery: [...galData], accent, theme, layout, mcv: $("#fmv").value.trim().slice(0, 20), ver: $("#fver").value.trim().slice(0, 20), exp: $("#fexp").checked, studio: adm && $("#fo").value === "studio", credit: adm && $("#fo").value === "parceiro" ? $("#fcr").value.trim().slice(0, 30) : "", status: "pending"};
+  const it = {id: editing?.id, name, desc, type: ptype, tags: [...tags], link, yt, dc, image, gallery: [...galData], accent, theme, layout, mcv: $("#fmv").value.trim().slice(0, 20), ver: $("#fver").value.trim().slice(0, 20), exp: $("#fexp").checked, changelog: clog.filter(e => e.v.trim() || e.t.trim()).map(e => ({v: e.v.trim().slice(0, 20), d: /^\d{4}-\d{2}-\d{2}$/.test(e.d) ? e.d : new Date().toISOString().slice(0, 10), t: e.t.trim().slice(0, 500)})).slice(0, 20), studio: adm && $("#fo").value === "studio", credit: adm && $("#fo").value === "parceiro" ? $("#fcr").value.trim().slice(0, 30) : "", status: "pending"};
   if (editing) it.denyReason = "";
   if (!editing) { it.authorUid = user.uid; it.authorName = nameOf(user); it.path = ""; it.filePath = ""; }
   if (upFile) it.file = {name: upFile.name, size: upFile.size, chunks: upFile.parts.length};
@@ -879,7 +1056,7 @@ function retitle() {
 function setLang(l) {
   lang = l === "pt" ? "pt" : "en"; localStorage.setItem("lang", lang); $("#sl").value = lang;
   applyLang(); retitle(); head(); renderHome(); if (!$("#dash").hidden) renderDash();
-  if (!$("#sub").hidden) { $("#fTitle").textContent = tr(editing ? "Edit addon page" : "Create an addon page"); count(); drawTags(); fileTxt(); showStep(step); }
+  if (!$("#sub").hidden) { $("#fTitle").textContent = tr(editing ? "Edit addon page" : "Create an addon page"); count(); drawTags(); fileTxt(); showStep(step); drawClog(); }
   ["#aerr", "#serr", "#ferr"].forEach(x => $(x).textContent = "");
 }
 
